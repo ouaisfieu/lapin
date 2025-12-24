@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manual de Survie en Démocratie Avancée · JdR Autoguidé</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #02081b;
+      --card: #020817;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.12);
+      --accent-2: #f97316;
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border: rgba(148,163,184,0.35);
+      --danger: #ef4444;
+      --shadow: 0 18px 40px rgba(15,23,42,0.95);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #020617 0, #000 55%);
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .noise {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      opacity: 0.16;
+      mix-blend-mode: soft-light;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 18px auto 40px;
+      padding: 0 12px 28px;
+    }
+
+    header.hero {
+      margin-bottom: 16px;
+      padding: 14px 14px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(circle at 0 0, rgba(34,197,94,0.2), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(248,250,252,0.05), transparent 55%),
+        linear-gradient(135deg, #020617, #020617 45%, #020817 100%);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 25%, #a7f3d0, #22c55e 45%, #14532d 90%);
+      box-shadow:
+        0 0 0 2px rgba(15,23,42,0.9),
+        0 0 26px rgba(34,197,94,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #022c22;
+    }
+
+    .hero-main {
+      flex: 1 1 220px;
+    }
+
+    .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-sub {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .hero-sub strong {
+      color: var(--accent);
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 2px 7px;
+      font-size: 10px;
+      color: var(--text-soft);
+      background: rgba(15,23,42,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+
+    .hero-side {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .hero-side .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      font-size: 10px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(34,197,94,0.9);
+    }
+
+    .hero-side .hint {
+      font-size: 10px;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 840px) {
+      .layout {
+        grid-template-columns: minmax(0,1fr);
+      }
+      .hero-side {
+        align-items: flex-start;
+      }
+      .hero {
+        align-items: flex-start;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), #020617);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 12px 12px 10px;
+      font-size: 13px;
+      color: var(--text-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(34,197,94,0.9);
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+      margin-top: 2px;
+      margin-bottom: 3px;
+    }
+
+    .quote {
+      border-left: 2px solid var(--accent-soft);
+      padding-left: 8px;
+      margin: 4px 0 6px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .quote small {
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .stat {
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 5px 7px;
+      background: rgba(15,23,42,0.95);
+      font-size: 12px;
+    }
+
+    .stat-name {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+    }
+
+    .stat-bar-wrap {
+      margin-top: 3px;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      overflow: hidden;
+    }
+
+    .stat-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+      width: 0%;
+      transition: width 0.15s ease-out;
+    }
+
+    .stat-value {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+    }
+
+    /* GAME AREA */
+
+    .game {
+      margin-top: 2px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.92);
+      padding: 8px 8px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .game-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .progress-wrap {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      overflow: hidden;
+      margin-top: 3px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      border-radius: 999px;
+      transition: width 0.15s ease-out;
+    }
+
+    .scenario-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+    }
+
+    .scenario-body {
+      font-size: 13px;
+      color: var(--text);
+      margin-top: 2px;
+    }
+
+    .options {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color: var(--text);
+      padding: 6px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease, background 0.08s ease;
+    }
+
+    .option-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(34,197,94,0.4);
+      border-color: var(--accent);
+      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15,23,42,0.98));
+    }
+
+    .option-btn small {
+      display: block;
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .game-footer {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-soft);
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 4px 8px;
+      font-size: 11px;
+      background: rgba(15,23,42,0.95);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: #022c22;
+      background: radial-gradient(circle at 0 0, #bbf7d0, #22c55e 45%, #0f172a 100%);
+      box-shadow: 0 0 16px rgba(34,197,94,0.5);
+      font-weight: 600;
+    }
+
+    .btn-danger {
+      border-color: var(--danger);
+      color: #fecaca;
+      background: radial-gradient(circle at 0 0, rgba(239,68,68,0.4), #020617);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .hint {
+      font-size: 10px;
+      opacity: 0.9;
+    }
+
+    /* SUMMARY */
+
+    .summary {
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      padding: 7px 8px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .summary h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .summary h4 {
+      margin: 6px 0 2px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .summary ul {
+      margin: 2px 0 4px 16px;
+      padding: 0;
+    }
+
+    .summary li {
+      margin: 2px 0;
+    }
+
+    .summary-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      margin-right: 4px;
+    }
+
+    footer {
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 4px;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 600px) {
+      header.hero {
+        align-items: flex-start;
+      }
+      .hero-side {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+
+  <div class="shell">
+    <header class="hero">
+      <div class="hero-badge">JdR</div>
+      <div class="hero-main">
+        <div class="hero-title">Manual de Survie en Démocratie Avancée</div>
+        <div class="hero-sub">
+          Jeu de rôle autoguidé, réaliste et légèrement dystopique, pour
+          apprendre à <strong>tirer ton épingle du jeu</strong> en société
+          sans te transformer en panneau publicitaire sur pattes.
+        </div>
+        <div class="hero-chips">
+          <div class="chip"><span class="chip-dot"></span> Mode : sérieux + humour noir</div>
+          <div class="chip">Durée : 10–15 minutes</div>
+          <div class="chip">Profilage : 100% fictif (officiellement)</div>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="status">
+          <span class="status-dot"></span>
+          Simulation sociale en ligne
+        </div>
+        <div class="hint">
+          Tu joues ton propre rôle.<br/>
+          Les autres rôles aussi, d’ailleurs.
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- Colonne gauche : règles + jeu -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="dot"></span>
+            <span>Briefing</span>
+          </div>
+          <span class="pill">Règles du “jeu”</span>
+        </div>
+
+        <p class="section-label">Principe</p>
+        <div class="quote">
+          Tu te réveilles dans un pays officiellement démocratique,
+          rigoureusement sérieux, où tout le monde jure qu’il ne fait “que son travail”.
+          Ton objectif : <strong>survivre socialement</strong>, garder ta santé mentale
+          à peu près intacte, et éviter de finir mascotte cynique de ton propre burn-out.
+          <small>Bonus : si tu peux faire le bien au passage, on ne va pas s’y opposer.</small>
+        </div>
+
+        <p style="font-size:12px;margin-top:4px;">
+          Tu vas traverser une série de <strong>situations réalistes</strong> :
+          vie associative, travail, réseaux sociaux, institutions, etc.
+          À chaque fois, tu choisis une attitude parmi trois :
+        </p>
+        <ul style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li><strong>Low profile</strong> : discret·e, tu observes, tu notes.</li>
+          <li><strong>Joueur / joueuse</strong> : tu joues avec les codes, sans te vendre (enfin… tu essaies).</li>
+          <li><strong>Ultra-adapté·e</strong> : tu optimises ta carrière, en laissant ton âme à la consigne.</li>
+        </ul>
+
+        <p style="font-size:12px;">
+          Le jeu calcule en coulisses tes
+          <strong>scores de survie sociale</strong> :
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat-name">Visibilité</div>
+            <div class="stat-bar-wrap">
+              <div class="stat-bar" id="statVisibility"></div>
+            </div>
+            <div class="stat-value" id="statVisibilityText">0 / 100 — transparent comme un pare-brise propre.</div>
+          </div>
+          <div class="stat">
+            <div class="stat-name">Intégrité</div>
+            <div class="stat-bar-wrap">
+              <div class="stat-bar" id="statIntegrity"></div>
+            </div>
+            <div class="stat-value" id="statIntegrityText">0 / 100 — conscience en mode avion.</div>
+          </div>
+          <div class="stat">
+            <div class="stat-name">Réseau</div>
+            <div class="stat-bar-wrap">
+              <div class="stat-bar" id="statNetwork"></div>
+            </div>
+            <div class="stat-value" id="statNetworkText">0 / 100 — carnet d’adresses : toi + ton dentiste.</div>
+          </div>
+          <div class="stat">
+            <div class="stat-name">Sérénité</div>
+            <div class="stat-bar-wrap">
+              <div class="stat-bar" id="statCalm"></div>
+            </div>
+            <div class="stat-value" id="statCalmText">0 / 100 — pas encore cramé, mais surveille.</div>
+          </div>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">Politico-dystopique light</span>
+          <span class="tag">Auto-évaluation</span>
+          <span class="tag">Autodérision conseillée</span>
+        </div>
+
+        <div class="game" id="gameArea">
+          <div class="game-meta">
+            <div>
+              Scénario <span id="stepIndex">1</span>/<span id="stepTotal">0</span>
+            </div>
+            <div style="flex:1;max-width:180px;">
+              <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="scenario-title" id="scenarioTitle">Bienvenue dans la simulation</div>
+            <div class="scenario-body" id="scenarioText">
+              Clique sur “Commencer la partie” pour lancer ton parcours.
+            </div>
+          </div>
+
+          <div class="options" id="optionsContainer">
+            <!-- Boutons de choix injectés en JS -->
+          </div>
+
+          <div class="summary" id="summaryBox" style="display:none;"></div>
+
+          <div class="game-footer">
+            <div class="hint">
+              Chaque choix influence tes scores.<br/>
+              Il n’y a pas de “bonne” réponse, juste des conséquences.
+            </div>
+            <div style="display:flex;gap:4px;">
+              <button class="btn btn-danger" id="btnReset">Réinitialiser</button>
+              <button class="btn btn-primary" id="btnStart">Commencer la partie</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Colonne droite : mode d'emploi + version papier -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="dot"></span>
+            <span>Mode d’emploi</span>
+          </div>
+          <span class="pill">Jeu de rôle autoguidé</span>
+        </div>
+
+        <p class="section-label">Comment jouer</p>
+        <ol style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li>Clique sur <strong>“Commencer la partie”</strong>.</li>
+          <li>Lis la situation proposée.</li>
+          <li>Choisis l’option qui te ressemble <em>le plus</em> (ou celle que tu aimerais tester).</li>
+          <li>Observe comment tes <strong>scores</strong> évoluent.</li>
+          <li>À la fin, lis ton <strong>bilan perso</strong>.</li>
+        </ol>
+
+        <p class="section-label">Ce que le jeu ne fait pas</p>
+        <ul style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li>Il ne te dit pas pour qui voter.</li>
+          <li>Il ne remplace pas un psy, un syndicat, ni un avocat.</li>
+          <li>Il ne t’excuse pas d’être un·e sale con·ne si tu le deviens.</li>
+        </ul>
+
+        <p class="section-label">Ce que le jeu peut t’aider à faire</p>
+        <ul style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li>Repérer comment tu réagis face aux jeux de pouvoir discrets.</li>
+          <li>Identifier ce que tu sacrifies en premier : <strong>visibilité</strong>, <strong>intégrité</strong>, <strong>réseau</strong> ou <strong>sérénité</strong>.</li>
+          <li>Imaginer d’autres façons de “participer” sans t’épuiser.</li>
+        </ul>
+
+        <p class="section-label">Version “papier” ou atelier</p>
+        <p style="font-size:12px;">
+          Tu peux utiliser ce site comme :
+        </p>
+        <ul style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li>Support pour un <strong>atelier collectif</strong> (on projette, on discute les choix).</li>
+          <li>Base pour un <strong>jeu de rôle grandeur nature</strong> (chaque scénario devient une scène jouée).</li>
+          <li>Prétexte pour lancer une discussion sur “comment tenir debout sans se vendre”.</li>
+        </ul>
+
+        <p class="section-label">Sauvegarder / reprendre plus tard</p>
+        <p style="font-size:12px;">
+          Le jeu garde ton avancement (et tes scores) dans la
+          <span style="font-family:ui-monospace;">localStorage</span> de ton navigateur.
+          Tu peux :
+        </p>
+        <ul style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li>Recharger la page pour continuer où tu en étais.</li>
+          <li>Cliquer sur <strong>“Réinitialiser”</strong> pour repartir de zéro.</li>
+        </ul>
+
+        <p class="section-label">Étendre le jeu</p>
+        <p style="font-size:12px;">
+          Si tu connais un peu le HTML/JS, tu peux :
+        </p>
+        <ul style="margin:4px 0 6px 16px;padding:0;font-size:12px;">
+          <li>Ouvrir ce fichier dans un éditeur de texte.</li>
+          <li>Repérer le tableau <span style="font-family:ui-monospace;">const SCENES = [...]</span> dans le script.</li>
+          <li>Ajouter tes propres situations, options et effets sur les scores.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <span>Manual de Survie en Démocratie Avancée · jeu de rôle autoguidé amateur.</span>
+      <span>Tout est fictif, sauf le ressenti que ça déclenche.</span>
+    </footer>
+  </div>
+
+  <script>
+    // --- Modèle de données du jeu -----------------------------------------
+
+    /**
+     * Chaque scène :
+     * {
+     *   id: string,
+     *   title: string,
+     *   text: string,
+     *   options: [
+     *      { label, detail, effects: {visibility, integrity, network, calm} }
+     *   ]
+     * }
+     */
+    const SCENES = [
+      {
+        id: "reunion_assoc",
+        title: "Conseil d'administration associatif",
+        text: "Tu es bénévole dans une asbl très sérieuse qui parle de citoyenneté. " +
+              "Réunion du soir : quelqu’un propose une campagne de communication " +
+              "financée par une grande entreprise au comportement… disons, discutable.",
+        options: [
+          {
+            label: "Tu te tais, tu notes, tu verras plus tard.",
+            detail: "Tu observes qui applaudit, qui grimace, qui regarde son téléphone.",
+            effects: { visibility: +5, integrity: +10, network: +5, calm: +5 }
+          },
+          {
+            label: "Tu soulèves poliment le problème éthique.",
+            detail: "Sans attaquer, tu poses des questions sur la cohérence avec les valeurs affichées.",
+            effects: { visibility: +15, integrity: +15, network: +10, calm: -5 }
+          },
+          {
+            label: "Tu soutiens l’idée avec enthousiasme.",
+            detail: "Officiellement pour 'assurer la survie de l’asbl'. Officieusement : pour être dans le camp gagnant.",
+            effects: { visibility: +20, integrity: -10, network: +15, calm: -5 }
+          }
+        ]
+      },
+      {
+        id: "open_space",
+        title: "Open-space et mail ambigu",
+        text: "Au travail, tu reçois un mail te demandant d’“adapter” un rapport interne pour " +
+              "le rendre plus acceptable politiquement. On insiste sur la nécessité de rester “constructif”.",
+        options: [
+          {
+            label: "Tu fais deux versions : une honnête, une 'officielle'.",
+            detail: "Tu gardes la vraie dans un dossier perso, au cas où.",
+            effects: { visibility: +5, integrity: +5, network: +10, calm: -10 }
+          },
+          {
+            label: "Tu refuses poliment de maquiller les chiffres.",
+            detail: "Tu expliques que tu peux clarifier, contextualiser, mais pas mentir.",
+            effects: { visibility: +10, integrity: +20, network: -5, calm: -10 }
+          },
+          {
+            label: "Tu 'optimises' le rapport comme demandé.",
+            detail: "Tu ajustes les formulations pour que tout le monde soit content. Sauf peut-être la réalité.",
+            effects: { visibility: +15, integrity: -15, network: +15, calm: -5 }
+          }
+        ]
+      },
+      {
+        id: "reseaux_sociaux",
+        title: "Réseaux sociaux et indignation rentable",
+        text: "Sur les réseaux, un sujet de société explose. Ton fil se remplit d’indignation, " +
+              "de threads experts et de gens qui postent des selfies en manif.",
+        options: [
+          {
+            label: "Tu lis, tu vérifies, tu partages une seule source solide.",
+            detail: "Pas glamour, mais tu dors mieux.",
+            effects: { visibility: +5, integrity: +10, network: +5, calm: +5 }
+          },
+          {
+            label: "Tu t’engages publiquement, mais avec nuance.",
+            detail: "Tu écris un post réfléchi, sans hashtags à rallonge ni punchline facile.",
+            effects: { visibility: +15, integrity: +10, network: +10, calm: -5 }
+          },
+          {
+            label: "Tu surfe sur la vague pour gagner en visibilité.",
+            detail: "Tu tapes fort, tu polarises, tu récoltes des likes. L’algorithme t’applaudit.",
+            effects: { visibility: +25, integrity: -10, network: +20, calm: -10 }
+          }
+        ]
+      },
+      {
+        id: "administration",
+        title: "Administration et petite astuce",
+        text: "Un·e collègue bienveillant·e t’explique qu’avec un certain formulaire, " +
+              "tu peux accélérer une procédure… en exagérant un peu ta situation.",
+        options: [
+          {
+            label: "Tu refuses, tu fais la file comme tout le monde.",
+            detail: "Tu perds du temps, mais tu restes en paix avec toi-même (plus ou moins).",
+            effects: { visibility: +0, integrity: +20, network: -5, calm: -5 }
+          },
+          {
+            label: "Tu utilises l’astuce, mais à regret.",
+            detail: "Tu te dis que le système est déjà biaisé, alors tu compenses.",
+            effects: { visibility: +5, integrity: -5, network: +10, calm: -5 }
+          },
+          {
+            label: "Tu deviens la personne qui 'connaît les combines'.",
+            detail: "Les gens viennent te voir pour des conseils administratifs… très créatifs.",
+            effects: { visibility: +15, integrity: -15, network: +20, calm: -10 }
+          }
+        ]
+      },
+      {
+        id: "militantisme",
+        title: "Militantisme et récupération",
+        text: "Un mouvement citoyen que tu respectes est repris dans une campagne " +
+              "institutionnelle très propre, très officielle, très sponsorisée.",
+        options: [
+          {
+            label: "Tu continues à soutenir le mouvement de terrain, discrètement.",
+            detail: "Tu privilégies les espaces où on discute vraiment, pas les photos de presse.",
+            effects: { visibility: +5, integrity: +15, network: +5, calm: +5 }
+          },
+          {
+            label: "Tu joues le jeu pour peser de l’intérieur.",
+            detail: "Tu acceptes la récupération partielle en espérant infléchir quelques décisions.",
+            effects: { visibility: +15, integrity: +5, network: +15, calm: -5 }
+          },
+          {
+            label: "Tu profites de la vitrine pour booster ton image perso.",
+            detail: "Tu glisses subtilement ton nom, ton projet, ta page, partout où tu peux.",
+            effects: { visibility: +25, integrity: -10, network: +20, calm: -10 }
+          }
+        ]
+      }
+    ];
+
+    const TOTAL_STEPS = SCENES.length;
+
+    // Scores
+    let scores = {
+      visibility: 0,
+      integrity: 0,
+      network: 0,
+      calm: 0
+    };
+    let currentStepIndex = 0;
+    const STORAGE_KEY = "MSDA_JDR_STATE_v1";
+
+    // --- DOM refs ---------------------------------------------------------
+
+    const statVisibilityBar = document.getElementById("statVisibility");
+    const statIntegrityBar = document.getElementById("statIntegrity");
+    const statNetworkBar = document.getElementById("statNetwork");
+    const statCalmBar = document.getElementById("statCalm");
+
+    const statVisibilityText = document.getElementById("statVisibilityText");
+    const statIntegrityText = document.getElementById("statIntegrityText");
+    const statNetworkText = document.getElementById("statNetworkText");
+    const statCalmText = document.getElementById("statCalmText");
+
+    const stepIndexEl = document.getElementById("stepIndex");
+    const stepTotalEl = document.getElementById("stepTotal");
+    const progressBar = document.getElementById("progressBar");
+
+    const scenarioTitleEl = document.getElementById("scenarioTitle");
+    const scenarioTextEl = document.getElementById("scenarioText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const summaryBox = document.getElementById("summaryBox");
+
+    const btnStart = document.getElementById("btnStart");
+    const btnReset = document.getElementById("btnReset");
+
+    // --- Utilitaires ------------------------------------------------------
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function saveState() {
+      try {
+        const state = {
+          scores,
+          currentStepIndex
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        // pas grave si ça foire
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const state = JSON.parse(raw);
+        if (!state || typeof state !== "object") return false;
+        if (typeof state.currentStepIndex !== "number") return false;
+        if (!state.scores) return false;
+        scores = {
+          visibility: state.scores.visibility || 0,
+          integrity: state.scores.integrity || 0,
+          network: state.scores.network || 0,
+          calm: state.scores.calm || 0
+        };
+        currentStepIndex = clamp(state.currentStepIndex, 0, TOTAL_STEPS);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // --- Mise à jour de l'affichage --------------------------------------
+
+    function updateStatsUI() {
+      const v = clamp(scores.visibility, 0, 100);
+      const i = clamp(scores.integrity, 0, 100);
+      const n = clamp(scores.network, 0, 100);
+      const c = clamp(scores.calm, 0, 100);
+
+      statVisibilityBar.style.width = v + "%";
+      statIntegrityBar.style.width = i + "%";
+      statNetworkBar.style.width = n + "%";
+      statCalmBar.style.width = c + "%";
+
+      statVisibilityText.textContent =
+        `${v} / 100 — ` +
+        (v < 20 ? "quasi invisible, mais tranquille." :
+         v < 50 ? "repérable sans être tape-à-l’œil." :
+         v < 80 ? "on sait qui tu es." :
+                  "tu deviens un personnage public malgré toi.");
+
+      statIntegrityText.textContent =
+        `${i} / 100 — ` +
+        (i < 20 ? "les compromis te dépassent." :
+         i < 50 ? "tu jongles avec tes principes." :
+         i < 80 ? "tu restes cohérent·e dans un monde flou." :
+                  "tu es une anomalie statistique.");
+
+      statNetworkText.textContent =
+        `${n} / 100 — ` +
+        (n < 20 ? "réseau minimal mais sincère." :
+         n < 50 ? "quelques connexions utiles." :
+         n < 80 ? "tu connais du monde, et inversement." :
+                  "tu pourrais organiser un coup d’État logistique.");
+
+      statCalmText.textContent =
+        `${c} / 100 — ` +
+        (c < 20 ? "stress élevé, surveille le crash." :
+         c < 50 ? "fatigué·e mais fonctionnel·le." :
+         c < 80 ? "fatigue raisonnable pour l’époque." :
+                  "calme olympien, es-tu humain·e ?");
+    }
+
+    function updateProgressUI() {
+      stepTotalEl.textContent = TOTAL_STEPS.toString();
+      const humanStep = Math.min(currentStepIndex + 1, TOTAL_STEPS);
+      stepIndexEl.textContent = humanStep.toString();
+
+      const ratio = TOTAL_STEPS === 0 ? 0 : (humanStep - 1) / TOTAL_STEPS;
+      progressBar.style.width = (ratio * 100).toFixed(1) + "%";
+    }
+
+    function renderCurrentScene() {
+      summaryBox.style.display = "none";
+      summaryBox.innerHTML = "";
+
+      if (currentStepIndex >= TOTAL_STEPS) {
+        // fin du jeu
+        scenarioTitleEl.textContent = "Fin de cette boucle de simulation";
+        scenarioTextEl.textContent =
+          "Tu as traversé suffisamment de situations pour dresser un premier " +
+          "bilan. Rien n’est figé : c’est un instantané, pas un jugement final.";
+        optionsContainer.innerHTML = "";
+        renderSummary();
+        btnStart.textContent = "Rejouer avec d'autres choix";
+        btnStart.disabled = false;
+        updateProgressUI();
+        return;
+      }
+
+      const scene = SCENES[currentStepIndex];
+      scenarioTitleEl.textContent = scene.title;
+      scenarioTextEl.textContent = scene.text;
+
+      optionsContainer.innerHTML = "";
+      scene.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `
+          ${opt.label}
+          <small>${opt.detail}</small>
+        `;
+        btn.addEventListener("click", () => {
+          applyOption(opt);
+        });
+        optionsContainer.appendChild(btn);
+      });
+
+      btnStart.textContent = currentStepIndex === 0 ? "Commencer la partie" : "Continuer";
+      btnStart.disabled = true;
+
+      updateProgressUI();
+    }
+
+    function applyOption(option) {
+      scores.visibility = clamp(scores.visibility + (option.effects.visibility || 0), 0, 100);
+      scores.integrity = clamp(scores.integrity + (option.effects.integrity || 0), 0, 100);
+      scores.network  = clamp(scores.network  + (option.effects.network  || 0), 0, 100);
+      scores.calm     = clamp(scores.calm     + (option.effects.calm     || 0), 0, 100);
+
+      currentStepIndex = clamp(currentStepIndex + 1, 0, TOTAL_STEPS);
+
+      updateStatsUI();
+      saveState();
+      renderCurrentScene();
+    }
+
+    // --- Bilan final ------------------------------------------------------
+
+    function renderSummary() {
+      const v = clamp(scores.visibility, 0, 100);
+      const i = clamp(scores.integrity, 0, 100);
+      const n = clamp(scores.network, 0, 100);
+      const c = clamp(scores.calm, 0, 100);
+
+      // Profil principal : on regarde ce qui est le plus haut
+      const sorted = [
+        { key: "Visibilité", value: v },
+        { key: "Intégrité", value: i },
+        { key: "Réseau", value: n },
+        { key: "Sérénité", value: c }
+      ].sort((a, b) => b.value - a.value);
+
+      const top = sorted[0];
+
+      let profileName = "";
+      let profileDesc = "";
+
+      if (top.key === "Visibilité") {
+        profileName = "Le / la Funambule Visible";
+        profileDesc =
+          "Tu es à l’aise avec le fait d’exister publiquement. " +
+          "L’enjeu : garder un espace où tu peux redescendre, " +
+          "sans que toute ta valeur dépende du nombre de regards posés sur toi.";
+      } else if (top.key === "Intégrité") {
+        profileName = "La Conscience Obstinée";
+        profileDesc =
+          "Tu as un radar interne qui bip dès qu’on t’invite à travestir la réalité. " +
+          "L’enjeu : ne pas t’épuiser dans des combats impossibles, et choisir tes batailles.";
+      } else if (top.key === "Réseau") {
+        profileName = "L’Acrobate Relationnel·le";
+        profileDesc =
+          "Tu sais naviguer entre groupes, milieux, institutions. " +
+          "L’enjeu : ne pas te dissoudre dans les attentes des autres et garder un centre à toi.";
+      } else {
+        profileName = "Le / la Survivant·e Lucide";
+        profileDesc =
+          "Tu protèges ta santé mentale, parfois en te mettant en retrait. " +
+          "L’enjeu : ne pas t’isoler au point de laisser le terrain libre aux plus bruyants.";
+      }
+
+      summaryBox.style.display = "block";
+      summaryBox.innerHTML = `
+        <h3>Bilan provisoire</h3>
+        <p>
+          <span class="summary-badge">${profileName}</span>
+          ${profileDesc}
+        </p>
+
+        <h4>Tes scores sociaux</h4>
+        <ul>
+          <li><strong>Visibilité</strong> : ${v}/100</li>
+          <li><strong>Intégrité</strong> : ${i}/100</li>
+          <li><strong>Réseau</strong> : ${n}/100</li>
+          <li><strong>Sérénité</strong> : ${c}/100</li>
+        </ul>
+
+        <h4>Pistes pour tirer ton épingle du jeu sans trop la ramener</h4>
+        <ul>
+          <li>
+            <strong>Choisir tes scènes</strong> :
+            tu n’es pas obligé·e de jouer toutes les batailles.
+            Concentre-toi sur les espaces où tu as un peu de prise.
+          </li>
+          <li>
+            <strong>Soigner les coulisses</strong> :
+            réseaux discrets, liens de confiance, temps de repos,
+            lieux où tu peux dire “je ne sais pas”.
+          </li>
+          <li>
+            <strong>Apprendre le “non mais”</strong> :
+            savoir dire “non” sans claquer toutes les portes,
+            et “oui” sans te renier complètement.
+          </li>
+          <li>
+            <strong>Garder une marge d’humour noir</strong> :
+            pas pour tout relativiser, mais pour ne pas te dissoudre dans l’absurde ambiant.
+          </li>
+        </ul>
+
+        <p style="margin-top:6px;">
+          Tu peux rejouer en faisant d’autres choix pour voir
+          comment ton profil évolue. Ce n’est pas un jugement,
+          juste un miroir de tes réflexes dans cette petite simulation.
+        </p>
+      `;
+    }
+
+    // --- Contrôles -------------------------------------------------------
+
+    function resetGame() {
+      scores = { visibility: 0, integrity: 0, network: 0, calm: 0 };
+      currentStepIndex = 0;
+      updateStatsUI();
+      updateProgressUI();
+      scenarioTitleEl.textContent = "Bienvenue dans la simulation";
+      scenarioTextEl.textContent =
+        "Clique sur “Commencer la partie” pour lancer ton parcours.";
+      optionsContainer.innerHTML = "";
+      summaryBox.style.display = "none";
+      summaryBox.innerHTML = "";
+      btnStart.textContent = "Commencer la partie";
+      btnStart.disabled = false;
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {}
+    }
+
+    function startGameIfNeeded() {
+      if (currentStepIndex >= TOTAL_STEPS) {
+        // rejouer
+        scores = { visibility: 0, integrity: 0, network: 0, calm: 0 };
+        currentStepIndex = 0;
+      }
+      updateStatsUI();
+      renderCurrentScene();
+      saveState();
+    }
+
+    // --- Initialisation --------------------------------------------------
+
+    function init() {
+      stepTotalEl.textContent = TOTAL_STEPS.toString();
+
+      const restored = loadState();
+      updateStatsUI();
+
+      if (restored && currentStepIndex <= TOTAL_STEPS) {
+        renderCurrentScene();
+        if (currentStepIndex >= TOTAL_STEPS) {
+          // partie déjà terminée
+          renderSummary();
+          btnStart.textContent = "Rejouer avec d'autres choix";
+          btnStart.disabled = false;
+        } else {
+          btnStart.textContent = "Continuer la partie";
+          btnStart.disabled = false;
+        }
+      } else {
+        resetGame();
+      }
+
+      btnStart.addEventListener("click", () => {
+        startGameIfNeeded();
+      });
+
+      btnReset.addEventListener("click", () => {
+        if (confirm("Réinitialiser la partie et effacer les scores ?")) {
+          resetGame();
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
