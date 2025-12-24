@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>SILENT·PROTOCOL — PHASE-A</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #030712;
+      --bg-soft: #020617;
+      --fg: #f9fafb;
+      --soft: #a1a1aa;
+      --accent: #a3ffb9;    /* vert tendre néon */
+      --accent2: #e1b8ff;   /* lilas néon */
+      --accent-dark: #0f766e;
+      --border: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 0 0,#020617,#020617 40%,#020617 60%,#000 100%);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+    }
+
+    /* Glow global */
+
+    .glow {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      box-shadow:
+        inset 0 0 200px rgba(0,0,0,0.9),
+        0 0 180px rgba(163,255,185,0.15),
+        0 0 180px rgba(225,184,255,0.12);
+      z-index: -1;
+    }
+
+    /* HEADER */
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg,rgba(10,10,20,0.9),rgba(27,27,40,0.85));
+      padding: 10px 12px 8px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-family: "Cinzel", "Georgia", serif;
+      font-size: 18px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #f9fafb;
+    }
+
+    .brand-title span.dot {
+      color: var(--accent2);
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--soft);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      align-items: center;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15,23,42,0.9);
+      padding: 4px 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(163,255,185,0.9);
+    }
+
+    .pill-cta {
+      cursor: pointer;
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    .pill-cta:hover {
+      box-shadow: 0 0 10px rgba(225,184,255,0.6);
+    }
+
+    /* MAIN */
+
+    main {
+      flex: 1;
+      padding: 16px 12px 20px;
+    }
+
+    .layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0,3fr) minmax(0,2.4fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    /* HERO / TRAILER */
+
+    .hero {
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at 0 0,#020617,#020617 50%,#020617 80%);
+      padding: 14px 14px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-neon {
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0,rgba(163,255,185,0.14) 0,transparent 40%),
+        radial-gradient(circle at 100% 0,rgba(225,184,255,0.16) 0,transparent 40%);
+      opacity: 0.5;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tagline {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: var(--soft);
+      margin-bottom: 6px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .hero-title span {
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(163,255,185,0.7);
+    }
+
+    .hero-subtitle {
+      font-size: 12px;
+      color: var(--soft);
+      margin-bottom: 10px;
+    }
+
+    .trailer-box {
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.95);
+      padding: 10px;
+      font-size: 13px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trailer-lines {
+      min-height: 96px;
+    }
+
+    .trailer-line {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+      margin: 3px 0;
+    }
+
+    .trailer-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .trailer-credits {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.96);
+      color: var(--fg);
+      padding: 5px 13px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 12px rgba(163,255,185,0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(163,255,185,0.7);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .hero-hint {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--soft);
+    }
+
+    /* EXPLICATIONS JEU */
+
+    .panel {
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at 0 0,#020617,#020617 60%);
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .panel-sub {
+      font-size: 11px;
+      color: var(--soft);
+    }
+
+    .panel-body {
+      font-size: 13px;
+      color: var(--fg);
+    }
+
+    .panel-body p {
+      margin: 4px 0;
+    }
+
+    .panel-body ul {
+      margin: 4px 0 4px 18px;
+      padding: 0;
+      color: var(--soft);
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--soft);
+      white-space: nowrap;
+    }
+
+    .badge-primary {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    .badge-soft {
+      border-color: rgba(148,163,184,0.6);
+    }
+
+    /* CARDS PAGES */
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .cards-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+    }
+    @media (max-width: 600px) {
+      .cards-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .card {
+      position: relative;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: radial-gradient(circle at 0 0,#020617,#020617 70%);
+      padding: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0,rgba(163,255,185,0.12) 0,transparent 40%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-out;
+      mix-blend-mode: screen;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      color: var(--soft);
+      margin-bottom: 4px;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      color: var(--soft);
+    }
+
+    .card-footer {
+      margin-top: 6px;
+      font-size: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--accent2);
+    }
+
+    /* COLONNE DROITE : CONSOLE + CHEATCODES */
+
+    .terminal-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: radial-gradient(circle at 100% 0,#020617,#020617 60%);
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .terminal-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .terminal-leds {
+      display: flex;
+      gap: 4px;
+    }
+
+    .led {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #16a34a;
+      box-shadow: 0 0 6px rgba(22,163,74,0.9);
+    }
+    .led.lilac {
+      background: #c4b5fd;
+      box-shadow: 0 0 6px rgba(196,181,253,0.9);
+    }
+
+    .terminal-body {
+      margin-top: 4px;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: #020617;
+      padding: 6px;
+      font-size: 11px;
+      color: var(--soft);
+    }
+
+    .term-output {
+      min-height: 60px;
+      max-height: 120px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .term-line {
+      margin: 2px 0;
+    }
+
+    .term-prompt {
+      color: var(--accent);
+    }
+
+    .term-input-row {
+      margin-top: 4px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .term-input {
+      flex: 1;
+      min-width: 0;
+      border-radius: 7px;
+      border: 1px solid #111827;
+      background: #020617;
+      color: var(--fg);
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+
+    .term-select {
+      border-radius: 7px;
+      border: 1px solid #111827;
+      background: #020617;
+      color: var(--fg);
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+
+    .term-hint {
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--soft);
+    }
+
+    /* CHEATCODES */
+
+    .cheat-panel {
+      margin-top: 10px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at 100% 0,#020617,#020617 70%);
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .cheat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .cheat-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .cheat-body {
+      font-size: 12px;
+      color: var(--soft);
+    }
+
+    .cheat-row {
+      margin-top: 6px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .cheat-input {
+      flex: 1;
+      min-width: 0;
+      border-radius: 7px;
+      border: 1px solid #111827;
+      background: #020617;
+      color: var(--fg);
+      padding: 4px 6px;
+      font-size: 11px;
+    }
+
+    .cheat-hint {
+      margin-top: 3px;
+      font-size: 10px;
+      color: var(--soft);
+    }
+
+    .spoiler-block {
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      padding: 6px;
+      font-size: 11px;
+      display: none;
+    }
+
+    .spoiler-block strong {
+      color: var(--accent2);
+    }
+
+    /* MODAL VIEWER */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      padding: 10px;
+    }
+
+    .modal.visible {
+      display: flex;
+    }
+
+    .modal-inner {
+      width: 100%;
+      max-width: 950px;
+      height: 90vh;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow:
+        0 0 40px rgba(163,255,185,0.3),
+        0 0 40px rgba(225,184,255,0.25);
+    }
+
+    .modal-header {
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg,rgba(15,23,42,0.95),rgba(30,64,175,0.3));
+      font-size: 12px;
+    }
+
+    .modal-title {
+      font-weight: 500;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .modal-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.96);
+      color: var(--fg);
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .modal-btn-primary {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .modal-body {
+      flex: 1;
+      background: #020617;
+      position: relative;
+    }
+
+    .modal-iframe {
+      border: 0;
+      width: 100%;
+      height: 100%;
+      background: #020617;
+    }
+
+    /* FOOTER */
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: #020617;
+      padding: 8px 12px 10px;
+      font-size: 11px;
+      color: var(--soft);
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .egg {
+      cursor: pointer;
+      color: var(--accent2);
+      text-shadow: 0 0 10px rgba(225,184,255,0.8);
+    }
+  </style>
+</head>
+<body>
+<div class="glow"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-title">SILENT<span class="dot">·</span>PROTOCOL</div>
+      <div class="brand-sub">PHASE-A · BANDE-ANNONCE & PORTAIL</div>
+    </div>
+    <div class="header-actions">
+      <div class="pill">
+        <span class="status-dot"></span>
+        <span class="mono">PHASE-A en ligne</span>
+      </div>
+      <div class="pill pill-cta" id="btnScrollGame">
+        Comprendre le jeu ▼
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="layout">
+    <!-- COLONNE GAUCHE -->
+    <div>
+      <!-- HERO / TRAILER -->
+      <section class="hero">
+        <div class="hero-neon"></div>
+        <div class="hero-content">
+          <div class="hero-tagline">bande-annonce interactive</div>
+          <div class="hero-title">PHASE<span>·</span>A</div>
+          <div class="hero-subtitle">
+            Tu te souviens de la première fois où tu as fait défiler l’actualité
+            avant ton café ? Ce jeu commence là. Et il ne s’arrête pas vraiment.
+          </div>
+
+          <div class="trailer-box">
+            <div class="trailer-lines" id="trailerLines">
+              <div class="trailer-line" data-delay="0">
+                · ÉCRAN NOIR. Un réveil clignote. Dehors, il pleut même dans ta tête.
+              </div>
+              <div class="trailer-line" data-delay="1800">
+                · TU SCROLLES. Les crises se succèdent plus vite que ton regard.
+              </div>
+              <div class="trailer-line" data-delay="3600">
+                · QUELQU’UN — OU QUELQUE CHOSE — OBSERVE COMMENT TU RÉAGIS.
+              </div>
+              <div class="trailer-line" data-delay="5400">
+                · CE N’EST PAS UN FILM. C’est ton quotidien, recadré comme un jeu de rôle.
+              </div>
+              <div class="trailer-line" data-delay="7200">
+                · TU NE SAUVERAS PAS LE MONDE. Mais tu peux apprendre à ne pas t’y dissoudre.
+              </div>
+            </div>
+            <div class="trailer-credits">
+              <button class="btn btn-primary" id="btnReplayTrailer">Rejouer la bande-annonce</button>
+              <div>
+                <span class="mono">PHASE-A</span> · saison 0 : <span style="color:var(--accent2)">“écran noir, café froid”</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-hint">
+            ↓ Ensuite, tu choisis : comprendre le jeu, explorer les pages, ou tout casser avec la console.
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPLICATION JEU -->
+      <section class="panel" id="gamePanel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Silent Protocol : le jeu, clairement.</div>
+            <div class="panel-sub">Ce que c’est, comment on joue, et comment participer sans se perdre.</div>
+          </div>
+          <span class="badge badge-primary">mode grand public</span>
+        </div>
+        <div class="panel-body">
+          <p>
+            <strong>Silent Protocol</strong> est un jeu de rôle politico-dystopique
+            qui se joue à partir de <strong>pages web statiques</strong> :
+            des écrans, des faux sites, des terminaux, des mini-jeux.
+          </p>
+          <p>
+            Tu n’y incarnes pas un héros spectaculaire, mais une personne normale
+            qui essaie de garder la tête froide dans un monde saturé d’alertes.
+          </p>
+          <p><strong>Concrètement :</strong></p>
+          <ul>
+            <li>tu navigues entre plusieurs pages (intro, dossiers, faux OS, smartphones, etc.) ;</li>
+            <li>tu lis, tu cliques, tu observes comment tu réagis ;</li>
+            <li>tu peux jouer <strong>solo</strong>, en <strong>duo</strong>, ou en <strong>groupe</strong> ;</li>
+            <li>tu peux même co-écrire la suite en ajoutant tes propres pages.</li>
+          </ul>
+          <p>
+            La présente page <strong>PHASE-A</strong> est ton <em>hub</em> :
+            bande-annonce, manuel lisible, raccourcis vers les pages clés,
+            console de navigation et système de <strong>cheatcodes</strong>
+            pour débloquer des spoilers quand tu en as envie (et pas avant).
+          </p>
+        </div>
+      </section>
+
+      <!-- CARTES DES PAGES -->
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Portail des modules principaux.</div>
+            <div class="panel-sub">Cliquer sur une carte ouvre la page dans la visionneuse intégrée.</div>
+          </div>
+          <span class="badge badge-soft">navigation guidée</span>
+        </div>
+        <div class="panel-body">
+          <div class="cards-grid">
+            <div class="card" data-file="intro-rpg.html" data-title="Intro A · Silent Protocol">
+              <div class="card-title">Intro A · Écran noir</div>
+              <div class="card-tag">01 · ouverture silencieuse</div>
+              <div class="card-desc">
+                La première impression : fumée, logo, menu minimaliste. C’est là que tout commence.
+              </div>
+              <div class="card-footer">
+                <span>Ouvrir dans la visionneuse</span>
+                <span class="mono">[intro-rpg.html]</span>
+              </div>
+            </div>
+
+            <div class="card" data-file="intro-rpg-option-b.html" data-title="Option B · Debrief Alien">
+              <div class="card-title">Option B · Alien brief</div>
+              <div class="card-tag">02 · analyse méta</div>
+              <div class="card-desc">
+                La même histoire, racontée comme un rapport de bord dans un vaisseau à la dérive.
+              </div>
+              <div class="card-footer">
+                <span>Comprendre ce que fait l’intro</span>
+                <span class="mono">[option B]</span>
+              </div>
+            </div>
+
+            <div class="card" data-file="dossier-joueur.html" data-title="Dossier Joueur">
+              <div class="card-title">Dossier Joueur</div>
+              <div class="card-tag">03 · jouer sans se noyer</div>
+              <div class="card-desc">
+                Briefing clair, fiche personnage, règles de confort mental.
+              </div>
+              <div class="card-footer">
+                <span>Préparer ta partie</span>
+                <span class="mono">[dossier-joueur]</span>
+              </div>
+            </div>
+
+            <div class="card" data-file="dossier-meneur.html" data-title="Dossier Meneur">
+              <div class="card-title">Dossier Meneur</div>
+              <div class="card-tag">04 · pilotage</div>
+              <div class="card-desc">
+                Structure de campagne, types de scènes, niveaux soft/normal/hard.
+              </div>
+              <div class="card-footer">
+                <span>Pour animer le jeu</span>
+                <span class="mono">[dossier-meneur]</span>
+              </div>
+            </div>
+
+            <div class="card" data-file="IA-000.html" data-title="IA-000 · Suites & modèle éco">
+              <div class="card-title">IA-000 · Suites possibles</div>
+              <div class="card-tag">05 · méta & économie</div>
+              <div class="card-desc">
+                Comment le jeu peut vivre dans le temps, sans se trahir ni se vendre.
+              </div>
+              <div class="card-footer">
+                <span>Lire le rapport IA-000</span>
+                <span class="mono">[IA-000]</span>
+              </div>
+            </div>
+
+            <div class="card" data-file="PHASE-A.html" data-title="PHASE-A · Hub">
+              <div class="card-title">PHASE-A</div>
+              <div class="card-tag">00 · toi es ici</div>
+              <div class="card-desc">
+                Cette page-ci. Si tu la ouvres dans la visionneuse, tu entres dans un miroir.
+              </div>
+              <div class="card-footer">
+                <span>Meta sur meta</span>
+                <span class="mono">[PHASE-A]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- COLONNE DROITE -->
+    <div>
+      <!-- TERMINAL / NAVIGATEUR -->
+      <section class="terminal-panel">
+        <div class="terminal-header">
+          <div class="terminal-title">Console & navigateur intégré</div>
+          <div class="terminal-leds">
+            <div class="led"></div>
+            <div class="led lilac"></div>
+          </div>
+        </div>
+        <div class="terminal-body">
+          <div class="term-output" id="termOutput">
+            <div class="term-line">
+              <span class="term-prompt">phase-a$</span> Tape <span class="mono">help</span> pour la liste des commandes simples.
+            </div>
+          </div>
+          <div class="term-input-row">
+            <input id="termInput" class="term-input" placeholder="Ex. open intro, open joueur, help…" />
+            <select id="termSelect" class="term-select">
+              <option value="">Raccourci…</option>
+              <option value="open intro">Ouvrir Intro A</option>
+              <option value="open option-b">Ouvrir Option B</option>
+              <option value="open joueur">Ouvrir Dossier Joueur</option>
+              <option value="open meneur">Ouvrir Dossier Meneur</option>
+              <option value="open ia">Ouvrir IA-000</option>
+              <option value="open phase-a">Ouvrir PHASE-A</option>
+            </select>
+            <button class="btn" id="termRunBtn">Exécuter</button>
+          </div>
+          <div class="term-hint">
+            <strong>Commandes dispo :</strong>
+            <span class="mono">help</span>,
+            <span class="mono">list</span>,
+            <span class="mono">open intro</span>,
+            <span class="mono">open option-b</span>,
+            <span class="mono">open joueur</span>,
+            <span class="mono">open meneur</span>,
+            <span class="mono">open ia</span>,
+            <span class="mono">open phase-a</span>.
+          </div>
+        </div>
+      </section>
+
+      <!-- CHEATCODES / SPOILERS -->
+      <section class="cheat-panel">
+        <div class="cheat-header">
+          <div class="cheat-title">Cheatcodes & spoilers contrôlés</div>
+          <span class="badge badge-soft">optionnel</span>
+        </div>
+        <div class="cheat-body">
+          <p>
+            Tu peux jouer sans jamais entrer de code.
+            Les cheatcodes servent à débloquer des
+            <strong>pistes de lecture supplémentaires</strong>,
+            des idées de suites ou des secrets de fabrication.
+          </p>
+          <p style="margin-top:4px;"><strong>Exemples de codes :</strong></p>
+          <ul style="margin-left:16px;">
+            <li class="mono">PHASEA-ALPHA</li>
+            <li class="mono">RIPLEY-1337</li>
+            <li class="mono">CITIZEN-VEILLE</li>
+          </ul>
+          <div class="cheat-row">
+            <input id="cheatInput" class="cheat-input" placeholder="Entrer un cheatcode (ex. PHASEA-ALPHA)" />
+            <button class="btn" id="cheatBtn">Valider</button>
+          </div>
+          <div class="cheat-hint" id="cheatHint">
+            Les codes ne font rien de dangereux. Au pire, ils ne marchent pas. Au mieux, ils t’en disent trop.
+          </div>
+
+          <div id="spoilerAlpha" class="spoiler-block">
+            <strong>PHASEA-ALPHA — Comment le jeu se “termine”.</strong><br />
+            Il n’y a pas de boss final. Une vraie “fin” de Silent Protocol, c’est un moment
+            où toi ou le groupe se disent : <em>“ok, là, on a vu assez de choses pour avoir un avis.”</em><br />
+            Tu peux décider qu’une partie se conclut quand :
+            <ul>
+              <li>vous avez identifié 3–5 “mécaniques” de l’info qui vous concernent vraiment ;</li>
+              <li>vous avez noté au moins une chose “à faire différemment” dans la vie réelle ;</li>
+              <li>vous avez encore envie d’en parler dans une semaine.</li>
+            </ul>
+          </div>
+
+          <div id="spoilerRipley" class="spoiler-block">
+            <strong>RIPLEY-1337 — Version horreur psychologique maximale.</strong><br />
+            En mode hardcore, tu peux jouer la campagne comme un <em>huis clos</em> :
+            tout ce qui se passe à l’écran est traité comme un système hostile ou indifférent.<br />
+            À n’utiliser que :
+            <ul>
+              <li>avec un groupe volontaire, stabilisé et averti,</li>
+              <li>avec des pauses fréquentes, des signaux de sortie clairs,</li>
+              <li>avec un debrief long et bienveillant.</li>
+            </ul>
+            Ce n’est pas un mode “plus cool”. C’est un mode “à manier avec précautions”.
+          </div>
+
+          <div id="spoilerCitizen" class="spoiler-block">
+            <strong>CITIZEN-VEILLE — Transformer le jeu en outil de veille citoyenne.</strong><br />
+            Tu peux :
+            <ul>
+              <li>remplacer certains modules par des cas réels (articles, décisions, projets locaux) ;</li>
+              <li>utiliser les fiches pour faire écrire aux gens leur propre “journal d’info” ;</li>
+              <li>co-construire une carte des acteurs de ton coin à partir des ressentis.</li>
+            </ul>
+            À partir de là, Silent Protocol devient un <strong>prétexte</strong> :
+            ce qui compte, ce sont les liens entre personnes, pas le “lore” du jeu.
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL VIEWER -->
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Visionneuse</div>
+      <div class="modal-actions">
+        <button class="modal-btn" id="modalNewTabBtn">Ouvrir dans un nouvel onglet</button>
+        <button class="modal-btn modal-btn-primary" id="modalCloseBtn">Fermer</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe id="modalFrame" class="modal-iframe" src="about:blank"></iframe>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      Silent Protocol · PHASE-A · Portail principal  
+      <span class="mono">[Utilisation hors ligne possible · Aucun tracking intégré]</span>
+    </div>
+    <div class="footer-links">
+      <span class="mono">ESC = fermer la visionneuse</span>
+      <span><a href="intro-rpg.html">Intro A</a></span>
+      <span><a href="intro-rpg-option-b.html">Option B</a></span>
+      <span><a href="dossier-joueur.html">Dossier Joueur</a></span>
+      <span><a href="dossier-meneur.html">Dossier Meneur</a></span>
+      <span><a href="IA-000.html">IA-000</a></span>
+      <span class="egg" id="egg">??</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Bande-annonce (trailer)
+  const trailerLines = Array.from(document.querySelectorAll('.trailer-line'));
+  const btnReplayTrailer = document.getElementById('btnReplayTrailer');
+  let trailerTimers = [];
+
+  function playTrailer() {
+    trailerTimers.forEach(t => clearTimeout(t));
+    trailerTimers = [];
+    trailerLines.forEach(line => line.classList.remove('visible'));
+
+    trailerLines.forEach(line => {
+      const delay = parseInt(line.dataset.delay || '0', 10);
+      const t = setTimeout(() => {
+        line.classList.add('visible');
+      }, delay);
+      trailerTimers.push(t);
+    });
+  }
+
+  window.addEventListener('load', playTrailer);
+  btnReplayTrailer.addEventListener('click', playTrailer);
+
+  // Scroll vers explication jeu
+  const btnScrollGame = document.getElementById('btnScrollGame');
+  const gamePanel = document.getElementById('gamePanel');
+  btnScrollGame.addEventListener('click', () => {
+    gamePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Visionneuse (modal)
+  const modal = document.getElementById('modal');
+  const modalFrame = document.getElementById('modalFrame');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalNewTabBtn = document.getElementById('modalNewTabBtn');
+  let currentFile = null;
+
+  function openViewer(title, file) {
+    currentFile = file;
+    modalTitle.textContent = title;
+    modalFrame.src = file;
+    modal.classList.add('visible');
+  }
+
+  function closeViewer() {
+    modal.classList.remove('visible');
+    modalFrame.src = 'about:blank';
+  }
+
+  modalCloseBtn.addEventListener('click', closeViewer);
+  modalNewTabBtn.addEventListener('click', () => {
+    if (currentFile) {
+      window.open(currentFile, '_blank');
+    }
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('visible')) {
+      closeViewer();
+    }
+  });
+
+  // Cartes -> visionneuse
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const file = card.dataset.file;
+      const title = card.dataset.title || 'Visionneuse';
+      if (file) openViewer(title, file);
+    });
+  });
+
+  // Console / terminal
+  const termOutput = document.getElementById('termOutput');
+  const termInput = document.getElementById('termInput');
+  const termSelect = document.getElementById('termSelect');
+  const termRunBtn = document.getElementById('termRunBtn');
+
+  const commandMap = {
+    'open intro': { title: 'Intro A · Écran noir', file: 'intro-rpg.html' },
+    'open option-b': { title: 'Option B · Debrief Alien', file: 'intro-rpg-option-b.html' },
+    'open joueur': { title: 'Dossier Joueur', file: 'dossier-joueur.html' },
+    'open meneur': { title: 'Dossier Meneur', file: 'dossier-meneur.html' },
+    'open ia': { title: 'IA-000 · Suites & modèle éco', file: 'IA-000.html' },
+    'open phase-a': { title: 'PHASE-A · Hub', file: 'PHASE-A.html' }
+  };
+
+  function appendLine(text) {
+    const div = document.createElement('div');
+    div.className = 'term-line';
+    div.innerHTML = text;
+    termOutput.appendChild(div);
+    termOutput.scrollTop = termOutput.scrollHeight;
+  }
+
+  function runCommand(raw) {
+    const cmd = (raw || '').trim();
+    if (!cmd) return;
+    appendLine('<span class="term-prompt">phase-a$</span> ' + cmd);
+
+    if (cmd === 'help') {
+      appendLine('Commandes simples :');
+      appendLine('- <span class="mono">list</span> : liste des pages principales');
+      appendLine('- <span class="mono">open intro</span>, <span class="mono">open option-b</span>, <span class="mono">open joueur</span>, <span class="mono">open meneur</span>, <span class="mono">open ia</span>, <span class="mono">open phase-a</span>');
+      return;
+    }
+
+    if (cmd === 'list') {
+      appendLine('Pages disponibles :');
+      Object.keys(commandMap).forEach(key => {
+        appendLine('&nbsp;&nbsp;• <span class="mono">' + key + '</span> → ' + commandMap[key].title);
+      });
+      return;
+    }
+
+    if (commandMap[cmd]) {
+      const { title, file } = commandMap[cmd];
+      appendLine('Ouverture de <span class="mono">' + file + '</span> dans la visionneuse…');
+      openViewer(title, file);
+      return;
+    }
+
+    appendLine('Commande inconnue. Tape <span class="mono">help</span> pour l’aide.');
+  }
+
+  termRunBtn.addEventListener('click', () => {
+    runCommand(termInput.value);
+    termInput.value = '';
+  });
+
+  termInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      runCommand(termInput.value);
+      termInput.value = '';
+    }
+  });
+
+  termSelect.addEventListener('change', () => {
+    const value = termSelect.value;
+    if (value) {
+      termInput.value = value;
+    }
+  });
+
+  // Cheatcodes
+  const cheatInput = document.getElementById('cheatInput');
+  const cheatBtn = document.getElementById('cheatBtn');
+  const cheatHint = document.getElementById('cheatHint');
+  const spoilerAlpha = document.getElementById('spoilerAlpha');
+  const spoilerRipley = document.getElementById('spoilerRipley');
+  const spoilerCitizen = document.getElementById('spoilerCitizen');
+
+  function handleCheat(codeRaw) {
+    const code = (codeRaw || '').trim().toUpperCase();
+    if (!code) return;
+    let msg = "Code inconnu. Tu peux essayer PHASEA-ALPHA, RIPLEY-1337 ou CITIZEN-VEILLE.";
+
+    if (code === 'PHASEA-ALPHA') {
+      spoilerAlpha.style.display = 'block';
+      msg = "Spoiler de fin “soft” débloqué : comment décider que la partie est finie.";
+    } else if (code === 'RIPLEY-1337') {
+      spoilerRipley.style.display = 'block';
+      msg = "Mode hardcore débloqué. À n’utiliser que si tout le monde est d’accord.";
+    } else if (code === 'CITIZEN-VEILLE') {
+      spoilerCitizen.style.display = 'block';
+      msg = "Piste “outil de veille citoyenne” débloquée.";
+    }
+
+    cheatHint.textContent = msg;
+  }
+
+  cheatBtn.addEventListener('click', () => {
+    handleCheat(cheatInput.value);
+    cheatInput.value = '';
+  });
+
+  cheatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      handleCheat(cheatInput.value);
+      cheatInput.value = '';
+    }
+  });
+
+  // Easter egg (??)
+  const egg = document.getElementById('egg');
+  egg.addEventListener('click', () => {
+    document.body.classList.toggle('party');
+    if (document.body.classList.contains('party')) {
+      document.body.style.background = 'radial-gradient(circle at 0 0,#022c22,#0f172a 40%,#020617 70%)';
+      egg.textContent = 'NEON-ON';
+    } else {
+      document.body.style.background = 'radial-gradient(circle at 0 0,#020617,#020617 40%,#020617 60%,#000 100%)';
+      egg.textContent = '??';
+    }
+  });
+</script>
+</body>
+</html>
