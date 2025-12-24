@@ -1,0 +1,1863 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>INFO EN CONTINU – Surinformation 24/7</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050711;
+      --bg-soft: #0b0f1f;
+      --bg-softer: #15182b;
+      --accent: #ff2157;
+      --accent-soft: #ff7a99;
+      --accent-strong: #ffcc00;
+      --text: #f5f7ff;
+      --muted: #9aa2c2;
+      --good: #3fd27e;
+      --danger: #ff4b5c;
+      --border-soft: #222847;
+      --shadow-soft: 0 20px 40px rgba(0,0,0,0.45);
+      --radius-xl: 18px;
+      --radius-2xl: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #171e3f 0, #050711 45%, #02030a 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 10px;
+      padding-bottom: 70px; /* pour voir le bandeau bas */
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .app {
+      max-width: 1360px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* HEADER */
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: auto minmax(0, 2fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-2xl);
+      background: linear-gradient(135deg, #1b1022 0%, #050711 55%, #2b1111 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .top-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.12), transparent 55%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: radial-gradient(circle at 0 50%, rgba(255,255,255,0.25), transparent 60%);
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-live {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      background: var(--danger);
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(255,75,92,0.9);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .logo-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      animation: pulse 1s infinite;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .logo-main {
+      font-weight: 900;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+    }
+
+    .logo-sub {
+      font-size: 0.57rem;
+      color: var(--muted);
+    }
+
+    .slogan {
+      position: relative;
+      z-index: 1;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .slogan strong {
+      color: var(--accent-strong);
+    }
+
+    .clock {
+      position: relative;
+      z-index: 1;
+      justify-self: end;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(6,10,32,0.9);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clock span.label {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    /* BANDEAU D'ALERTES QUI DÉFILE (HAUT) */
+
+    .alert-tape {
+      margin-top: 4px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+      display: flex;
+      height: 34px;
+    }
+
+    .alert-tape-label {
+      flex: 0 0 auto;
+      background: #ff0000;
+      color: #fff;
+      font-weight: 900;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .alert-tape-label span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      animation: flash 0.7s infinite;
+    }
+
+    .alert-tape-track {
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      background: linear-gradient(90deg, #111827, #1f2937);
+    }
+
+    .alert-tape-inner {
+      position: absolute;
+      white-space: nowrap;
+      animation: alertTapeScroll 22s linear infinite;
+    }
+
+    .alert-tape-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 60px;
+      color: #fee2e2;
+      font-size: 0.8rem;
+    }
+
+    .alert-tape-type {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #fed7d7;
+    }
+
+    .alert-tape-sep {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f97316;
+    }
+
+    /* LAYOUT PRINCIPAL */
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.5fr);
+      gap: 10px;
+      align-items: start;
+      margin-top: 6px;
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.1), transparent 55%);
+      background-color: var(--bg-soft);
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 120% -20%, rgba(255,255,255,0.12), transparent 60%);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .panel-badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      color: var(--accent-soft);
+      background: rgba(5,7,20,0.7);
+    }
+
+    /* ARTICLE PRINCIPAL */
+
+    .main-story {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 6px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 6px;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tag-live {
+      color: var(--good);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag-live span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--good);
+      box-shadow: 0 0 12px rgba(63,210,126,0.9);
+      animation: pulse 1.2s infinite;
+    }
+
+    .tag-breaking {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255,204,0,0.1);
+      border: 1px solid rgba(255,204,0,0.5);
+      color: var(--accent-strong);
+    }
+
+    .main-headline {
+      font-size: 1.45rem;
+      font-weight: 900;
+      line-height: 1.18;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .main-headline span.highlight {
+      background: linear-gradient(90deg, #ffcc00, #ff2157);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .main-meta {
+      font-size: 0.74rem;
+      color: var(--muted);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .main-body {
+      margin-top: 4px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #d4daff;
+    }
+
+    .main-body p + p {
+      margin-top: 0.5em;
+    }
+
+    .mini-alerts {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 0.68rem;
+    }
+
+    .mini-alert {
+      padding: 3px 6px;
+      border-radius: 999px;
+      border: 1px dashed rgba(255,204,0,0.7);
+      color: var(--accent-strong);
+      background: rgba(255,204,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .main-footer {
+      margin-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      font-size: 0.7rem;
+    }
+
+    /* COLONNE DROITE : VIDEO + ARTICLES */
+
+    .right-column {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 10px;
+    }
+
+    .video-panel {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 8px;
+    }
+
+    .live-player {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: #02030a;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.8);
+      /* vidéo plus compacte */
+      max-height: 260px;
+    }
+
+    .live-video-wrapper {
+      position: relative;
+      flex: 0 0 auto;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      max-height: 180px;
+    }
+
+    .live-video-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #ff0000;
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    .live-video-tag span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      animation: flash 0.7s infinite;
+    }
+
+    .live-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
+    .live-bottom {
+      padding: 6px 10px 8px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.6));
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .live-title {
+      font-weight: 600;
+    }
+
+    .live-meta-small {
+      color: #dcdcff;
+      display: flex;
+      gap: 8px;
+      font-size: 0.68rem;
+      flex-wrap: wrap;
+    }
+
+    .player-controls {
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+
+    .btn-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+      transition: transform 0.1s ease, background 0.1s ease;
+    }
+
+    .btn-icon:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-inner {
+      position: absolute;
+      inset: 0;
+      transform-origin: left;
+      transform: scaleX(0.3);
+      background: linear-gradient(90deg, #ff2157, #ffcc00);
+      animation: fakeProgress 22s linear infinite;
+    }
+
+    .btn-fullscreen {
+      border-radius: 999px;
+      border: none;
+      padding: 3px 8px;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .catalog-grid {
+      margin-top: 4px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      /* plus de place pour voir les miniatures */
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 3px;
+      font-size: 0.76rem;
+    }
+
+    .thumb {
+      border-radius: 11px;
+      padding: 6px 7px;
+      background: rgba(6,10,32,0.95);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1fr);
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.12s ease, transform 0.1s ease, border-color 0.12s ease;
+    }
+
+    .thumb:hover {
+      background: rgba(18,24,70,0.98);
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .thumb.active {
+      border-color: #ffcc00;
+      box-shadow: 0 0 10px rgba(255,204,0,0.5);
+    }
+
+    .thumb-preview {
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thumb-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-preview::after {
+      content: "▶";
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      font-size: 0.7rem;
+      color: #000;
+      background: rgba(255,255,255,0.85);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    }
+
+    .thumb-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .thumb-title {
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .thumb-meta {
+      font-size: 0.65rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    /* ARTICLES */
+
+    .articles-panel {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .articles-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 2fr;
+      gap: 8px;
+    }
+
+    .articles-list {
+      list-style: none;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 4px;
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .article-item {
+      border-radius: 10px;
+      padding: 6px 7px;
+      background: rgba(6,10,32,0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .article-item:hover {
+      background: rgba(16,22,60,0.95);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .article-item.active {
+      border-color: #ffcc00;
+    }
+
+    .article-item-title {
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    .article-item-meta {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .article-viewer {
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #dde2ff;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .article-viewer h3 {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .article-viewer .meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .article-viewer p + p {
+      margin-top: 0.5em;
+    }
+
+    /* CARTES BAS */
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      font-size: 0.78rem;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #090c22, #171b37);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 9px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .card-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .card-body {
+      color: #c4caea;
+      line-height: 1.4;
+    }
+
+    .card-tag-row {
+      margin-top: auto;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      font-size: 0.6rem;
+      color: var(--muted);
+    }
+
+    .footer {
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      opacity: 0.9;
+    }
+
+    .footer strong {
+      color: var(--accent-soft);
+    }
+
+    /* BOUTON ALERTEZ-NOUS */
+
+    .alert-fab {
+      position: fixed;
+      bottom: 42px;
+      right: 12px;
+      z-index: 45;
+    }
+
+    .alert-button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: radial-gradient(circle at 0 0, #ffffff, #ffcc00);
+      color: #000;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255,204,0,0.9);
+      animation: bigFlash 1s infinite;
+    }
+
+    .alert-button span.icon {
+      font-size: 1rem;
+    }
+
+    /* BANDEAU FLASH BAS (2ème bandeau) */
+
+    .flash-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 34px;
+      background: #111;
+      display: flex;
+      align-items: center;
+      z-index: 40;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      font-size: 0.78rem;
+    }
+
+    .flash-label {
+      flex: 0 0 auto;
+      background: #ff0000;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flash-label span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      animation: flash 0.7s infinite;
+    }
+
+    .flash-track {
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      background: linear-gradient(90deg, #111, #222);
+    }
+
+    .flash-inner {
+      position: absolute;
+      white-space: nowrap;
+      animation: flashTicker 28s linear infinite;
+      will-change: transform;
+    }
+
+    .flash-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 60px;
+      color: #fef3c7;
+    }
+
+    .flash-type {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.7rem;
+      color: #fed7aa;
+    }
+
+    .flash-sep {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f97316;
+    }
+
+    /* OVERLAYS (pub + alerte) */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 10px;
+    }
+
+    .overlay.visible {
+      display: flex;
+    }
+
+    .alert-modal {
+      background: #050713;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+      max-width: 520px;
+      width: 100%;
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .alert-modal-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent-strong);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .alert-modal-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .alert-form {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.78rem;
+    }
+
+    .alert-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .alert-form span.label-text {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    .alert-form input,
+    .alert-form textarea {
+      border-radius: 9px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(3,5,15,0.95);
+      padding: 6px 7px;
+      color: var(--text);
+      font-size: 0.78rem;
+      resize: vertical;
+      min-height: 28px;
+    }
+
+    .alert-form textarea {
+      min-height: 70px;
+    }
+
+    .alert-form input:focus,
+    .alert-form textarea:focus {
+      outline: none;
+      border-color: #ffcc00;
+      box-shadow: 0 0 0 1px rgba(255,204,0,0.6);
+    }
+
+    .alert-form-actions {
+      margin-top: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .btn-send {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: linear-gradient(90deg, #ff2157, #ffcc00);
+      color: #000;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.68rem;
+      cursor: pointer;
+    }
+
+    .btn-close-x {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    /* POPUP PUB */
+
+    .ad-modal {
+      background: #020617;
+      border-radius: 18px;
+      border: 1px solid rgba(250,204,21,0.8);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      max-width: 420px;
+      width: 100%;
+      padding: 12px 14px 12px;
+      position: relative;
+      color: #fef9c3;
+    }
+
+    .ad-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #fbbf24;
+      margin-bottom: 4px;
+    }
+
+    .ad-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .ad-body {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .ad-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: none;
+      padding: 6px 12px;
+      background: linear-gradient(90deg, #f97316, #fde047);
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+    }
+
+    .ad-cta span.icon {
+      font-size: 1rem;
+    }
+
+    /* SCROLLBARS DISCRÈTES */
+
+    .catalog-grid::-webkit-scrollbar,
+    .articles-list::-webkit-scrollbar,
+    .article-viewer::-webkit-scrollbar {
+      width: 4px;
+    }
+    .catalog-grid::-webkit-scrollbar-thumb,
+    .articles-list::-webkit-scrollbar-thumb,
+    .article-viewer::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 999px;
+    }
+
+    /* ANIMATIONS */
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.6); opacity: 0.45; }
+    }
+
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    @keyframes alertTapeScroll {
+      0% { transform: translate3d(0,0,0); }
+      100% { transform: translate3d(-50%,0,0); }
+    }
+
+    @keyframes flashTicker {
+      0% { transform: translate3d(0,0,0); }
+      100% { transform: translate3d(-50%,0,0); }
+    }
+
+    @keyframes bigFlash {
+      0%, 100% { transform: translateY(0); box-shadow: 0 0 20px rgba(255,204,0,0.9); }
+      50% { transform: translateY(-2px); box-shadow: 0 0 35px rgba(255,204,0,1); }
+    }
+
+    @keyframes fakeProgress {
+      0% { transform: scaleX(0.1); }
+      50% { transform: scaleX(0.9); }
+      100% { transform: scaleX(0.1); }
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1000px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .right-column {
+        grid-template-rows: auto auto;
+      }
+      .articles-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 880px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+      .clock {
+        justify-self: flex-start;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 8px;
+        padding-bottom: 70px;
+      }
+      .catalog-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .lower-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- HEADER -->
+  <header class="top-bar">
+    <div class="logo">
+      <div class="logo-live">
+        <span class="logo-dot"></span>
+        LIVE
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">INFO EN CONTINU</span>
+        <span class="logo-sub">La chaîne d’info en continu de l’info en continu</span>
+      </div>
+    </div>
+    <div class="slogan">
+      « Comme une <strong>VRAIE</strong> chaîne d'info en continu, digne de l'info en continu. »
+      <span style="opacity:.7">Slogan &amp; statuts fusionnés.</span>
+    </div>
+    <div class="clock" id="clock">
+      <span class="label">Europe/Brussels</span>
+      <span class="value">--:--:--</span>
+    </div>
+  </header>
+
+  <!-- BANDEAU D'ALERTES QUI DÉFILE -->
+  <div class="alert-tape">
+    <div class="alert-tape-label">
+      <span class="dot"></span>
+      ALERTES EN DIRECT
+    </div>
+    <div class="alert-tape-track">
+      <div class="alert-tape-inner" id="alert-tape-inner"></div>
+    </div>
+  </div>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <main class="layout">
+    <!-- ARTICLE PRINCIPAL -->
+    <section class="panel">
+      <div class="panel-inner main-story">
+        <div class="panel-header">
+          <div class="panel-title">ÉDITION SPÉCIALE</div>
+          <div class="panel-badge">Surinformation 24/7</div>
+        </div>
+
+        <div class="tag-row">
+          <span class="tag-live">
+            <span class="dot"></span>
+            direct plateau
+          </span>
+          <span class="tag-breaking">breaking / contre-breaking / re-breaking</span>
+        </div>
+
+        <h1 class="main-headline">
+          Ils voulaient <span class="highlight">être informés</span>, ils se retrouvent
+          prisonniers d’un flux qui ne s’arrête jamais
+        </h1>
+
+        <div class="main-meta">
+          <span>Par <strong>Cellule « live sur le live »</strong></span>
+          <span>Mis à jour en continu (même sans info)</span>
+          <span>Durée de lecture&nbsp;: infinie (en boucle)</span>
+        </div>
+
+        <div class="main-body">
+          <p>
+            Ici, chaque micro-événement devient «&nbsp;édition spéciale&nbsp;», chaque
+            soupçon de rumeur devient bandeau rouge, et chaque silence est comblé
+            par un débat sur l’absence d’images. Le spectateur n’a plus vraiment
+            le temps de distinguer l’important du spectaculaire : tout clignote,
+            tout est urgent, tout réclame votre attention immédiate.
+          </p>
+          <p>
+            Ce site statique condense ce bruit permanent : vrai bandeau qui défile,
+            vrai lecteur vidéo, vraie liste d’articles. À toi de brancher de
+            vraies images, de vrais textes, ou de tout détourner pour montrer
+            comment la surinformation tourne à vide.
+          </p>
+        </div>
+
+        <div class="mini-alerts">
+          <div class="mini-alert">⚠ niveau d’alerte : saturé</div>
+          <div class="mini-alert">📡 toutes les notifications se ressemblent</div>
+          <div class="mini-alert">🧠 temps d’attention restant : 12 sec</div>
+        </div>
+
+        <div class="main-footer">
+          <div class="pill-row">
+            <span class="pill">#flash</span>
+            <span class="pill">#clickbait</span>
+            <span class="pill">#dystopie-mediatique</span>
+          </div>
+          <div>
+            Dernière montée en pression : <span id="update-time">--:--</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLONNE DROITE : VIDEO + ARTICLES -->
+    <section class="right-column">
+      <!-- VIDEO -->
+      <section class="panel">
+        <div class="panel-inner video-panel">
+          <div class="panel-header">
+            <div class="panel-title">DIRECT VIDÉO</div>
+            <div class="panel-badge">vraies vidéos + plein écran</div>
+          </div>
+
+          <div class="live-player" id="live-player">
+            <div class="live-video-wrapper">
+              <div class="live-video-tag">
+                <span class="dot"></span> LIVE
+              </div>
+              <!-- IMPORTANT :
+                   - pour un MP4 local : mets le fichier à côté du HTML, src="monfichier.mp4"
+                   - pour une URL : src="https://..."
+              -->
+              <video
+                id="live-video"
+                class="live-video"
+                controls
+                autoplay
+                muted
+              >
+                <source src="live-exemple.mp4" type="video/mp4" />
+                Votre navigateur ne supporte pas la vidéo HTML5.
+              </video>
+            </div>
+
+            <div class="live-bottom">
+              <div class="live-title" id="live-title">
+                DIRECT : « On commente ce que l’on vient juste de commenter »
+              </div>
+              <div class="live-meta-small">
+                <span id="live-meta">Caméra plateau 1 · Son : experts qui se contredisent</span>
+              </div>
+              <div class="player-controls">
+                <button class="btn-icon" id="play-toggle" title="Lecture/Pause">
+                  ▌▌
+                </button>
+                <div class="progress-bar">
+                  <div class="progress-inner"></div>
+                </div>
+                <button class="btn-fullscreen" id="fullscreen-btn">
+                  ⛶ plein écran
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:6px;font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.14em;">
+            Replays &amp; sujets en boucle
+          </div>
+          <div class="catalog-grid" id="catalog">
+            <!-- rempli par JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ARTICLES -->
+      <section class="panel articles-panel">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <div class="panel-title">DERNIERS ARTICLES</div>
+            <div class="panel-badge">vrais textes éditables</div>
+          </div>
+
+          <div class="articles-layout">
+            <ul class="articles-list" id="articles-list">
+              <!-- rempli par JS -->
+            </ul>
+
+            <article class="article-viewer" id="article-viewer">
+              <!-- rempli par JS -->
+            </article>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- CARTES BAS -->
+  <section class="lower-grid">
+    <article class="card">
+      <div class="card-label">mode d’emploi</div>
+      <h2 class="card-title">1 fichier, vrai décor d’info</h2>
+      <p class="card-body">
+        Ouvre ce fichier depuis une clé USB, un dossier, ou un hébergeur statique.
+        Pour changer le contenu, modifie simplement les tableaux
+        <code>flashAlerts</code>, <code>videos</code> et <code>articles</code> dans le script.
+      </p>
+      <div class="card-tag-row">
+        <span>statique</span>
+        <span>surinformation simulée</span>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-label">vidéos réelles</div>
+      <h2 class="card-title">Brancher tes propres images</h2>
+      <p class="card-body">
+        Mets tes fichiers <code>.mp4</code> dans le même dossier que ce HTML
+        ou indique une URL en ligne. Le lecteur principal et les miniatures
+        utilisent ces sources telles quelles : pas d’algorithme, juste ton choix.
+      </p>
+      <div class="card-tag-row">
+        <span>local ou web</span>
+        <span>contrôle total</span>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="card-label">mise à distance</div>
+      <h2 class="card-title">Voir la machine faire du bruit</h2>
+      <p class="card-body">
+        Les bandeaux d’alerte, le bouton qui clignote, la pub intrusive :
+        tout est là pour mimer la pression. Mais tu peux mettre pause,
+        fermer le fichier, ou le réécrire pour raconter autre chose.
+      </p>
+      <div class="card-tag-row">
+        <span>dystopie douce</span>
+        <span>critique par le décor</span>
+      </div>
+    </article>
+  </section>
+
+  <footer class="footer">
+    <strong>INFO EN CONTINU</strong> – Prototype statique d’info en continu sur l’info en continu.
+  </footer>
+</div>
+
+<!-- BOUTON ALERTEZ-NOUS -->
+<div class="alert-fab">
+  <button class="alert-button" id="alert-button">
+    <span class="icon">🚨</span>
+    ALERTEZ-NOUS&nbsp;/!\
+  </button>
+</div>
+
+<!-- BANDEAU FLASH BAS -->
+<div class="flash-bar">
+  <div class="flash-label">
+    <span class="dot"></span>
+    FLASH
+  </div>
+  <div class="flash-track">
+    <div class="flash-inner" id="flash-inner">
+      <!-- rempli par JS -->
+    </div>
+  </div>
+</div>
+
+<!-- MODALE ALERTEZ-NOUS -->
+<div class="overlay" id="alert-overlay">
+  <div class="alert-modal">
+    <button class="btn-close-x" data-close="alert-overlay">&times;</button>
+    <div class="alert-modal-title">
+      🚨 ALERTEZ-NOUS /!\
+    </div>
+    <div class="alert-modal-sub">
+      Tout ce que vous signalez peut être transformé en bandeau rouge, plateau débat
+      ou fausse exclusivité. Remplissez ce formulaire en ayant ça en tête.
+    </div>
+    <form class="alert-form" id="alert-form">
+      <label>
+        <span class="label-text">Sujet de votre alerte</span>
+        <input type="text" name="subject" placeholder="Ex. : Il se passe peut-être quelque chose" required />
+      </label>
+      <label>
+        <span class="label-text">Ce que vous avez vu / entendu / imaginé</span>
+        <textarea name="details" placeholder="Décrivez la situation (même si vous n’êtes pas sûr·e)…"></textarea>
+      </label>
+      <label>
+        <span class="label-text">Degré d’urgence auto-évalué</span>
+        <input type="text" name="urgency" placeholder="Ex. : faible / moyen / apocalyptique" />
+      </label>
+      <div class="alert-form-actions">
+        <span>
+          En cliquant sur «&nbsp;Transformer en bandeau&nbsp;», vous acceptez que tout ne mérite pas un breaking.
+        </span>
+        <button type="submit" class="btn-send">
+          transformer en bandeau
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- POPUP PUB -->
+<div class="overlay" id="ad-overlay">
+  <div class="ad-modal">
+    <button class="btn-close-x" data-close="ad-overlay">&times;</button>
+    <div class="ad-label">PUBLICITÉ</div>
+    <div class="ad-title">RESTEZ ENCORE UN PEU AVEC NOUS</div>
+    <div class="ad-body">
+      Une pause pub pour bien couper votre attention en deux.  
+      Ce bloc peut promouvoir un produit, un service, ou juste rappeler que
+      votre temps de cerveau est précieux pour quelqu’un.
+    </div>
+    <button class="ad-cta" id="ad-cta">
+      <span class="icon">👉</span>
+      CLIQUEZ ICI (OU PAS)
+    </button>
+  </div>
+</div>
+
+<script>
+  // HORLOGE
+  function updateClock() {
+    var el = document.getElementById('clock');
+    if (!el) return;
+    var valueEl = el.querySelector('.value');
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2, '0');
+    var mm = String(now.getMinutes()).padStart(2, '0');
+    var ss = String(now.getSeconds()).padStart(2, '0');
+    valueEl.textContent = hh + ':' + mm + ':' + ss;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // HEURE "DERNIÈRE MONTÉE EN PRESSION"
+  (function setUpdateTime() {
+    var el = document.getElementById('update-time');
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2, '0');
+    var mm = String(now.getMinutes()).padStart(2, '0');
+    if (el) el.textContent = hh + ':' + mm;
+  })();
+
+  // ************* CONTENU DYNAMIQUE A PERSONNALISER *************
+
+  // ALERTES BANDEAU (haut + bas)
+  const flashAlerts = [
+    {
+      type: "FLASH",
+      text: "Coupure de son en direct : débat immédiat sur ce que cela signifie."
+    },
+    {
+      type: "ALERTE INFO",
+      text: "Des images floues circulent : personne ne sait d’où elles viennent, mais tout le monde les commente."
+    },
+    {
+      type: "DERNIÈRE MINUTE",
+      text: "Une notification de plus : aucune conséquence directe sur votre vie, mais sur votre attention, oui."
+    },
+    {
+      type: "ÉDITION SPÉCIALE",
+      text: "Spéciale « tout en même temps » : météo, politique, faits divers, réseaux, tout en bandeau."
+    }
+  ];
+
+  // VIDEOS : src = vrai fichier ou URL, thumb = miniature (image)
+  const videos = [
+    {
+      id: 1,
+      title: "Journal du soir : édition spéciale sur rien de précis",
+      tag: "journal",
+      length: "26:04",
+      src: "jutsu.mp4",
+      thumb: "https://dl.ouaisfi.eu/images/persos/aiCat.jpg",
+      meta: "Présentateur / plateau 1",
+      liveTitle: "Journal du soir – « tout est important »"
+    },
+    {
+      id: 2,
+      title: "Débat : « Sommes-nous trop informés ? »",
+      tag: "débat",
+      length: "42:18",
+      src: "https://dl.ouaisfi.eu/Vid%C3%A9os/videoplayback.mp4",
+      thumb: "https://dl.ouaisfi.eu/images/persos/guide.png",
+      meta: "4 invités, 0 conclusion",
+      liveTitle: "Débat sans fin sur la surinformation"
+    },
+    {
+      id: 3,
+      title: "Réactions en plateau après les réactions en plateau",
+      tag: "réactions",
+      length: "18:07",
+      src: "https://dl.ouaisfi.eu/Vid%C3%A9os/Monsieur%20R%c3%a9mi%20V%20qui%20comme.mp4",
+      thumb: "https://dl.ouaisfi.eu/images/coin.png",
+      meta: "Commenter le commentaire",
+      liveTitle: "Réactions en cascade"
+    }
+  ];
+
+  // ARTICLES
+  const articles = [
+    {
+      id: "surinfo-quotidien",
+      title: "Surinformation quotidienne : quand tout devient « urgent »",
+      author: "Rédaction info en continu",
+      time: "il y a 12 min",
+      kicker: "Décryptage",
+      body: [
+        "Tous les jours, le même réflexe : ouvrir une application, allumer une chaîne, dérouler un fil. Entre deux événements réellement importants, une multitude de pseudo-urgences occupent l’espace.",
+        "Le bandeau qui défile en bas de l’écran devient la bande-son permanente d’un monde supposément en crise continue. Mais derrière la mise en scène, la plupart des alertes n’impliquent aucune action concrète pour celles et ceux qui les reçoivent.",
+        "Ce site propose une manière de regarder ce mécanisme comme un décor : en le reproduisant, mais en donnant au visiteur le temps de prendre du recul."
+      ]
+    },
+    {
+      id: "bouton-alerte",
+      title: "Le bouton « Alertez-nous » : participation ou pression ?",
+      author: "Cellule « participation du public »",
+      time: "il y a 27 min",
+      kicker: "Analyse",
+      body: [
+        "Inciter toutes et tous à signaler la moindre anomalie, c’est multiplier les sources. Mais c’est aussi multiplier les bruits.",
+        "Dans ce prototype, le bouton « ALERTEZ-NOUS /!\\ » est volontairement mis en scène : il clignote, attire l’œil, promet une transformation instantanée en breaking.",
+        "L’objectif n’est pas de glorifier la délation, mais de mettre en lumière comment des dispositifs très simples peuvent pousser à réagir avant de réfléchir."
+      ]
+    },
+    {
+      id: "lowtech-decor",
+      title: "Un décor d’info high-noise en low-tech",
+      author: "Atelier HTML minimal",
+      time: "il y a 1 h",
+      kicker: "Coulisses",
+      body: [
+        "Derrière ce mur d’alertes, d’icônes et de bandeaux, il n’y a qu’un fichier HTML, un peu de CSS et un peu de JavaScript.",
+        "Aucune base de données, aucun suivi de clics, aucune personnalisation algorithmique : la surinformation est ici un décor figé que tu peux ouvrir, modifier et refermer.",
+        "En gardant la structure, tu peux ensuite brancher tes propres enquêtes, tes propres vidéos, et transformer ce prototype en média réel ou en dispositif artistique."
+      ]
+    }
+  ];
+
+  // ************* RENDU BANDEAUX *************
+
+  function buildAlertTape() {
+    var el = document.getElementById('alert-tape-inner');
+    if (!el) return;
+    el.textContent = "";
+    var loop = flashAlerts.concat(flashAlerts);
+    loop.forEach(function (a) {
+      var item = document.createElement('span');
+      item.className = 'alert-tape-item';
+      item.innerHTML =
+        '<span class="alert-tape-type">' + a.type + '</span>' +
+        '<span class="alert-tape-text">' + a.text + '</span>' +
+        '<span class="alert-tape-sep"></span>';
+      el.appendChild(item);
+    });
+  }
+  buildAlertTape();
+
+  function buildFlashTicker() {
+    var el = document.getElementById('flash-inner');
+    if (!el) return;
+    el.textContent = "";
+    var loop = flashAlerts.concat(flashAlerts);
+    loop.forEach(function (a) {
+      var wrap = document.createElement('span');
+      wrap.className = 'flash-item';
+      wrap.innerHTML =
+        '<span class="flash-type">' + a.type + '</span>' +
+        '<span class="flash-text">' + a.text + '</span>' +
+        '<span class="flash-sep"></span>';
+      el.appendChild(wrap);
+    });
+  }
+  buildFlashTicker();
+
+  // ************* LECTEUR VIDEO *************
+
+  function renderCatalog() {
+    var container = document.getElementById('catalog');
+    if (!container) return;
+    container.innerHTML = "";
+    videos.forEach(function (v, index) {
+      var div = document.createElement('div');
+      div.className = 'thumb' + (index === 0 ? ' active' : '');
+      div.setAttribute('data-video-id', String(v.id));
+
+      var previewHtml;
+      if (v.thumb) {
+        // VRAIE IMAGE FOURNIE
+        previewHtml = '<img src="' + v.thumb + '" alt="Miniature vidéo" />';
+      } else {
+        // PAS DE MINIATURE : PLACEHOLDER COLORÉ AVEC INITIALES
+        var initials = (v.tag || "vidéo").slice(0, 3).toUpperCase();
+        previewHtml =
+          '<div style="width:100%;height:100%;' +
+          'background:conic-gradient(from 220deg,#ff2157,#ffcc00,#ff2157);' +
+          'display:flex;align-items:center;justify-content:center;' +
+          'font-size:0.6rem;font-weight:900;color:#000;">' +
+          initials +
+          '</div>';
+      }
+
+      div.innerHTML =
+        '<div class="thumb-preview">' + previewHtml + '</div>' +
+        '<div class="thumb-text">' +
+        '  <div class="thumb-title">' + v.title + '</div>' +
+        '  <div class="thumb-meta">' +
+        '    <span>' + (v.tag || "") + '</span>' +
+        '    <span>' + (v.length || "") + '</span>' +
+        '  </div>' +
+        '</div>';
+      container.appendChild(div);
+    });
+  }
+  renderCatalog();
+
+  function setActiveVideo(videoId) {
+    var video = document.getElementById('live-video');
+    var titleEl = document.getElementById('live-title');
+    var metaEl = document.getElementById('live-meta');
+    var thumbs = document.querySelectorAll('.thumb');
+    thumbs.forEach(function (t) {
+      if (t.getAttribute('data-video-id') === String(videoId)) {
+        t.classList.add('active');
+      } else {
+        t.classList.remove('active');
+      }
+    });
+    var v = videos.find(function (x) { return x.id === Number(videoId); });
+    if (v && video) {
+      if (v.src) {
+        video.src = v.src;
+      }
+      if (titleEl) titleEl.textContent = v.liveTitle || v.title;
+      if (metaEl) metaEl.textContent = v.meta || "";
+      video.play().catch(function (){});
+    }
+  }
+
+  var catalogEl = document.getElementById('catalog');
+  if (catalogEl) {
+    catalogEl.addEventListener('click', function (e) {
+      var target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      var thumb = target.closest('.thumb');
+      if (!thumb) return;
+      var id = thumb.getAttribute('data-video-id');
+      if (!id) return;
+      setActiveVideo(id);
+    });
+  }
+
+  // Play/pause bouton
+  var playBtn = document.getElementById('play-toggle');
+  var liveVideo = document.getElementById('live-video');
+  if (playBtn && liveVideo) {
+    playBtn.addEventListener('click', function () {
+      if (liveVideo.paused) {
+        liveVideo.play();
+        playBtn.textContent = '▌▌';
+      } else {
+        liveVideo.pause();
+        playBtn.textContent = '▶';
+      }
+    });
+  }
+
+  // Fullscreen (vrai)
+  var fullscreenBtn = document.getElementById('fullscreen-btn');
+  var livePlayer = document.getElementById('live-player');
+
+  function toggleFullscreen(elem) {
+    if (!elem) return;
+    var doc = document;
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+      if (elem.requestFullscreen) elem.requestFullscreen();
+      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+    } else {
+      if (doc.exitFullscreen) doc.exitFullscreen();
+      else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
+    }
+  }
+
+  if (fullscreenBtn && livePlayer) {
+    fullscreenBtn.addEventListener('click', function () {
+      toggleFullscreen(livePlayer);
+    });
+  }
+
+  // activer la première vidéo si elle existe
+  if (videos.length > 0) {
+    setActiveVideo(videos[0].id);
+  }
+
+  // ************* ARTICLES *************
+
+  function renderArticlesList() {
+    var listEl = document.getElementById('articles-list');
+    if (!listEl) return;
+    listEl.innerHTML = "";
+    articles.forEach(function (a, index) {
+      var li = document.createElement('li');
+      li.className = 'article-item' + (index === 0 ? ' active' : '');
+      li.setAttribute('data-article-id', a.id);
+      li.innerHTML =
+        '<div class="article-item-title">' + a.title + '</div>' +
+        '<div class="article-item-meta">' +
+        (a.kicker ? a.kicker + ' · ' : '') +
+        (a.time || '') +
+        '</div>';
+      listEl.appendChild(li);
+    });
+  }
+
+  function renderArticle(id) {
+    var a = articles.find(function (x) { return x.id === id; });
+    var viewer = document.getElementById('article-viewer');
+    if (!a || !viewer) return;
+    viewer.innerHTML = "";
+    var h = document.createElement('h3');
+    h.textContent = a.title;
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent =
+      (a.kicker ? a.kicker + " · " : "") +
+      (a.author ? a.author + " · " : "") +
+      (a.time || "");
+    viewer.appendChild(h);
+    viewer.appendChild(meta);
+    (a.body || []).forEach(function (pText) {
+      var p = document.createElement('p');
+      p.textContent = pText;
+      viewer.appendChild(p);
+    });
+
+    var items = document.querySelectorAll('.article-item');
+    items.forEach(function (li) {
+      if (li.getAttribute('data-article-id') === id) {
+        li.classList.add('active');
+      } else {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  renderArticlesList();
+  if (articles.length > 0) {
+    renderArticle(articles[0].id);
+  }
+
+  var articlesListEl = document.getElementById('articles-list');
+  if (articlesListEl) {
+    articlesListEl.addEventListener('click', function (e) {
+      var target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      var li = target.closest('.article-item');
+      if (!li) return;
+      var id = li.getAttribute('data-article-id');
+      if (!id) return;
+      renderArticle(id);
+    });
+  }
+
+  // ************* BOUTON ALERTE + MODALE *************
+
+  var alertButton = document.getElementById('alert-button');
+  var alertOverlay = document.getElementById('alert-overlay');
+  if (alertButton && alertOverlay) {
+    alertButton.addEventListener('click', function () {
+      alertOverlay.classList.add('visible');
+    });
+  }
+
+  document.body.addEventListener('click', function (e) {
+    var target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+    var closeId = target.getAttribute('data-close');
+    if (closeId) {
+      var ov = document.getElementById(closeId);
+      if (ov) ov.classList.remove('visible');
+    }
+  });
+
+  var alertForm = document.getElementById('alert-form');
+  if (alertForm) {
+    alertForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      alertForm.reset();
+      if (alertOverlay) alertOverlay.classList.remove('visible');
+      alert("Votre alerte a été transformée en bandeau rouge imaginaire.\nMerci pour votre contribution à la surinformation.");
+    });
+  }
+
+  // ************* POPUP PUB *************
+
+  var adOverlay = document.getElementById('ad-overlay');
+  var adCta = document.getElementById('ad-cta');
+  var adShownOnce = false;
+
+  function showAdPopup() {
+    if (!adOverlay || adShownOnce) return;
+    adOverlay.classList.add('visible');
+    adShownOnce = true;
+  }
+
+  // Première pub au bout de 6 secondes
+  setTimeout(showAdPopup, 6000);
+
+  // Pub qui pourrait revenir au premier gros scroll (si pas déjà vue)
+  var scrollTriggered = false;
+  window.addEventListener('scroll', function () {
+    if (scrollTriggered) return;
+    scrollTriggered = true;
+    setTimeout(showAdPopup, 1000);
+  });
+
+  if (adCta && adOverlay) {
+    adCta.addEventListener('click', function () {
+      alert("Vous venez de cliquer sur une pub imaginaire.\nVotre attention est officiellement monétisable.");
+      adOverlay.classList.remove('visible');
+    });
+  }
+</script>
+</body>
+</html>
