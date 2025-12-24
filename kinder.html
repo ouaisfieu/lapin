@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flamme · swipe statique</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top, #ff7a7a 0, #140b33 40%, #050010 100%);
+      --card-bg: #020617;
+      --accent: #ff4458;
+      --accent-soft: rgba(255,68,88,0.1);
+      --accent-blue: #0ea5e9;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148,163,184,0.35);
+      --radius-card: 22px;
+      --radius-btn: 999px;
+      --shadow-strong: 0 18px 40px rgba(0,0,0,0.8);
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: #050010;
+      background-image: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      padding: 10px 10px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 2px 8px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .logo-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 10%, #ffe08a, #ff7a7a 40%, #ff4458 65%, #c91a6f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(248,113,113,0.9);
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 8px;
+    }
+
+    /* ÉCRANS (un seul visible à la fois) */
+    .screen {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    /* ---------- LOADING ---------- */
+    .screen-loading {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+    }
+
+    .loader-ring {
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      border: 3px solid rgba(148,163,184,0.4);
+      border-top-color: #f97316;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 6px;
+    }
+
+    .loading-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .small-note {
+      font-size: 0.75rem;
+      color: #64748b;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ---------- ONBOARDING ---------- */
+    .screen-onboarding {
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ob-top {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ob-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .ob-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .ob-card {
+      margin-top: 2px;
+      padding: 12px 12px 10px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, rgba(248,113,113,0.18), transparent 60%),
+                  rgba(15,23,42,0.96);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .field input,
+    .field select {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip-toggle {
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(15,23,42,0.9);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .chip-toggle.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #fecaca;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fb7185, #f97316);
+      color: #0b1120;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(220,38,38,0.6);
+    }
+
+    .btn-link {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-decoration: underline;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* ---------- MAIN / SWIPE ---------- */
+
+    .screen-main {
+      gap: 8px;
+    }
+
+    .user-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .user-bar strong {
+      color: #e5e7eb;
+    }
+
+    .user-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34,197,94,0.9);
+      margin-right: 4px;
+      display: inline-block;
+    }
+
+    .card-zone {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 0;
+      min-height: 0;
+    }
+
+    .card {
+      width: 100%;
+      max-height: 480px;
+      border-radius: var(--radius-card);
+      background: var(--card-bg);
+      overflow: hidden;
+      box-shadow: var(--shadow-strong);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      touch-action: pan-y;
+    }
+
+    .card-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: radial-gradient(circle at 10% 10%, #f97316 0, #7c3aed 40%, #020617 100%);
+      overflow: hidden;
+    }
+
+    .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform-origin: center;
+      transition: transform 0.4s ease-out;
+    }
+
+    .card-photo::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 45%;
+      background: linear-gradient(to top, rgba(3,7,18,0.98), transparent);
+      pointer-events: none;
+    }
+
+    .chip-live {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(22,163,74,0.14);
+      border: 1px solid rgba(34,197,94,0.9);
+      color: #bbf7d0;
+      font-size: 0.7rem;
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .chip-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(74,222,128,0.9);
+    }
+
+    .avatar-row {
+      position: absolute;
+      bottom: 72px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .avatar-mini {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 2px solid rgba(248,250,252,0.95);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.7);
+      background: #020617;
+    }
+
+    .avatar-mini img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .chip-label {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.7rem;
+    }
+
+    .card-info {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 14px 14px 12px;
+      z-index: 2;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .name-row span.age {
+      font-weight: 500;
+    }
+
+    .name-row span.badge {
+      margin-left: auto;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid var(--border-subtle);
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .meta {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .meta-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.7);
+    }
+
+    .bio {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #e5e7eb;
+      max-height: 3.4em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .mini-tag {
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 0.7rem;
+    }
+
+    .card-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: #020617;
+      border-top: 1px solid rgba(15,23,42,0.9);
+    }
+
+    .btn-text {
+      border: 0;
+      background: transparent;
+      color: var(--accent-blue);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .btn-text span.icon {
+      font-size: 0.9rem;
+    }
+
+    .bottom-ui {
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .progress {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      overflow: hidden;
+      margin: 0 2px 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f97316, #facc15, #22c55e, #06b6d4, #8b5cf6);
+      transition: width 0.2s ease-out;
+    }
+
+    .buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 0 6px;
+    }
+
+    .circle-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-btn);
+      border: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.7);
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+    }
+
+    .circle-btn.small {
+      width: 48px;
+      height: 48px;
+      font-size: 1.2rem;
+      box-shadow: 0 10px 18px rgba(0,0,0,0.6);
+    }
+
+    .btn-dislike { background: #f9fafb; color: #111827; }
+    .btn-like { background: #22c55e; color: #ecfdf5; }
+    .btn-super { background: #0ea5e9; color: #e0f2fe; }
+    .btn-rewind { background: #fbbf24; color: #713f12; }
+
+    .circle-btn:active {
+      transform: scale(0.9);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.8);
+    }
+
+    /* Swipe animations */
+    .card.swipe-left  { animation: swipeLeft 0.3s ease-out forwards; }
+    .card.swipe-right { animation: swipeRight 0.3s ease-out forwards; }
+    .card.swipe-up    { animation: swipeUp 0.3s ease-out forwards; }
+
+    @keyframes swipeLeft {
+      to { transform: translateX(-120%) rotate(-14deg); opacity: 0; }
+    }
+    @keyframes swipeRight {
+      to { transform: translateX(120%) rotate(14deg); opacity: 0; }
+    }
+    @keyframes swipeUp {
+      to { transform: translateY(-120%) scale(0.9); opacity: 0; }
+    }
+
+    /* Match overlay (par-dessus la carte seulement) */
+    .match-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% -10%, rgba(248,113,113,0.18), transparent 60%),
+                  radial-gradient(circle at 90% 110%, rgba(59,130,246,0.32), transparent 60%),
+                  rgba(3,7,18,0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      color: #f9fafb;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease-out;
+      z-index: 5;
+      text-align: center;
+    }
+    .match-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .match-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .match-sub {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      max-width: 260px;
+    }
+
+    .match-avatars {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .match-avatars .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      border: 3px solid rgba(248,250,252,0.95);
+      overflow: hidden;
+      box-shadow: 0 16px 26px rgba(0,0,0,0.7);
+    }
+
+    .match-avatars .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .match-btn {
+      margin-top: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 0;
+      background: #f9fafb;
+      color: #0f172a;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* Modale profil pleine largeur */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 20;
+    }
+    .modal.visible {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      background: #020617;
+      border-radius: 18px 18px 0 0;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 -16px 32px rgba(0,0,0,0.9);
+      padding: 8px 12px 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.7);
+      margin: 0 auto 6px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .modal-header small {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 0;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      margin-top: 6px;
+      padding-right: 4px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    .section {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .section p {
+      margin: 3px 0;
+      color: #e5e7eb;
+    }
+
+    .section-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill-soft {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.45);
+      font-size: 0.75rem;
+      color: #e5e7eb;
+    }
+
+    .pill-soft.good {
+      border-color: #22c55e;
+      background: rgba(22,163,74,0.12);
+      color: #bbf7d0;
+    }
+
+    .section-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    @media (min-height: 750px) {
+      .card {
+        max-height: 540px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🔥</div>
+        <span>Flamme</span>
+      </div>
+      <div class="top-right">
+        <div class="pill" id="modeLabel">Démo locale</div>
+        <button class="icon-btn" id="btnShareApp" title="Partager l'app">📤</button>
+        <button class="icon-btn" id="btnSettings" title="Reconfigurer">⚙️</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Écran 1 : Loading -->
+      <section class="screen screen-loading active" id="screenLoading">
+        <div>
+          <div class="loader-ring"></div>
+          <div class="loading-text">Connexion à ton univers social…</div>
+          <div class="small-note">
+            Pas de serveur, pas de tracking. Juste un fichier HTML qui pourrait tenir sur une disquette.
+          </div>
+        </div>
+      </section>
+
+      <!-- Écran 2 : Onboarding -->
+      <section class="screen screen-onboarding" id="screenOnboarding">
+        <div class="ob-top">
+          <div>
+            <div class="ob-title">Calibrer ta flamme</div>
+            <div class="ob-sub">
+              Deux ou trois infos stockées en local pour que la démo ressemble un peu à quelque chose.
+            </div>
+          </div>
+
+          <div class="ob-card">
+            <form id="onboardingForm">
+              <div class="field">
+                <label for="youName">Ton prénom</label>
+                <input id="youName" name="youName" placeholder="Ex : Alex" autocomplete="off" />
+              </div>
+
+              <div class="field">
+                <label for="youCity">Ta ville</label>
+                <input id="youCity" name="youCity" placeholder="Ex : Bruxelles" autocomplete="off" />
+              </div>
+
+              <div class="field">
+                <label>Tu cherches :</label>
+                <div class="chips" id="chipsLookingFor">
+                  <button type="button" class="chip-toggle" data-value="rencontres curieuses">Rencontres curieuses</button>
+                  <button type="button" class="chip-toggle" data-value="collabs créatives">Collabs créatives</button>
+                  <button type="button" class="chip-toggle" data-value="gens qui réfléchissent">Gens qui réfléchissent</button>
+                  <button type="button" class="chip-toggle" data-value="tout ça à la fois">Tout ça à la fois</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="youRadius">Rayon (km)</label>
+                <select id="youRadius" name="youRadius">
+                  <option value="5">5 km</option>
+                  <option value="10" selected>10 km</option>
+                  <option value="25">25 km</option>
+                  <option value="50">50 km</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn-primary">Commencer à swiper</button>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <button class="btn-link" id="btnSkipOnboarding">
+            Passer (utiliser les valeurs par défaut)
+          </button>
+        </div>
+      </section>
+
+      <!-- Écran 3 : Swipe -->
+      <section class="screen screen-main" id="screenMain">
+        <div class="user-bar">
+          <div><span class="user-dot"></span><span id="userBarText">Toi · Bruxelles · 10 km</span></div>
+          <div>Local · <strong>offline-friendly</strong></div>
+        </div>
+
+        <div class="card-zone">
+          <article class="card" id="card">
+            <div class="card-photo" id="cardPhoto">
+              <img id="cardImage" src="" alt="">
+              <div class="chip-live">
+                <div class="chip-live-dot"></div>
+                <span>En ligne</span>
+              </div>
+
+              <div class="avatar-row">
+                <div class="avatar-mini">
+                  <img id="avatarMini" src="" alt="">
+                </div>
+                <div class="chip-label" id="chipLabel">Nouveau·lle</div>
+              </div>
+
+              <div class="card-info">
+                <div class="name-row">
+                  <span id="name">Nom</span>
+                  <span class="age" id="age">00</span>
+                  <span class="badge">✓ vérifié</span>
+                </div>
+                <div class="meta">
+                  <span>📍 <span id="city">Ville</span></span>
+                  <div class="meta-dot"></div>
+                  <span id="distance">0 km</span>
+                </div>
+                <p class="bio" id="bio">Bio…</p>
+                <div class="mini-tags" id="miniTags"></div>
+              </div>
+
+              <!-- Match overlay -->
+              <div class="match-overlay" id="matchOverlay">
+                <div class="match-title">IT'S A MATCH</div>
+                <div class="match-sub" id="matchText">
+                  Vous vous êtes liké·es. Le reste n’appartient pas à l’algorithme.
+                </div>
+                <div class="match-avatars">
+                  <div class="avatar">
+                    <img src="https://source.unsplash.com/featured/200x200/?portrait,person&sig=999" alt="Toi">
+                  </div>
+                  <div class="avatar">
+                    <img id="matchAvatar" src="" alt="Match">
+                  </div>
+                </div>
+                <button class="match-btn" id="closeMatch">Continuer</button>
+              </div>
+            </div>
+
+            <div class="card-footer-bar">
+              <button class="btn-text" id="btnViewProfile"><span class="icon">👁</span> Voir profil</button>
+              <button class="btn-text" id="btnShareProfile"><span class="icon">📤</span> Partager</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="bottom-ui">
+          <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="buttons-row">
+            <button class="circle-btn small btn-rewind" id="btnRewind" title="Revenir en arrière">⏪</button>
+            <button class="circle-btn btn-dislike" id="btnNope" title="Passer">✖</button>
+            <button class="circle-btn btn-like" id="btnLike" title="J'aime">❤</button>
+            <button class="circle-btn small btn-super" id="btnSuper" title="Super-like">⭐</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modale profil -->
+  <div class="modal" id="profileModal">
+    <div class="modal-sheet">
+      <div class="drag-handle"></div>
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modalTitle">Nom, 00</div>
+          <small id="modalSubtitle">Ville · job</small>
+        </div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="section">
+          <div class="section-title">À propos</div>
+          <p id="modalAbout"></p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Ce que je fais</div>
+          <p id="modalJob"></p>
+          <p class="section-meta" id="modalEducation"></p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Ce que je cherche</div>
+          <p id="modalLookingFor"></p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Centres d'intérêt</div>
+          <div class="section-list" id="modalInterests"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Fun facts</div>
+          <div class="section-list" id="modalFunFacts"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Réseaux (fictifs)</div>
+          <div class="section-list" id="modalSocials"></div>
+          <p class="section-meta">
+            Ici tout est factice. Dans la vraie vie, ces métadonnées finissent souvent dans des profils qu’on ne voit jamais.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --------- Données profils ---------
+    const profiles = [
+      {
+        id: 1,
+        name: "Lina",
+        age: 27,
+        city: "Bruxelles",
+        distanceKm: 3,
+        jobTitle: "UX designer",
+        company: "studio indépendant",
+        education: "École d’art + bootcamp UX.",
+        bio: "Je design des applis, je casse des dark patterns et je cherche des gens avec qui refaire le monde autour d’un ramen.",
+        interests: ["Design éthique", "Photo argentique", "Concerts intimistes", "Balades nocturnes"],
+        lookingFor: "Des gens qui voient l’UX comme un pouvoir à utiliser contre la dystopie, pas pour augmenter le temps d’écran.",
+        funFacts: [
+          "Peut reconnaître un bouton mal aligné à 5 mètres.",
+          "Tient un carnet de 'micro-absurdités' rencontrées chaque jour.",
+          "A déjà supprimé toutes ses apps de réseaux sociaux trois fois."
+        ],
+        socials: ["IG · @lina.sketches", "Behance · /lina-ux"],
+        photoUrl: "https://dl.ouaisfi.eu/images/admin.jpg",
+        avatarUrl: "https://dl.ouaisfi.eu/images/coin.png",
+        label: "Nouveau match"
+      },
+      {
+        id: 2,
+        name: "Noah",
+        age: 30,
+        city: "Liège",
+        distanceKm: 7,
+        jobTitle: "Ingénieur data",
+        company: "coopérative tech",
+        education: "Ingénieur passé du côté obscur des données.",
+        bio: "Je mesure tout sauf les gens. Amateur de bistrots cachés, de balades en train et de mèmes absurdes.",
+        interests: ["Data viz", "Jeux de rôle", "Cafés de quartier", "Trains lents"],
+        lookingFor: "Des gens avec qui parler d’algos et de politique sans que ce soit bizarre.",
+        funFacts: [
+          "A déjà imprimé un mème pour le coller en salle de réunion.",
+          "Connaît les horaires de train par cœur pour trois lignes.",
+          "Compte ses pas mais pas ses likes."
+        ],
+        socials: ["GitHub · /noah-data", "Signal · dispo sur demande"],
+        photoUrl: "https://dl.ouaisfi.eu/gifs/haha.gif",
+        avatarUrl: "https://dl.ouaisfi.eu/gifs/haha.gif",
+        label: "Sélection du jour"
+      },
+      {
+        id: 3,
+        name: "Maya",
+        age: 24,
+        city: "Namur",
+        distanceKm: 1,
+        jobTitle: "Étudiante en socio",
+        company: "fac publique",
+        education: "Licence en sociologie, options 'dystopies du quotidien' auto-proclamées.",
+        bio: "Je collectionne les livres, les playlists et les situations un peu trop lucides pour ce système.",
+        interests: ["Socio", "Manifestations", "Séries cheloues", "Lectures communes"],
+        lookingFor: "Des personnes qui supportent les pavés théoriques et les pavés dans la rue.",
+        funFacts: [
+          "Écrit des slogans pendant les réunions 'ennui'.",
+          "A cité un mème comme matériau empirique dans un exposé.",
+          "Tient une carte mentale d’absurdités organisationnelles."
+        ],
+        socials: ["Bookwyrm · @maya-reads", "Blog · maya-notes.local"],
+        photoUrl: "https://source.unsplash.com/featured/800x1100/?portrait,woman,outdoor,city",
+        avatarUrl: "https://source.unsplash.com/featured/200x200/?portrait,woman,face",
+        label: "À ne pas rater"
+      },
+      {
+        id: 4,
+        name: "Jonas",
+        age: 33,
+        city: "Gand",
+        distanceKm: 12,
+        jobTitle: "Dev full-stack",
+        company: "freelance",
+        education: "Auto-didacte + beaucoup de nuits blanches.",
+        bio: "Je fais des sites trop rapides pour la bureaucratie. Team vélo & café filtre.",
+        interests: ["Hackathons", "Vélo", "Minimalisme", "Infra low-tech"],
+        lookingFor: "Des allié·es pour monter des projets légers qui tiennent sur une clé USB.",
+        funFacts: [
+          "A une todo-list en texte brut depuis 2015.",
+          "A 'optimisé' un site au point que le marketing ne trouvait plus ses popups.",
+          "Prépare un guide 'désintox des applis'."
+        ],
+        socials: ["Codeberg · /jonas-min", "RSS · feed.jonas.dev"],
+        photoUrl: "https://source.unsplash.com/featured/800x1100/?portrait,man,indoor,cafe",
+        avatarUrl: "https://source.unsplash.com/featured/200x200/?portrait,man,profile",
+        label: "Recommandé"
+      },
+      {
+        id: 5,
+        name: "Aya",
+        age: 29,
+        city: "Bruxelles",
+        distanceKm: 5,
+        jobTitle: "Illustratrice",
+        company: "atelier partagé",
+        education: "École d’art + zines auto-édités.",
+        bio: "Je dessine des mondes moins dystopiques entre deux expos. Allergique au ghosting.",
+        interests: ["Illustration", "Zines", "Rooftops calmes", "Fanzines politiques"],
+        lookingFor: "Des personnes qui aiment autant les marges que le centre de la page.",
+        funFacts: [
+          "Collectionne les affiches de manifs plus que celles de concerts.",
+          "A déjà refusé une commande pour vibes 'propagande'.",
+          "Repère un générateur d’images en 3 secondes."
+        ],
+        socials: ["IG · @aya.draws", "Portfolio · aya-studio.local"],
+        photoUrl: "https://source.unsplash.com/featured/800x1100/?portrait,woman,colorful,studio",
+        avatarUrl: "https://source.unsplash.com/featured/200x200/?portrait,woman,color",
+        label: "Tendance"
+      }
+    ];
+
+    // --------- État utilisateur ---------
+    const STORAGE_KEY_SETTINGS = "flamme_settings_v3";
+    let userSettings = {
+      name: "Toi",
+      city: "Bruxelles",
+      lookingFor: "rencontres curieuses",
+      radius: 10,
+      initialized: false
+    };
+
+    let currentIndex = 0;
+    const liked = [];
+    const passed = [];
+    const historyStack = [];
+
+    // --------- DOM ---------
+    const screenLoading = document.getElementById("screenLoading");
+    const screenOnboarding = document.getElementById("screenOnboarding");
+    const screenMain = document.getElementById("screenMain");
+
+    const userBarText = document.getElementById("userBarText");
+
+    const card = document.getElementById("card");
+    const cardPhoto = document.getElementById("cardPhoto");
+    const cardImage = document.getElementById("cardImage");
+    const avatarMini = document.getElementById("avatarMini");
+    const chipLabelEl = document.getElementById("chipLabel");
+    const nameEl = document.getElementById("name");
+    const ageEl = document.getElementById("age");
+    const cityEl = document.getElementById("city");
+    const distanceEl = document.getElementById("distance");
+    const bioEl = document.getElementById("bio");
+    const miniTagsEl = document.getElementById("miniTags");
+    const progressBar = document.getElementById("progressBar");
+
+    const btnNope = document.getElementById("btnNope");
+    const btnLike = document.getElementById("btnLike");
+    const btnSuper = document.getElementById("btnSuper");
+    const btnRewind = document.getElementById("btnRewind");
+    const btnSettings = document.getElementById("btnSettings");
+    const btnShareApp = document.getElementById("btnShareApp");
+    const btnViewProfile = document.getElementById("btnViewProfile");
+    const btnShareProfile = document.getElementById("btnShareProfile");
+
+    const matchOverlay = document.getElementById("matchOverlay");
+    const matchAvatar = document.getElementById("matchAvatar");
+    const matchText = document.getElementById("matchText");
+    const closeMatchBtn = document.getElementById("closeMatch");
+
+    const onboardingForm = document.getElementById("onboardingForm");
+    const btnSkipOnboarding = document.getElementById("btnSkipOnboarding");
+    const chipsLookingFor = document.getElementById("chipsLookingFor");
+
+    const profileModal = document.getElementById("profileModal");
+    const modalClose = document.getElementById("modalClose");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const modalAbout = document.getElementById("modalAbout");
+    const modalJob = document.getElementById("modalJob");
+    const modalEducation = document.getElementById("modalEducation");
+    const modalLookingFor = document.getElementById("modalLookingFor");
+    const modalInterests = document.getElementById("modalInterests");
+    const modalFunFacts = document.getElementById("modalFunFacts");
+    const modalSocials = document.getElementById("modalSocials");
+
+    // --------- Utils ---------
+    function showScreen(name) {
+      screenLoading.classList.remove("active");
+      screenOnboarding.classList.remove("active");
+      screenMain.classList.remove("active");
+      if (name === "loading") screenLoading.classList.add("active");
+      if (name === "onboarding") screenOnboarding.classList.add("active");
+      if (name === "main") screenMain.classList.add("active");
+    }
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_SETTINGS);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          userSettings = { ...userSettings, ...parsed };
+        }
+      } catch (e) {
+        console.warn("Erreur load settings", e);
+      }
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(userSettings));
+      } catch (e) {
+        console.warn("Erreur save settings", e);
+      }
+    }
+
+    function updateUserBar() {
+      userBarText.textContent = `${userSettings.name} · ${userSettings.city} · ${userSettings.radius} km · ${userSettings.lookingFor}`;
+    }
+
+    function clampIndex(i) {
+      if (i < 0) return 0;
+      if (i >= profiles.length) return profiles.length;
+      return i;
+    }
+
+    function setImageWithFallback(imgEl, url, fallbackQuery) {
+      const fallback = `https://source.unsplash.com/featured/800x1100/?${encodeURIComponent(fallbackQuery)}`;
+      imgEl.onerror = () => { imgEl.src = fallback; };
+      imgEl.src = url;
+    }
+
+    // --------- Rendu profil ---------
+    function renderProfile(index) {
+      index = clampIndex(index);
+      currentIndex = index;
+
+      if (index >= profiles.length) {
+        cardImage.src = "https://source.unsplash.com/featured/800x1100/?night,city,empty";
+        avatarMini.src = "https://source.unsplash.com/featured/200x200/?abstract,gradient";
+        nameEl.textContent = "Plus de profils";
+        ageEl.textContent = "";
+        cityEl.textContent = "Fin de la démo";
+        distanceEl.textContent = "∞ km";
+        bioEl.textContent = "Tu as vu tous les profils. À partir de là, c’est à toi de décider quoi faire du fichier HTML.";
+        miniTagsEl.innerHTML = "";
+        chipLabelEl.textContent = "Démo terminée";
+        progressBar.style.width = "100%";
+        return;
+      }
+
+      const p = profiles[index];
+      setImageWithFallback(cardImage, p.photoUrl, "portrait,person");
+      avatarMini.src = p.avatarUrl;
+
+      nameEl.textContent = p.name;
+      ageEl.textContent = p.age;
+      cityEl.textContent = p.city;
+      distanceEl.textContent = `${p.distanceKm} km • ${p.jobTitle}`;
+      bioEl.textContent = p.bio;
+      chipLabelEl.textContent = p.label || "Découverte";
+
+      miniTagsEl.innerHTML = "";
+      (p.interests || []).slice(0, 3).forEach((tag) => {
+        const span = document.createElement("span");
+        span.className = "mini-tag";
+        span.textContent = tag;
+        miniTagsEl.appendChild(span);
+      });
+
+      const ratio = (index / profiles.length) * 100;
+      progressBar.style.width = `${ratio}%`;
+
+      card.style.transform = "";
+      card.style.opacity = "1";
+      card.classList.remove("swipe-left", "swipe-right", "swipe-up");
+    }
+
+    function nextProfile() {
+      renderProfile(currentIndex + 1);
+    }
+
+    // --------- Match overlay ---------
+    function openMatchOverlay(profile, type) {
+      matchAvatar.src = profile.avatarUrl || profile.photoUrl;
+      const verb = type === "super" ? "super-liké·es" : "liké·es";
+      matchText.textContent = `Vous et ${profile.name} vous êtes ${verb}. Décider de la suite, c’est à vous.`;
+      matchOverlay.classList.add("visible");
+    }
+
+    function closeMatchOverlay() {
+      matchOverlay.classList.remove("visible");
+    }
+
+    // --------- Modale profil ---------
+    function openProfileModal(profile) {
+      modalTitle.textContent = `${profile.name}, ${profile.age}`;
+      modalSubtitle.textContent = `${profile.city} · ${profile.jobTitle} (${profile.company})`;
+      modalAbout.textContent = profile.bio;
+      modalJob.textContent = `Je bosse comme ${profile.jobTitle} dans ${profile.company}.`;
+      modalEducation.textContent = profile.education || "";
+      modalLookingFor.textContent = profile.lookingFor || "";
+
+      modalInterests.innerHTML = "";
+      (profile.interests || []).forEach((it) => {
+        const span = document.createElement("span");
+        span.className = "pill-soft good";
+        span.textContent = it;
+        modalInterests.appendChild(span);
+      });
+
+      modalFunFacts.innerHTML = "";
+      (profile.funFacts || []).forEach((f) => {
+        const span = document.createElement("span");
+        span.className = "pill-soft";
+        span.textContent = f;
+        modalFunFacts.appendChild(span);
+      });
+
+      modalSocials.innerHTML = "";
+      (profile.socials || []).forEach((s) => {
+        const span = document.createElement("span");
+        span.className = "pill-soft";
+        span.textContent = s;
+        modalSocials.appendChild(span);
+      });
+
+      profileModal.classList.add("visible");
+    }
+
+    function closeProfileModal() {
+      profileModal.classList.remove("visible");
+    }
+
+    // --------- Partage ---------
+    function shareApp() {
+      const text = "Je teste un mini 'Tinder' statique sans serveur ni tracking. C’est juste un fichier HTML.";
+      const url = window.location.href;
+
+      const data = { title: "Flamme · démo statique", text, url };
+
+      if (navigator.share) {
+        navigator.share(data).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${text}\n${url}`).then(() => {
+          alert("Lien copié dans le presse-papiers.");
+        }).catch(() => {
+          alert("Impossible de copier automatiquement, mais tu peux envoyer directement le fichier HTML.");
+        });
+      } else {
+        alert("Pas d’API de partage : old school, mais plus simple à maîtriser.");
+      }
+    }
+
+    function shareProfile(profile) {
+      const text = `${profile.name}, ${profile.age} ans à ${profile.city} (${profile.jobTitle}). Profil de la démo statique Flamme.`;
+      const url = window.location.href.split("#")[0] + `#profile-${profile.id}`;
+      const data = { title: `Profil de ${profile.name}`, text, url };
+
+      if (navigator.share) {
+        navigator.share(data).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${text}\n${url}`).then(() => {
+          alert("Texte copié dans le presse-papiers (symbolique, c’est la même page).");
+        }).catch(() => {
+          alert("Impossible de copier automatiquement, montre l’écran directement 🧠.");
+        });
+      } else {
+        alert("Pas d’API de partage disponible.");
+      }
+    }
+
+    // --------- Choix ---------
+    function handleChoice(type) {
+      if (currentIndex >= profiles.length) return;
+      const p = profiles[currentIndex];
+      historyStack.push({ index: currentIndex, type, profile: p });
+
+      if (type === "like" || type === "super") {
+        liked.push(p);
+        const proba = type === "super" ? 0.9 : 0.4;
+        if (Math.random() < proba) openMatchOverlay(p, type);
+      } else {
+        passed.push(p);
+      }
+
+      let anim = "swipe-right";
+      if (type === "nope") anim = "swipe-left";
+      if (type === "super") anim = "swipe-up";
+
+      card.classList.remove("swipe-left", "swipe-right", "swipe-up");
+      void card.offsetWidth;
+      card.classList.add(anim);
+
+      setTimeout(() => {
+        nextProfile();
+      }, 230);
+    }
+
+    function rewind() {
+      if (!historyStack.length) return;
+      const last = historyStack.pop();
+      currentIndex = last.index;
+
+      if (last.type === "like" || last.type === "super") {
+        const i = liked.findIndex((p) => p.id === last.profile.id);
+        if (i !== -1) liked.splice(i, 1);
+      } else if (last.type === "nope") {
+        const i = passed.findIndex((p) => p.id === last.profile.id);
+        if (i !== -1) passed.splice(i, 1);
+      }
+
+      renderProfile(currentIndex);
+    }
+
+    // --------- Gestes swipe ---------
+    let startX = null;
+    let startY = null;
+
+    cardPhoto.addEventListener("touchstart", (e) => {
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+    });
+
+    cardPhoto.addEventListener("touchmove", (e) => {
+      if (startX === null || startY === null) return;
+      const t = e.touches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        const rot = dx / 20;
+        card.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
+        card.style.opacity = `${1 - Math.min(Math.abs(dx) / 260, 0.35)}`;
+      }
+    });
+
+    cardPhoto.addEventListener("touchend", (e) => {
+      if (startX === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+
+      if (dx > 90) {
+        handleChoice("like");
+      } else if (dx < -90) {
+        handleChoice("nope");
+      } else {
+        card.style.transform = "";
+        card.style.opacity = "1";
+      }
+
+      startX = null;
+      startY = null;
+    });
+
+    // --------- Onboarding ---------
+    chipsLookingFor.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("chip-toggle")) return;
+      chipsLookingFor.querySelectorAll(".chip-toggle").forEach((el) => el.classList.remove("active"));
+      e.target.classList.add("active");
+    });
+
+    onboardingForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = new FormData(onboardingForm);
+      const name = (data.get("youName") || "").toString().trim() || "Toi";
+      const city = (data.get("youCity") || "").toString().trim() || "Bruxelles";
+      const radius = parseInt(data.get("youRadius") || "10", 10);
+      const activeChip = chipsLookingFor.querySelector(".chip-toggle.active");
+      const looking = activeChip ? activeChip.dataset.value : "rencontres curieuses";
+
+      userSettings = { name, city, radius, lookingFor: looking, initialized: true };
+      saveSettings();
+      updateUserBar();
+      showScreen("main");
+      renderProfile(0);
+    });
+
+    btnSkipOnboarding.addEventListener("click", () => {
+      userSettings.initialized = true;
+      saveSettings();
+      updateUserBar();
+      showScreen("main");
+      renderProfile(0);
+    });
+
+    // --------- Boutons ---------
+    btnNope.addEventListener("click", () => handleChoice("nope"));
+    btnLike.addEventListener("click", () => handleChoice("like"));
+    btnSuper.addEventListener("click", () => handleChoice("super"));
+    btnRewind.addEventListener("click", rewind);
+    btnSettings.addEventListener("click", () => showScreen("onboarding"));
+    btnShareApp.addEventListener("click", shareApp);
+
+    btnViewProfile.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const p = profiles[clampIndex(currentIndex)];
+      if (p) openProfileModal(p);
+    });
+
+    btnShareProfile.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const p = profiles[clampIndex(currentIndex)];
+      if (p) shareProfile(p);
+    });
+
+    closeMatchBtn.addEventListener("click", closeMatchOverlay);
+    matchOverlay.addEventListener("click", (e) => {
+      if (e.target === matchOverlay) closeMatchOverlay();
+    });
+
+    profileModal.addEventListener("click", (e) => {
+      if (e.target === profileModal) closeProfileModal();
+    });
+    modalClose.addEventListener("click", closeProfileModal);
+
+    // Clic sur la carte = ouvre la fiche
+    card.addEventListener("click", () => {
+      const p = profiles[clampIndex(currentIndex)];
+      if (p && currentIndex < profiles.length) openProfileModal(p);
+    });
+
+    // --------- Init ---------
+    loadSettings();
+    updateUserBar();
+    showScreen("loading");
+
+    setTimeout(() => {
+      if (!userSettings.initialized) {
+        showScreen("onboarding");
+      } else {
+        showScreen("main");
+        renderProfile(0);
+      }
+    }, 800);
+  </script>
+</body>
+</html>
