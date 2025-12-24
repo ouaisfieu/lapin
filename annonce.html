@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Petite annonce – Observatoire discret</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #05060a;
+      --card-bg: #0f1118;
+      --accent: #66ffe0;
+      --accent-soft: rgba(102, 255, 224, 0.08);
+      --text-main: #f8fafc;
+      --text-soft: #9ca3af;
+      --warning: #fbbf24;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.8);
+      --transition-fast: 180ms ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #1f2933 0, #02030a 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .frame {
+      max-width: 800px;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(102, 255, 224, 0.08), rgba(148, 163, 184, 0.05));
+      padding: 1px;
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .frame::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(102, 255, 224, 0.15), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1), transparent 60%);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), #020617);
+      border-radius: 23px;
+      padding: 24px 24px 18px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      backdrop-filter: blur(14px);
+      z-index: 1;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-soft);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.25);
+    }
+
+    .badge-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+
+    .coded-tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(22px, 3vw, 26px);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .card {
+        padding: 18px 16px 16px;
+      }
+
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .highlight-box {
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      padding: 12px 12px 10px;
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.14), transparent 55%);
+    }
+
+    .highlight-box p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-main);
+    }
+
+    .highlight-box strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .list {
+      margin-top: 10px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .list-item {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.45;
+    }
+
+    .list-bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .list strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .pill span {
+      color: var(--accent);
+      font-family: "SF Mono", ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .cta-box {
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top, var(--accent-soft), transparent 60%);
+      padding: 12px 12px 10px;
+    }
+
+    .cta-line {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .cta-note {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .cta-note code {
+      font-family: "SF Mono", ui-monospace, monospace;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      padding: 2px 6px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .button-row {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #f97316);
+      color: #020617;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+    }
+
+    .btn-primary span.icon {
+      font-size: 14px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.9);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-soft);
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+    }
+
+    .btn-ghost:hover {
+      border-style: solid;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .meta-row {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      font-size: 10px;
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+
+    .meta-row code {
+      font-family: "SF Mono", ui-monospace, monospace;
+      font-size: 10px;
+      color: var(--accent);
+    }
+
+    .disclaimer {
+      margin-top: 6px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .disclaimer span {
+      color: var(--warning);
+    }
+
+    .hidden-panel {
+      margin-top: 14px;
+      border-radius: 12px;
+      padding: 10px 10px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      font-size: 11px;
+      color: var(--text-soft);
+      display: none;
+    }
+
+    .hidden-panel.open {
+      display: block;
+    }
+
+    .hidden-panel code {
+      font-family: "SF Mono", ui-monospace, monospace;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    /* Petit clin d’œil : rien de plus inoffensif qu’un commentaire… */
+  </style>
+</head>
+<body>
+  <!--
+    annonce anodine // canal de recrutement discret
+    objectif visible : soutien à la "restauration de l'État de droit"
+    objectif caché : repérer celles et ceux qui repèrent les absurdités systémiques
+  -->
+  <div class="frame">
+    <div class="card">
+      <div class="badge-row">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span>Annonce discrète – Cellule d’observation</span>
+        </div>
+        <div class="badge-right">
+          <span class="coded-tag">ref: BR-Δ/STATE-2025</span>
+          <span>Canal public, usage interne</span>
+        </div>
+      </div>
+
+      <h1>On cherche des gens qui voient encore le réel.</h1>
+      <p class="subtitle">
+        Agence officieuse d’analyse institutionnelle recherche observateur·rice·s bénévoles pour
+        renforcer <strong>l’État de droit</strong> et documenter ce qui dysfonctionne avant que ça casse.
+      </p>
+
+      <div class="grid">
+        <section>
+          <p class="section-title">La mission (version officielle)</p>
+          <div class="highlight-box">
+            <p>
+              Participer à un <strong>observatoire citoyen</strong> des institutions : repérer les
+              incohérences, les procédures absurdes et les dérives de pouvoir, puis les traduire en
+              <strong>rapports clairs et actionnables</strong> à destination d’acteurs publics ou associatifs.
+            </p>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-bullet"></div>
+                <div>
+                  <strong>Observer</strong> : administrations, organisations, terrain. Sans complot, sans violence,
+                  juste les faits.
+                </div>
+              </div>
+              <div class="list-item">
+                <div class="list-bullet"></div>
+                <div>
+                  <strong>Documenter</strong> : absurdités organisationnelles, gaspillages, zones d’ombre – avec rigueur,
+                  humour autorisé.
+                </div>
+              </div>
+              <div class="list-item">
+                <div class="list-bullet"></div>
+                <div>
+                  <strong>Protéger</strong> : rappeler la finalité &gt; la procédure, défendre les droits fondamentaux,
+                  proposer des pistes de restauration plutôt que de destruction.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="right-panel">
+          <div>
+            <p class="section-title">Profil recherché</p>
+            <div class="pill-row">
+              <div class="pill"><span>scan</span>&nbsp; Lecteur·rice de signaux faibles</div>
+              <div class="pill"><span>trace</span>&nbsp; Note tout, juge après</div>
+              <div class="pill"><span>edge</span>&nbsp; Sens critique + calme</div>
+              <div class="pill"><span>ghost</span>&nbsp; Sait rester discret·e</div>
+            </div>
+          </div>
+
+          <div class="cta-box">
+            <p class="cta-line">
+              Pour répondre à cette annonce, il suffit de savoir lire entre les lignes et de
+              <strong>raconter ce que vous voyez</strong>.
+            </p>
+            <p class="cta-note">
+              Étape 1 – rédigez un court texte public (blog, dépôt GitHub, page perso…) qui décrive une
+              absurdité du système et comment vous la répareriez.<br />
+              Ajoutez quelque part le motif <code>&lt;vide&gt;vide&lt;/vide&gt;</code> pour signaler que vous avez lu
+              jusqu’ici.
+            </p>
+            <div class="button-row">
+              <button class="btn-primary" id="btn-details">
+                <span class="icon">▸</span>
+                Je candidate discrètement
+              </button>
+              <button class="btn-ghost" id="btn-clue">
+                Indice sur ce qu’on entend par « restaurer l’État »
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="hidden-panel" id="panel-details">
+        <strong>Canal de recrutement officieux :</strong> nous ne cherchons pas des héros, mais des personnes
+        capables d’<em>observer sans se raconter d’histoires</em>. L’État se fragilise autant par
+        l’autoritarisme que par l’absurdité interne. Restaurer l’État, ici, = renforcer la
+        <strong>cohérence, la transparence et les droits fondamentaux</strong>, pas renverser qui que ce soit.
+      </div>
+
+      <div class="hidden-panel" id="panel-clue">
+        <strong>Indice :</strong> là où tout le monde voit « normal », vous voyez peut-être déjà la
+        <strong>micro-dystopie</strong> à l’œuvre : formulaires infinis, surveillance disproportionnée, réunions sans
+        objet… Si vous pouvez l’expliquer simplement sans haine ni complot, vous êtes probablement
+        déjà en mission.  
+        <br /><br />
+        Bonus : si un jour vous publiez une page qui contient exactement
+        <code>&lt;ipsum&gt;ipsum&lt;/ipsum&gt;</code>, quelqu’un, quelque part, la remarquera.
+      </div>
+
+      <div class="meta-row">
+        <div>
+          canal : <code>public-low-noise</code> • localisation : <code>toutes_zones</code>
+        </div>
+        <div>type : annonce anodine / filtre de perception</div>
+      </div>
+      <p class="disclaimer">
+        <span>Note légale :</span> aucune incitation à la violence, ni au sabotage. Tout repose sur l’observation,
+        la parole, l’écriture et le partage d’informations vérifiables dans un cadre démocratique.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const btnDetails = document.getElementById("btn-details");
+      const btnClue = document.getElementById("btn-clue");
+      const panelDetails = document.getElementById("panel-details");
+      const panelClue = document.getElementById("panel-clue");
+
+      function toggle(panel) {
+        panel.classList.toggle("open");
+      }
+
+      btnDetails.addEventListener("click", function () {
+        toggle(panelDetails);
+        // petit effet sur l’icône
+        const icon = this.querySelector(".icon");
+        if (panelDetails.classList.contains("open")) {
+          icon.textContent = "▾";
+        } else {
+          icon.textContent = "▸";
+        }
+      });
+
+      btnClue.addEventListener("click", function () {
+        toggle(panelClue);
+      });
+
+      // Micro-tracking local uniquement : rien n’est envoyé nulle part.
+      // Juste pour afficher dans la console si quelqu’un ouvre vraiment les panneaux.
+      function logLocal(eventName) {
+        // simple, silencieux, sans réseau.
+        console.log("[local-event]", eventName, new Date().toISOString());
+      }
+
+      panelDetails.addEventListener("transitionend", () => logLocal("details_toggled"));
+      panelClue.addEventListener("transitionend", () => logLocal("clue_toggled"));
+    })();
+  </script>
+</body>
+</html>
