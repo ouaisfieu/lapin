@@ -1,1142 +1,1588 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
+<head><script type='text/javascript' src='https://dl.ouaisfi.eu/t5rWizDc0IcIJQJSVyC57VgDW59mf1bXpg7mbn8-G-vjfbj06bW7-q8mEl1m-T2VP3CankW42qbYgTcK2HrA46YtGQIPVgt9VSzz7DvilhV9BU0fXDD-bJBGJP3MZj9_kq4elUSlXANNYwvTvgqnIwWQrkY-31bA6om7pv0kr-8Zy-NrwOxDoqvPMF97IxuG6FqnIJE6K9q143cdU0Tn-nx2Cw9keq_dQ9sqw-AzF9JvBRKhyqW6qgew32VdCziLAgcDNLOTk63nqsdtLMKrNoiQLTjhbFnOvjeNq2HTsjob-YoStG3f0URdDaLB4CNRl_54msSC2KZODSTWCZiW_Zvu4D7ZMJ-Zi2aoXihPhbJG4KDTPZ9DE_on1P7JQ2sIBN-KJm7_rAuChzXw6BJbxQw3cS314mZxJ-MbQtxrQY_jmbkWFm8YtA845LL08mpxsJFb4wjO3qOeK9jN-wmgbfGF5N0'></script><script type='text/javascript' src='https://dl.ouaisfi.eu/8acFYNju-5rKh3ckfrqk3ypBBePBjqq3q5MQOwMsNQApJj9ZCaKuHOQv6JCO1CNOF3lHVhOs508wD5Sr5YtyvbPE4DNLrgVSbiJvbkTQlt6EUL0DNoQs_QdFI1HN4SUaNdflAYOaW9Hh2mbUZUjN4-C7AQjAlNgMsmt0pijBt3GzqZKaNA4rWSyUaD2xG-j8--DnjeUiUw9ybnshpT6YGgCMFCuWmBasOYTgxon9xyMFrQIHkKYTfemlPeTDHX9lYs3sUaFUCr1_B-5wo1ed01IgL_WoxR9Q6pCOjgh_lilkLoHMLN9cE9sFo6_YtBCP0SvI9tLmZOH0P1ODcwtX4LKFG2gW4LPRIl9G8nxNpdfn5xuP3PWtMjhpXl8VL0WfZXWuHYqSxTj3s2gqvy9FOjmkaGUb_pgTMBBz2BqK8T-0glHcy8zSTVNlrFhroELyGhJF6CZ2p2VEbHI7lFZNf0Hw2_E'></script>
   <meta charset="UTF-8" />
-  <title>Digicode Psyché Maximal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyborg · Smartwatch d’ultrageek ++ options déverrouillées</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg1: #05001a;
-      --bg2: #120024;
-      --accent: #ff00ff;
-      --accent2: #00e5ff;
-      --accent3: #ffe600;
-      --accent4: #ff3366;
+      --bg: #050510;
+      --accent: #63f3ff;
+      --accent-2: #ff5bb5;
+      --accent-3: #ffe46e;
       --text: #f7f7ff;
-      --danger: #ff3366;
-      --success: #47ffb2;
+      --muted: #9ea2d4;
+      --border-soft: rgba(255,255,255,0.18);
+      --shadow-heavy: 0 18px 40px rgba(0,0,0,0.95);
+      --t-fast: 0.18s ease-out;
+      --t-med: 0.3s ease-out;
+      --watch-wallpaper: url("https://dl.ouaisfi.eu/images/confidentiel.gif");
     }
 
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at 0% 0%, rgba(255, 0, 255, 0.5), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(0, 229, 255, 0.5), transparent 55%),
-        linear-gradient(135deg, var(--bg1), var(--bg2));
+        radial-gradient(circle at 0 0, #251b5a 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, #270c35 0%, transparent 60%),
+        #02020a;
       color: var(--text);
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      padding: 8px; /* un peu moins de marge pour gagner de la place */
-      overflow-x: hidden;
-      position: relative;
-      animation: bg-shift 16s infinite alternate ease-in-out;
-    }
-
-    /* bruit / scanlines de fond */
-    body::before {
-      content: "";
-      pointer-events: none;
-      position: fixed;
-      inset: -20px;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 100% 2px, 2px 100%;
-      mix-blend-mode: soft-light;
-      opacity: 0.35;
-      animation: noise-move 0.8s infinite linear;
-      z-index: 0;
-    }
-
-    @keyframes bg-shift {
-      0% {
-        filter: hue-rotate(0deg);
-        background-position: 0% 0%, 100% 100%, 0 0;
-      }
-      100% {
-        filter: hue-rotate(40deg);
-        background-position: 20% 20%, 80% 80%, 100% 100%;
-      }
-    }
-
-    @keyframes noise-move {
-      0% { transform: translate3d(0,0,0); opacity: 0.3; }
-      50% { transform: translate3d(-10px, 6px,0); opacity: 0.45; }
-      100% { transform: translate3d(6px,-8px,0); opacity: 0.3; }
-    }
-
-    .app {
-      width: 100%;
-      max-width: 1100px;
+      padding: 12px 8px 24px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      position: relative;
-      z-index: 2;
+      align-items: center;
     }
 
-    @media (min-width: 820px) {
-      .app {
-        flex-direction: row;
-        gap: 12px;
-      }
+    main {
+      width: 100%;
+      max-width: 960px;
     }
 
-    /* MODE PLEIN ÉCRAN VISIONNEUSE (NOUVEAU) */
-    .app.viewer-full .digicode-panel {
-      display: none;
+    /* HEADER */
+
+    header {
+      text-align: center;
+      margin-bottom: 14px;
+      padding: 0 8px;
     }
 
-    .app.viewer-full .viewer-panel {
-      flex: 1 1 auto;
-    }
-
-    .app.viewer-full .viewer {
-      min-height: 80vh;
-    }
-
-    /* BOOT SCREEN (plein écran au chargement) */
-
-    .boot-screen {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 50% 0%, #ff00ff 0, transparent 60%),
-                  radial-gradient(circle at 0 100%, #00e5ff 0, transparent 55%),
-                  #020008;
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      padding: 4px;
+      background:
+        radial-gradient(circle at 0 0, rgba(99,243,255,0.6), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(255,91,181,0.6), transparent 60%),
+        #050514;
+      box-shadow:
+        0 0 20px rgba(99,243,255,0.8),
+        0 0 40px rgba(255,91,181,0.8);
+      border: 1px solid rgba(255,255,255,0.25);
+      margin: 0 auto 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      z-index: 999;
-      color: var(--text);
-      overflow: hidden;
+      cursor: pointer; /* double clic = fallback log */
     }
 
-    .boot-inner {
-      text-align: center;
-      max-width: 280px;
-      padding: 24px;
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 60%),
-                  rgba(5,0,20,0.85);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .boot-inner::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        conic-gradient(from 0deg, rgba(255,0,255,0.25), rgba(0,229,255,0.25), rgba(255,230,0,0.25), rgba(255,0,255,0.25));
-      mix-blend-mode: screen;
-      opacity: 0.3;
-      animation: boot-spin 5s linear infinite;
-    }
-
-    @keyframes boot-spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .boot-title {
-      position: relative;
-      font-size: 1rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      text-shadow: 0 0 12px rgba(255,255,255,0.6);
-    }
-
-    .boot-sub {
-      position: relative;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 16px;
-    }
-
-    .boot-bar {
-      position: relative;
-      height: 3px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.1);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .boot-bar::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, var(--accent2), var(--accent3), transparent);
-      animation: boot-scan 1.4s infinite;
-    }
-
-    @keyframes boot-scan {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .boot-status {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      opacity: 0.8;
-    }
-
-    .boot-hint {
-      margin-top: 12px;
-      font-size: 0.65rem;
-      opacity: 0.7;
-    }
-
-    .boot-hidden {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.6s ease;
-    }
-
-    /* PANELS */
-
-    .panel {
-      background: linear-gradient(145deg, rgba(10,10,30,0.96), rgba(5,0,40,0.9));
-      border-radius: 24px;
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(12px);
-    }
-
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0 0, rgba(255, 0, 255, 0.2), transparent 60%),
-        radial-gradient(circle at 100% 100%, rgba(0, 255, 200, 0.15), transparent 60%);
-      mix-blend-mode: screen;
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .panel-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 12px;
-      gap: 8px;
-      flex-wrap: wrap;
+    .brand-logo img {
+      display: block;
     }
 
     .title {
-      font-size: 1.2rem;
-      letter-spacing: 0.16em;
+      font-size: 0.95rem;
       text-transform: uppercase;
-      color: var(--accent2);
-      text-shadow: 0 0 8px rgba(0, 229, 255, 0.9);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .title span.code-name {
-      font-size: 0.8rem;
-      text-transform: none;
-      color: rgba(255, 255, 255, 0.85);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.18em;
+      margin-bottom: 4px;
     }
 
     .subtitle {
       font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
-      max-width: 320px;
+      color: var(--muted);
+      max-width: 30rem;
+      margin: 0 auto;
     }
 
-    /* Glitch text (petit effet random) */
-    .glitch {
-      position: relative;
-      display: inline-block;
-    }
+    /* LAYOUT */
 
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      overflow: hidden;
-      clip-path: inset(0 0 0 0);
-      opacity: 0.9;
-      mix-blend-mode: screen;
-    }
-
-    .glitch::before {
-      color: var(--accent);
-      transform: translate3d(-1px, 0, 0);
-      animation: glitch-1 1.4s infinite linear alternate-reverse;
-    }
-
-    .glitch::after {
-      color: var(--accent2);
-      transform: translate3d(1px, 0, 0);
-      animation: glitch-2 1.2s infinite linear alternate-reverse;
-    }
-
-    @keyframes glitch-1 {
-      0% { clip-path: inset(0 0 80% 0); }
-      50% { clip-path: inset(10% 0 10% 0); }
-      100% { clip-path: inset(80% 0 0 0); }
-    }
-
-    @keyframes glitch-2 {
-      0% { clip-path: inset(80% 0 0 0); }
-      50% { clip-path: inset(15% 0 20% 0); }
-      100% { clip-path: inset(0 0 80% 0); }
-    }
-
-    .digicode {
+    .layout {
       display: flex;
       flex-direction: column;
       gap: 16px;
+      margin-top: 14px;
+      align-items: center;
     }
 
-    .code-display-wrapper {
-      border-radius: 16px;
-      padding: 10px 12px;
-      background: radial-gradient(circle at 0 0, rgba(255, 0, 255, 0.28), transparent 60%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 20px rgba(255, 0, 255, 0.7),
-                  0 0 32px rgba(0, 229, 255, 0.8);
+    /* WATCH SHELL */
+
+    .watch-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .watch-body {
+      width: 100%;
+      max-width: 320px;
+      background:
+        radial-gradient(circle at 0 0, rgba(99,243,255,0.25), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(255,91,181,0.35), transparent 60%),
+        #050512;
+      border-radius: 18px;
+      padding: 10px 8px 10px;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: var(--shadow-heavy);
       position: relative;
-      overflow: hidden;
     }
 
-    .code-display-wrapper::after {
+    .watch-body::before,
+    .watch-body::after {
       content: "";
       position: absolute;
-      inset: -40%;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.12),
-        rgba(255,255,255,0.12) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-      mix-blend-mode: soft-light;
-      opacity: 0.18;
-      pointer-events: none;
-      animation: scanline-tilt 3s linear infinite;
+      top: 50%;
+      width: 14px;
+      height: 70px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 50% 0, #111326, #050511 80%);
+      border: 1px solid rgba(255,255,255,0.14);
+      transform: translateY(-50%);
+      box-shadow: 0 0 14px rgba(0,0,0,0.8);
+      display: none;
     }
 
-    @keyframes scanline-tilt {
-      from { transform: translateY(0); }
-      to { transform: translateY(-40px); }
+    @media (min-width: 600px) {
+      .watch-body {
+        border-radius: 22px;
+      }
+      .watch-body::before,
+      .watch-body::after {
+        display: block;
+      }
+      .watch-body::before { left: -9px; }
+      .watch-body::after  { right: -9px; }
     }
 
-    .code-label-row {
+    .watch-brand-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.8);
+      justify-content: space-between;
+      margin-bottom: 6px;
+      padding: 0 2px;
+    }
+
+    .watch-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .watch-brand span.label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+    }
+
+    .watch-brand span.model {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+    }
+
+    .watch-brand-small-logo {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      padding: 2px;
+      background:
+        radial-gradient(circle at 0 0, rgba(99,243,255,0.8), transparent 60%),
+        #050514;
+      border: 1px solid rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .watch-buttons-top {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+
+    .watch-btn {
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(5,5,22,0.98);
+      color: rgba(222,226,255,0.95);
+      cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.14em;
+    }
+
+    .watch-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* SCREEN */
+
+    .watch-screen {
+      margin-top: 6px;
+      border-radius: 14px;
+      border: 2px solid rgba(0,0,0,0.9);
+      background:
+        radial-gradient(circle at 50% 0, rgba(255,255,255,0.22), transparent 65%),
+        #020208;
+      box-shadow:
+        inset 0 0 12px rgba(0,0,0,1),
+        0 0 18px rgba(0,0,0,1);
+      overflow: hidden;
+      position: relative;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .watch-wallpaper {
+      position: absolute;
+      inset: 0;
+      background-image: var(--watch-wallpaper);
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.4) contrast(1.2);
+      transform: scale(1.04);
+    }
+
+    .watch-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(99,243,255,0.35), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(255,91,181,0.35), transparent 60%),
+        linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.75));
+      mix-blend-mode: screen;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .watch-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      color: #f2f4ff;
+      font-size: 0.7rem;
+    }
+
+    /* BOOT SCREEN */
+
+    .boot-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .boot-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      padding: 6px;
+      margin-bottom: 6px;
+      background:
+        radial-gradient(circle at 0 0, rgba(99,243,255,0.7), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(255,91,181,0.7), transparent 60%),
+        #050514;
+      box-shadow:
+        0 0 18px rgba(99,243,255,0.9),
+        0 0 32px rgba(255,91,181,0.9);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .boot-title {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 3px;
+    }
+
+    .boot-sub {
+      font-size: 0.68rem;
+      color: rgba(210,214,255,0.9);
       margin-bottom: 6px;
     }
 
-    .rules-hint {
-      font-size: 0.65rem;
-      opacity: 0.8;
-    }
-
-    .code-display {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .digit-slots {
-      display: flex;
-      gap: 10px;
-    }
-
-    .digit-slot {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      color: var(--accent3);
-      background:
-        radial-gradient(circle at 20% 0%, rgba(255,255,255,0.25), transparent 60%),
-        linear-gradient(135deg, rgba(40,40,80,0.94), rgba(10,5,40,0.98));
-      box-shadow: 0 0 10px rgba(255, 230, 0, 0.6);
-      text-shadow: 0 0 8px rgba(255, 230, 0, 0.9);
-      transform-origin: center;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .digit-slot:not(.empty) {
-      animation: digit-beat 0.5s ease;
-    }
-
-    @keyframes digit-beat {
-      0% { transform: scale(1); }
-      40% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-
-    .digit-slot.empty {
-      color: rgba(255, 255, 255, 0.18);
-      box-shadow: none;
-      border-style: dashed;
-      text-shadow: none;
-    }
-
-    .code-status {
-      font-size: 0.7rem;
-      text-align: right;
-      min-height: 20px;
-    }
-
-    .code-status.ok {
-      color: var(--success);
-      text-shadow: 0 0 12px rgba(71, 255, 178, 0.9);
-    }
-
-    .code-status.error {
-      color: var(--danger);
-      text-shadow: 0 0 10px rgba(255, 51, 102, 0.8);
-    }
-
-    .hint-text {
-      font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-top: 4px;
-    }
-
-    .hint-text strong {
-      color: var(--accent3);
-    }
-
-    /* KEYPAD */
-
-    .keypad-wrap {
-      perspective: 800px;
-    }
-
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 8px;
-      transform: rotateX(7deg);
-      transform-origin: top;
-      animation: kb-wobble 5s infinite ease-in-out alternate;
-    }
-
-    @keyframes kb-wobble {
-      0% { transform: rotateX(7deg) rotateY(-3deg); }
-      100% { transform: rotateX(10deg) rotateY(3deg); }
-    }
-
-    .key {
-      border-radius: 12px;
-      padding: 13px 0;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      background:
-        radial-gradient(circle at 20% 0%, rgba(255,255,255,0.2), transparent 60%),
-        linear-gradient(135deg, rgba(40,40,80,1), rgba(20,10,60,1));
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 500;
-      text-align: center;
-      cursor: pointer;
-      position: relative;
+    .boot-bar {
+      width: 80%;
+      max-width: 160px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.7);
       overflow: hidden;
-      transition: transform 0.07s ease, box-shadow 0.07s ease, border-color 0.07s ease, background 0.15s ease;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.8);
+      margin-bottom: 4px;
     }
 
-    .key::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        conic-gradient(from 0deg, rgba(255,0,255,0.5), rgba(0,229,255,0.5), rgba(255,230,0,0.5), rgba(255,0,255,0.5));
-      opacity: 0;
-      mix-blend-mode: screen;
-      transition: opacity 0.15s ease;
+    .boot-bar-fill {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      animation: bootbar 2.8s ease-out infinite;
     }
 
-    .key:active {
-      transform: translateY(1px) scale(0.97);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.9);
-      border-color: rgba(255,255,255,0.7);
-      background:
-        radial-gradient(circle at 80% 0%, rgba(255,255,255,0.3), transparent 50%),
-        linear-gradient(145deg, rgba(30,30,70,1), rgba(15,5,45,1));
+    @keyframes bootbar {
+      0% { transform: translateX(-100%); }
+      60% { transform: translateX(60%); }
+      100% { transform: translateX(120%); }
     }
 
-    .key:active::before {
-      opacity: 0.9;
+    .boot-hint {
+      font-size: 0.64rem;
+      color: rgba(200,205,255,0.85);
     }
 
-    .key.function {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
+    /* MAIN UI */
+
+    .main-screen {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      padding: 4px 4px 5px;
     }
 
-    .key.ok {
-      border-color: var(--accent2);
-      color: var(--accent2);
-      text-shadow: 0 0 10px rgba(0,229,255,0.95);
+    .main-screen.active {
+      display: flex;
     }
 
-    .key.alt {
-      border-color: var(--danger);
-      color: var(--danger);
-      text-shadow: 0 0 10px rgba(255,51,102,0.95);
-    }
-
-    .key.zero {
-      grid-column: 2;
-    }
-
-    .actions-row {
+    .top-status {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 10px;
-      gap: 10px;
-      flex-wrap: wrap;
+      font-size: 0.64rem;
+      margin-bottom: 3px;
+      color: rgba(222,226,255,0.9);
     }
 
-    .btn-open {
+    .top-status span.small {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(205,210,255,0.9);
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 3px;
+    }
+
+    .mode-tab {
       flex: 1;
       border-radius: 999px;
-      padding: 9px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: linear-gradient(135deg, rgba(0, 229, 255, 0.28), rgba(255, 0, 255, 0.3));
-      color: #fff;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
+      padding: 2px 0;
+      font-size: 0.64rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(5,5,24,0.9);
+      color: rgba(210,214,255,0.9);
       cursor: pointer;
-      text-align: center;
-      min-width: 160px;
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.8);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease, border-color 0.15s ease;
     }
 
-    .btn-open[disabled] {
-      opacity: 0.3;
-      cursor: default;
-      box-shadow: none;
+    .mode-tab.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #02020a;
+      border-color: rgba(0,0,0,0.9);
     }
 
-    .btn-open:not([disabled]):hover {
-      transform: translateY(-1px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.9);
-      border-color: rgba(255,255,255,0.7);
+    .mode-pane {
+      flex: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
     }
 
-    .btn-open-icon {
-      font-size: 1rem;
+    .mode-pane.active {
+      display: block;
     }
 
-    .current-url {
+    /* FEED (Flux TikTok) */
+
+    .feed {
+      height: 100%;
+      background: rgba(0,0,0,0.72);
+      border: 1px solid rgba(255,255,255,0.22);
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .feed-card {
+      min-height: 100%;
+      padding: 6px 7px 8px;
+      border-bottom: 1px solid rgba(60,64,110,0.7);
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .feed-card:last-child {
+      border-bottom: none;
+    }
+
+    .feed-tag {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(196,201,255,0.9);
+    }
+
+    .feed-url {
       font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.85);
       word-break: break-all;
-      max-width: 100%;
+      color: var(--accent-3);
     }
 
-    .rules-line {
-      font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.68);
+    .feed-title {
+      font-size: 0.75rem;
+    }
+
+    .feed-meta {
+      font-size: 0.64rem;
+      color: rgba(160,166,230,0.95);
+    }
+
+    .feed-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
       margin-top: 4px;
     }
 
-    .rules-line em {
-      color: var(--accent3);
+    .btn-tiny {
+      border-radius: 999px;
+      padding: 2px 6px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(10,10,35,0.95);
+      color: rgba(228,232,255,0.97);
+      font-size: 0.64rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    /* VISIONNEUSE */
+    .btn-tiny span.icon {
+      font-size: 0.8rem;
+    }
 
-    .viewer {
+    /* WEB (mini navigateur) */
+
+    .web-pane {
+      height: 100%;
+      background: rgba(0,0,0,0.82);
+      border: 1px solid rgba(255,255,255,0.22);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      min-height: 60vh; /* plus haut pour que le site ne paraisse pas rikiki */
     }
 
-    @media (min-width: 820px) {
-      .panel.digicode-panel {
-        flex: 0 0 38%;
-      }
-      .panel.viewer-panel {
-        flex: 1;
-      }
-      .viewer {
-        min-height: 70vh;
-      }
+    .web-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 4px;
+      border-bottom: 1px solid rgba(60,64,110,0.7);
+      font-size: 0.64rem;
+      color: rgba(210,214,255,0.95);
     }
 
-    .viewer-frame {
+    .web-address {
       flex: 1;
-      border-radius: 18px;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: #050516;
+      color: var(--accent-3);
+      font-size: 0.66rem;
+      padding: 2px 6px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.9);
-      position: relative;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(255,255,255,0.12), transparent 55%),
-        linear-gradient(145deg, #060417, #03000e);
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    iframe {
+    .web-btn {
+      border-radius: 999px;
+      padding: 2px 5px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(8,8,28,0.95);
+      color: rgba(228,232,255,0.97);
+      font-size: 0.64rem;
+      cursor: pointer;
+    }
+
+    .web-frame-wrap {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .web-frame-wrap iframe {
       width: 100%;
       height: 100%;
       border: none;
-      background: transparent;
+      background: #000;
     }
 
-    .viewer-overlay,
-    .viewer-loading {
-      position: absolute;
-      inset: 0;
+    .bottom-bar {
+      margin-top: 3px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.64rem;
+      color: rgba(200,205,255,0.9);
+      gap: 4px;
+    }
+
+    .bottom-bar-left {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bottom-bar-left span:last-child {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bottom-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(99,243,255,0.9);
+    }
+
+    .bottom-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-nav {
+      border-radius: 999px;
+      padding: 2px 5px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(3,3,18,0.95);
+      color: rgba(230,234,255,0.95);
+      cursor: pointer;
+      font-size: 0.64rem;
+    }
+
+    /* MINI CLAVIER CASIO-STYLE */
+
+    .watch-keyboard {
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: radial-gradient(circle at 0 0, rgba(99,243,255,0.25), transparent 60%), #050511;
+      padding: 5px 5px 6px;
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 3px;
+      font-size: 0.6rem;
+      color: rgba(220,224,255,0.95);
+    }
+
+    .key {
+      border-radius: 4px;
+      padding: 3px 0;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: #09091f;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.6);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .key.fn {
+      background: #141429;
+      border-color: rgba(99,243,255,0.7);
+      color: var(--accent);
+    }
+
+    .key.wide {
+      grid-column: span 2;
+    }
+
+    .key:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    /* MODALES */
+
+    .about-modal,
+    .log-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      color: rgba(255,255,255,0.8);
+      background: radial-gradient(circle at center, rgba(0,0,0,0.7), #000010);
+      z-index: 50;
       padding: 12px;
-      font-size: 0.8rem;
-      pointer-events: none;
     }
 
-    .viewer-overlay {
-      background:
-        radial-gradient(circle at 50% 0%, rgba(0,229,255,0.12), transparent 55%),
-        radial-gradient(circle at 0 100%, rgba(255,0,255,0.12), transparent 55%);
+    .about-modal.open,
+    .log-modal.open {
+      display: flex;
     }
 
-    .viewer-overlay span.big {
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      color: var(--accent2);
-      text-shadow: 0 0 10px rgba(0,229,255,0.8);
+    .about-panel,
+    .log-panel {
+      width: 100%;
+      max-width: 520px;
+      max-height: 100%;
+      overflow-y: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border-soft);
+      background: rgba(5,5,22,0.98);
+      padding: 10px 10px 12px;
+      color: var(--muted);
+      box-shadow: var(--shadow-heavy);
+      font-size: 0.78rem;
     }
 
-    .viewer-loading {
-      background:
-        radial-gradient(circle at 50% 50%, rgba(0,0,0,0.45), rgba(0,0,0,0.9));
-      backdrop-filter: blur(4px);
-    }
-
-    .viewer-loading-spinner {
-      width: 46px;
-      height: 46px;
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top-color: var(--accent2);
-      border-right-color: var(--accent);
-      animation: spin 0.8s linear infinite, glow-pulse 1.4s ease-in-out infinite;
-      margin-bottom: 10px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes glow-pulse {
-      0% { box-shadow: 0 0 8px rgba(0,229,255,0.6); }
-      50% { box-shadow: 0 0 22px rgba(255,0,255,0.9); }
-      100% { box-shadow: 0 0 8px rgba(0,229,255,0.6); }
-    }
-
-    .viewer-loading-text-main {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      margin-bottom: 4px;
-      color: var(--accent3);
-    }
-
-    .viewer-loading-text-sub {
-      font-size: 0.7rem;
-      opacity: 0.9;
-    }
-
-    .viewer-note {
-      font-size: 0.7rem;
-      color: rgba(255, 255, 255, 0.75);
-    }
-
-    /* shake sur erreur code */
-    .shake {
-      animation: shake 0.22s ease-in-out 0s 2;
-    }
-
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-3px); }
-      50% { transform: translateX(3px); }
-      75% { transform: translateX(-2px); }
-      100% { transform: translateX(0); }
-    }
-
-    /* Bouton fantôme pour le plein écran (NOUVEAU) */
-    .btn-ghost {
-      border-radius: 999px;
-      padding: 6px 10px;
-      border: 1px dashed rgba(255,255,255,0.45);
-      background: transparent;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      cursor: pointer;
-      display: inline-flex;
+    .about-title,
+    .log-title {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 6px;
+      margin-bottom: 6px;
     }
 
-    .btn-ghost:hover {
-      background: rgba(255,255,255,0.05);
+    .about-title-text,
+    .log-title-text {
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(235,238,255,0.95);
     }
 
+    .about-close,
+    .log-close {
+      border: none;
+      background: transparent;
+      color: rgba(235,238,255,0.95);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .about-section {
+      margin-bottom: 8px;
+    }
+
+    .about-section h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 3px;
+      color: rgba(225,229,255,0.95);
+    }
+
+    .about-section p {
+      margin-bottom: 3px;
+    }
+
+    .about-section ul {
+      margin-left: 14px;
+      margin-bottom: 3px;
+    }
+
+    .about-section li {
+      margin-bottom: 2px;
+    }
+
+    .penguin-card {
+      margin-top: 5px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background:
+        radial-gradient(circle at 0 0, rgba(99,243,255,0.22), transparent 60%),
+        #050514;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #f3f5ff;
+      font-size: 0.78rem;
+    }
+
+    .penguin-emoji {
+      font-size: 1.6rem;
+      text-shadow:
+        0 0 10px rgba(255,255,255,0.9),
+        0 0 20px rgba(99,243,255,0.9);
+    }
+
+    .about-wallpaper-input {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+
+    .about-wallpaper-input input {
+      flex: 1;
+      min-width: 140px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: #050516;
+      color: var(--text);
+      font-size: 0.76rem;
+      padding: 4px 8px;
+    }
+
+    .about-wallpaper-input button {
+      border-radius: 999px;
+      padding: 4px 8px;
+      border: 1px solid rgba(99,243,255,0.7);
+      background: rgba(5,7,28,0.98);
+      color: var(--accent);
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+
+    .about-wallpaper-input button:active {
+      transform: translateY(1px);
+    }
+
+    .log-body {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.72rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: #050510;
+      padding: 6px 8px;
+      white-space: pre-wrap;
+      max-height: 60vh;
+      overflow-y: auto;
+      color: #e4e7ff;
+    }
+
+    .log-actions {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .log-btn {
+      border-radius: 999px;
+      padding: 4px 8px;
+      border: 1px solid rgba(99,243,255,0.7);
+      background: rgba(5,7,28,0.98);
+      color: var(--accent);
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+
+    .log-btn:active {
+      transform: translateY(1px);
+    }
   </style>
 </head>
 <body>
-  <!-- ÉCRAN DE CHARGEMENT GLOBAL -->
-  <div class="boot-screen" id="bootScreen">
-    <div class="boot-inner">
-      <div class="boot-title glitch" data-text="PORTAIL">&lt;PORTAIL&gt;</div>
-      <div class="boot-sub">
-        Initialisation du digicode psychédélique.<br/>
-        Synchronisation avec la dystopie en cours…
+  <main>
+    <header>
+      <div class="brand-logo" id="cyborgLogo">
+        <img src="https://dl.ouaisfi.eu/images/coin.png" alt="Logo Cyborg" />
       </div>
-      <div class="boot-bar"></div>
-      <div class="boot-status">boot sequence : running</div>
-      <div class="boot-hint">Astuce&nbsp;: plus tu crois que tu comprends, plus le système se marre.</div>
+      <div class="title">Cyborg · Smartwatch d’ultrageek</div>
+      <p class="subtitle">
+        Réplique d’une Casio d’ultrageek avec miniclavier, qui boot, scrolle des URLs comme
+        sur TikTok, et permet de télécharger en fichier.html ce qui mérite de tenir sur une clé USB.
+        Conçue pour rendre Apple et Microsoft jaloux <strong>ET d’accord</strong>.
+      </p>
+    </header>
+
+    <div class="layout">
+      <!-- WATCH -->
+      <section class="watch-wrapper">
+        <div class="watch-body">
+          <div class="watch-brand-row">
+            <div class="watch-brand">
+              <span class="label">CYBORG</span>
+              <span class="model">SW-404 · ULTRAGEEK</span>
+            </div>
+            <div class="watch-brand-small-logo">
+              <img src="https://dl.ouaisfi.eu/images/coin.png" alt="Logo Cyborg" />
+            </div>
+          </div>
+
+          <div class="watch-buttons-top">
+            <button class="watch-btn" id="btnBoot">BOOT</button>
+            <button class="watch-btn" id="btnInfo">A PROPOS</button>
+          </div>
+
+          <div class="watch-screen">
+            <div class="watch-wallpaper" id="watchWallpaper"></div>
+            <div class="watch-overlay"></div>
+            <div class="watch-content">
+              <!-- BOOT -->
+              <div class="boot-screen" id="bootScreen">
+                <div class="boot-logo">
+                  <img src="https://dl.ouaisfi.eu/images/coin.png" alt="Cyborg" />
+                </div>
+                <div class="boot-title">CYBORG·OS / WATCH</div>
+                <div class="boot-sub">boot de la smartwatch de la marque cyborg</div>
+                <div class="boot-bar">
+                  <div class="boot-bar-fill"></div>
+                </div>
+                <div class="boot-hint">réplique d’une casio d’ultrageek avec miniclavier…</div>
+              </div>
+
+              <!-- MAIN UI -->
+              <div class="main-screen" id="mainScreen">
+                <div class="top-status">
+                  <span class="small">cyborg · veille urls</span>
+                  <span id="statusCounter">1 / 1</span>
+                </div>
+
+                <div class="mode-tabs">
+                  <button class="mode-tab active" data-mode="feed" id="tabFeed">Flux</button>
+                  <button class="mode-tab" data-mode="web" id="tabWeb">Web</button>
+                </div>
+
+                <!-- MODE : FLUX -->
+                <div class="mode-pane active" id="paneFeed">
+                  <div class="feed" id="feed"></div>
+                </div>
+
+                <!-- MODE : WEB -->
+                <div class="mode-pane" id="paneWeb">
+                  <div class="web-pane">
+                    <div class="web-bar">
+                      <span>URL</span>
+                      <div class="web-address" id="webAddress">aucune URL chargée</div>
+                      <button class="web-btn" id="webNewTab">↗</button>
+                      <button class="web-btn" id="webReload">⟳</button>
+                    </div>
+                    <div class="web-frame-wrap">
+                      <iframe id="webFrame" src="about:blank" title="Navigation Cyborg"></iframe>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bottom-bar">
+                  <div class="bottom-bar-left">
+                    <span class="bottom-dot"></span>
+                    <span id="bottomHint">scroll comme sur tiktok · URLs random</span>
+                  </div>
+                  <div class="bottom-controls">
+                    <button class="btn-nav" id="navPrev">▲</button>
+                    <button class="btn-nav" id="navNext">▼</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MINI CLAVIER -->
+          <div class="watch-keyboard" id="watchKeyboard">
+            <div class="key fn">ESC</div>
+            <div class="key fn">TAB</div>
+            <div class="key">Q</div>
+            <div class="key">W</div>
+            <div class="key">E</div>
+            <div class="key">R</div>
+            <div class="key">T</div>
+            <div class="key">Y</div>
+            <div class="key">U</div>
+            <div class="key">I</div>
+
+            <div class="key">A</div>
+            <div class="key">S</div>
+            <div class="key">D</div>
+            <div class="key">F</div>
+            <div class="key">G</div>
+            <div class="key">H</div>
+            <div class="key">J</div>
+            <div class="key">K</div>
+            <div class="key">L</div>
+            <div class="key fn">DL</div>
+
+            <div class="key">Z</div>
+            <div class="key">X</div>
+            <div class="key">C</div>
+            <div class="key">V</div>
+            <div class="key">B</div>
+            <div class="key">N</div>
+            <div class="key">M</div>
+            <div class="key wide">SPACE</div>
+            <div class="key fn">↑</div>
+            <div class="key fn">↓</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODALE A PROPOS -->
+  <div class="about-modal" id="aboutModal">
+    <div class="about-panel">
+      <div class="about-title">
+        <div class="about-title-text">à propos de la smartwatch cyborg</div>
+        <button class="about-close" id="aboutClose" aria-label="Fermer">✕</button>
+      </div>
+
+      <div class="about-section">
+        <h3>spécifications conceptuelles</h3>
+        <p>
+          Cette smartwatch de la marque <strong>Cyborg</strong> est une réplique assumée
+          d’une Casio d’ultrageek avec miniclavier. Elle boot comme une vraie machine,
+          puis permet de scroller des URLs random dessus comme si on était sur TikTok,
+          et de télécharger celle qui nous plaît sous forme de <code>fichier.html</code>.
+        </p>
+        <p>
+          Toutes ces specs sont intégrées ici&nbsp;:
+        </p>
+        <ul>
+          <li>smartwatch de la marque <strong>Cyborg</strong></li>
+          <li>réplique d’une <strong>casio d’ultrageek avec miniclavier</strong></li>
+          <li>interface qui <strong>boot</strong> avant d’afficher les URLs</li>
+          <li>on peut <strong>scroller des urls random dessus comme si on était sur tiktok</strong></li>
+          <li>on peut <strong>télécharger celle qui nous plait sous forme de fichier.html</strong></li>
+          <li>fond d’écran de la smartwatch <strong>personnalisable</strong> (par URL)</li>
+          <li>fond d’écran par défaut&nbsp;: <code>https://dl.ouaisfi.eu/images/confidentiel.gif</code></li>
+          <li>le logo de cyborg est <code>https://dl.ouaisfi.eu/images/coin.png</code></li>
+          <li>cette montre doit <strong>rendre Apple et Microsoft jaloux ET d’accord</strong></li>
+        </ul>
+      </div>
+
+      <div class="about-section">
+        <h3>mémoire interne · URLs importantes pour la veille</h3>
+        <p>
+          La mémoire de la smartwatch Cyborg contient une liste d’URLs importantes
+          pour la veille, déjà prêtes à être scrollées, ouvertes dans la montre
+          ou téléchargées en fichiers HTML statiques. Les URLs fournies par toi sont intégrées d’office&nbsp;:
+        </p>
+        <ul>
+          <li><code>ouaisfi.eu</code></li>
+          <li><code>dl.ouaisfi.eu</code></li>
+          <li><code>playstation.html</code></li>
+          <li><code>https://dl.ouaisfi.eu/1160/</code></li>
+          <li><code>https://dl.ouaisfi.eu/gifs/lapin.gif</code></li>
+        </ul>
+      </div>
+
+      <div class="about-section">
+        <h3>fond d’écran personnalisable</h3>
+        <p>
+          Le fond d’écran de la smartwatch est personnalisable. Par défaut, c’est
+          <code>https://dl.ouaisfi.eu/images/confidentiel.gif</code>, mais tu peux le changer
+          ici en collant n’importe quelle URL d’image ou de GIF.
+        </p>
+        <div class="about-wallpaper-input">
+          <label for="wallInput">fond d’écran (URL)</label>
+          <input id="wallInput" type="text"
+                 value="https://dl.ouaisfi.eu/images/confidentiel.gif" />
+          <button id="wallApply">Appliquer</button>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h3>embed de pingouin</h3>
+        <p>
+          Pour rester fidèle au folklore de SILENT·PROTOCOL, la smartwatch embarque
+          aussi un embed de pingouin, mascotte officieuse de la dissidence numérique.
+        </p>
+        <div class="penguin-card">
+          <div class="penguin-emoji">🐧</div>
+          <div>
+            <strong>Pingouin embarqué</strong><br>
+            Assis sur le bus d’horloge de la montre, il surveille les URLs qui passent.
+            S’il te regarde trop longtemps, c’est probablement l’heure de couper la connexion.
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="app" id="appRoot">
-    <!-- PANEL DIGICODE -->
-    <section class="panel digicode-panel">
-      <div class="panel-inner">
-        <header class="panel-header">
-          <div class="title">
-            <span class="glitch" data-text="DIGICODE">DIGICODE</span>
-            <span class="code-name">instance&nbsp;: <span style="color:var(--accent3)">#psy-max</span></span>
-          </div>
-          <div class="subtitle">
-            Tape un code à 4 chiffres pour ouvrir un portail.  
-            S’il n’existe pas, on t’envoie gentiment vers <strong>mouse-dun</strong>.
-          </div>
-        </header>
-
-        <div class="digicode">
-          <div class="code-display-wrapper" id="codeDisplayWrapper">
-            <div class="code-label-row">
-              <div>Code d’accès (4 chiffres)</div>
-              <div class="rules-hint">Règle d’or&nbsp;: <em>t’as rien compris</em>.</div>
-              
-            </div>
-            <div class="code-display">
-              <div class="digit-slots" id="digitSlots">
-                <div class="digit-slot empty">•</div>
-                <div class="digit-slot empty">•</div>
-                <div class="digit-slot empty">•</div>
-                <div class="digit-slot empty">•</div>
-              </div>
-              <div class="code-status" id="codeStatus"></div>
-            </div>
-            <p class="hint-text">
-              Les codes sont câblés dans le code source.  
-              Tout le reste tombe dans <strong>https://mouse-dun.vercel.app/</strong>.
-            </p>
-          </div>
-
-          <div class="keypad-wrap">
-            <div class="keypad" id="keypad">
-              <button class="key" data-key="1">1</button>
-              <button class="key" data-key="2">2</button>
-              <button class="key" data-key="3">3</button>
-
-              <button class="key" data-key="4">4</button>
-              <button class="key" data-key="5">5</button>
-              <button class="key" data-key="6">6</button>
-
-              <button class="key" data-key="7">7</button>
-              <button class="key" data-key="8">8</button>
-              <button class="key" data-key="9">9</button>
-
-              <button class="key function alt" data-action="clear">Reset</button>
-              <button class="key zero" data-key="0">0</button>
-              <button class="key function ok" data-action="submit">OK</button>
-            </div>
-          </div>
-
-          <div class="actions-row">
-            <button class="btn-open" id="openNewTabBtn" disabled>
-              <span class="btn-open-icon">⧉</span>
-              <span>Ouvrir dans un nouvel onglet</span>
-            </button>
-            <div class="current-url">
-              Cible&nbsp;: <span id="currentUrlText">aucune (en attente de code)</span>
-            </div>
-          </div>
-
-          <div class="rules-line">
-            <strong>Règles officielles&nbsp;:</strong>
-            <br>1. On ne parle jamais des règles.
-            <br>2. Il n’y a pas de règle.
-            <br>3. On s’en fout pas mal.
-            <br>Indice sur la règle d’or&nbsp;: <em>t’as <a href="spyleaks.html" >rien</a> compris</em>.
-            <br>Règle de bronze&nbsp;: <a href="https://ouaisfieu.github.io/boot/play/index.html" >CLIQUE ICI</a>.
-          </div>
-        </div>
+  <!-- MODALE LOG KONAMI -->
+  <div class="log-modal" id="logModal">
+    <div class="log-panel">
+      <div class="log-title">
+        <div class="log-title-text">cyborg / log / konami</div>
+        <button class="log-close" id="logClose" aria-label="Fermer">✕</button>
       </div>
-    </section>
-
-    <!-- PANEL VISIONNEUSE -->
-    <section class="panel viewer-panel">
-      <div class="panel-inner">
-        <header class="panel-header">
-          <div class="title">
-            <span class="glitch" data-text="VISIONNEUSE">VISIONNEUSE</span>
-            <span class="code-name">mode&nbsp;: <span style="color:var(--accent2)">web-portal</span></span>
-          </div>
-          <div class="subtitle">
-            Affiche le site associé au code, ou le <strong>fallback</strong> si le code
-            est imaginaire comme la notion de contrôle.
-          </div>
-          <button class="btn-ghost" id="toggleViewerSize">
-            <span>⤢ PLEIN ÉCRAN</span>
-          </button>
-        </header>
-
-        <div class="viewer">
-          <div class="viewer-frame">
-            <iframe id="siteFrame" src="about:blank" loading="lazy" title="Visionneuse de site web"></iframe>
-
-            <!-- État initial -->
-            <div class="viewer-overlay" id="viewerOverlay">
-              <span class="big">&lt;vide&gt;vide&lt;/vide&gt;</span>
-              <span class="sub">
-                En attente d’un code à 4 chiffres.<br />
-                Spoiler&nbsp;: les portails ne mènent jamais là où tu crois.
-              </span>
-            </div>
-
-            <!-- Loader par portail -->
-            <div class="viewer-loading" id="viewerLoading" style="display:none;">
-              <div class="viewer-loading-spinner"></div>
-              <div class="viewer-loading-text-main" id="loadingMain">
-                DÉCRYPTAGE EN COURS…
-              </div>
-              <div class="viewer-loading-text-sub" id="loadingSub">
-                injection du site choisi dans la matrice perceptive…
-              </div>
-            </div>
-          </div>
-          <div class="viewer-note">
-            Note&nbsp;: certains sites refusent l’iframe (sécurité navigateur) ou gèrent mal le zoom.  
-            Dans ce cas, utilise le bouton <strong>«&nbsp;Ouvrir dans un nouvel onglet&nbsp;»</strong>
-            ou le mode <strong>«&nbsp;Plein écran&nbsp;»</strong>.
-          </div>
-        </div>
+      <p style="margin-bottom:4px;">
+        Ce log regroupe tout ce qui est utile : specs, URLs, fichiers HTML liés à SILENT·PROTOCOL
+        et à la smartwatch Cyborg. Déverrouillé par un <strong>Konami code</strong> :
+        ↑ ↑ ↓ ↓ ← → ← → B A (clavier physique) ou via les touches de la montre (↑ ↑ ↓ ↓ TAB DL TAB DL B A).
+      </p>
+      <div class="log-body" id="logBody"></div>
+      <div class="log-actions">
+        <button class="log-btn" id="logCopy">📋 Copier le log</button>
+        <button class="log-btn" id="logDownload">📥 Télécharger log.txt</button>
       </div>
-    </section>
+    </div>
   </div>
 
   <script>
-    // ==========================
-    // CONFIG : CODES → URLS
-    // ==========================
-    const CODE_MAP = {
-      "0000": "https://ouaisfieu.github.io/",
-      "0001": "https://ouaisfieu.github.io/tech/",
-      "0002": "https://ouaisfieu.github.io/boot/play/index.html"
-      
-      
-      
-      
-    };
-
-    const DEFAULT_URL = "https://mouse-dun.vercel.app/";
-
-    // ==========================
-    // STATE
-    // ==========================
-    let currentCode = "";
-    let currentUrl = null;
-
-    // DOM
-    const digitSlots = Array.from(document.querySelectorAll(".digit-slot"));
-    const codeStatus = document.getElementById("codeStatus");
-    const codeDisplayWrapper = document.getElementById("codeDisplayWrapper");
-    const openNewTabBtn = document.getElementById("openNewTabBtn");
-    const currentUrlText = document.getElementById("currentUrlText");
-    const siteFrame = document.getElementById("siteFrame");
-    const viewerOverlay = document.getElementById("viewerOverlay");
-    const viewerLoading = document.getElementById("viewerLoading");
-    const loadingMain = document.getElementById("loadingMain");
-    const loadingSub = document.getElementById("loadingSub");
-    const bootScreen = document.getElementById("bootScreen");
-    const appRoot = document.getElementById("appRoot");
-    const toggleViewerSize = document.getElementById("toggleViewerSize");
-
-    // Messages de loading
-    const LOADING_MESSAGES = [
+    // ---- DATA : URLs pour la veille (avec fichiers HTML déjà créés) ----
+    const urls = [
+      // URLs fournies par toi
       {
-        main: "CALIBRAGE DU RÉEL…",
-        sub: "alignement des illusions collectives sur le protocole en vigueur…"
+        url: "https://dl.ouaisfi.eu/usba/1/vids/Taupe_r%C3%A9cite_Chomsky_avec_sous_titres.mp4",
+        title: "Nomnom — Top prolo",
+        tag: "PNJ / Chillou",
       },
       {
-        main: "DÉCRYPTAGE DU PORTAIL…",
-        sub: "les pixels se concertent pour savoir qui tu crois être…"
+        url: "https://dl.ouaisfi.eu",
+        title: "dl.ouaisfi.eu — dépôt de fichiers et médias",
+        tag: "ouaisfi.eu / fichiers",
       },
       {
-        main: "NÉGOCIATION AVEC LE SERVEUR…",
-        sub: "tentative de convaincre la réalité d’être coopérative…"
+        url: "kinder.html",
+        title: "Pour la gagne — et le cul",
+        tag: "ouaisfi.eu / fichiers",
       },
       {
-        main: "SYNCHRO AVEC LA DYSTOPIE…",
-        sub: "mise à jour des limitations de ta liberté perçue…"
+        url: "404.html",
+        title: "casio.html — smartwatch ULTRAGEEK / SILENT·PROTOCOL",
+        tag: "html local",
       },
       {
-        main: "INJECTION DE CONTENU…",
-        sub: "merci de patienter, le vide se remplit de choses discutables…"
-      }
+        url: "https://dl.ouaisfi.eu/1160/",
+        title: "dl.ouaisfi.eu/1160/ — ressource numérotée mystérieuse",
+        tag: "curiosité",
+      },
+      {
+        url: "https://dl.ouaisfi.eu/gifs/lapin.gif",
+        title: "GIF lapin — chaos en boucle",
+        tag: "gif / mood",
+      },
+
+      // fichiers HTML qu’on a faits avant (noms cohérents)
+      {
+        url: "veilleuxses.html",
+        title: "SILENT·PROTOCOL — bande-annonce HTML complète",
+        tag: "silent·protocol / film",
+      },
+      {
+        url: "tuto-T999.html",
+        title: "SILENT·PROTOCOL — logo glitch + menu du film du jeu",
+        tag: "silent·protocol / logo",
+      },
+      {
+        url: "test-propagande.html",
+        title: "SILENT·PROTOCOL — boutique, merch & produits dérivés",
+        tag: "silent·protocol / boutique",
+      },
+      {
+        url: "test-intro-moyen-(1).html",
+        title: "SILENT·PROTOCOL — scènes bonus & expériences cachées",
+        tag: "silent·protocol / bonus",
+      },
+      {
+        url: "test-intro-hardcore-(2).html",
+        title: "SILENT·PROTOCOL — scène PlayStation Portable",
+        tag: "silent·protocol / psp",
+      },
+      {
+        url: "test-intro-fastoche.html",
+        title: "SILENT·PROTOCOL — interface smartwatch Cyborg",
+        tag: "silent·protocol / smartwatch",
+      },
+
+      // autres URLs importantes pour la veille
+      {
+        url: "stic-anarchie.html",
+        title: "EFF — Electronic Frontier Foundation",
+        tag: "droits numériques",
+      },
+      {
+        url: "https://privacytools.io/",
+        title: "PrivacyTools — outils et bonnes pratiques",
+        tag: "privacy",
+      },
+      {
+        url: "lorga.html",
+        title: "RFC Editor — les standards d’Internet",
+        tag: "protocoles",
+      },
+      {
+        url: "pomme.html",
+        title: "GNU — philosophie du logiciel libre",
+        tag: "philo / libre",
+      },
+      {
+        url: "recrutement.html",
+        title: "Tor Project — anonymat en réseau",
+        tag: "réseau / anonymat",
+      },
+      {
+        url: "sharky.html",
+        title: "Cryptome — archives info-sécurité",
+        tag: "archives",
+      },
+      {
+        url: "sas.html",
+        title: "DEF CON — conférences sécurité",
+        tag: "sécurité",
+      },
+      {
+        url: "https://sneak.berlin/",
+        title: "Sneak — articles techniques & culture numérique",
+        tag: "tech / culture",
+      },
+      {
+        url: "https://archive.org/",
+        title: "Internet Archive — mémoire du web",
+        tag: "archives web",
+      },
+      {
+        url: "stic-anarchie-2.html",
+        title: "Mozilla — politique de confidentialité",
+        tag: "privacy / navigateur",
+      },
     ];
 
-    // ==========================
-    // UTILITAIRES
-    // ==========================
-    function updateDigitSlots() {
-      const digits = currentCode.split("");
-      digitSlots.forEach((slot, index) => {
-        const d = digits[index];
-        if (d !== undefined) {
-          slot.textContent = d;
-          slot.classList.remove("empty");
-        } else {
-          slot.textContent = "•";
-          slot.classList.add("empty");
+    // ---- WALLPAPER : fond d’écran personnalisable ----
+    const rootStyle = document.documentElement.style;
+
+    function setWallpaper(url) {
+      rootStyle.setProperty("--watch-wallpaper", `url("${url}")`);
+    }
+
+    // ---- BOOT / MAIN SCREEN ----
+    const bootScreen   = document.getElementById("bootScreen");
+    const mainScreen   = document.getElementById("mainScreen");
+    const btnBoot      = document.getElementById("btnBoot");
+
+    function bootWatch() {
+      bootScreen.style.display = "flex";
+      mainScreen.classList.remove("active");
+      setTimeout(() => {
+        bootScreen.style.display = "none";
+        mainScreen.classList.add("active");
+      }, 2200);
+    }
+
+    btnBoot.addEventListener("click", bootWatch);
+    window.addEventListener("load", bootWatch);
+
+    // ---- MODE TABS (Flux / Web) ----
+    let currentMode = "feed";
+    const tabFeed = document.getElementById("tabFeed");
+    const tabWeb = document.getElementById("tabWeb");
+    const paneFeed = document.getElementById("paneFeed");
+    const paneWeb = document.getElementById("paneWeb");
+    const bottomHint = document.getElementById("bottomHint");
+
+    function setMode(mode) {
+      currentMode = mode;
+      if (mode === "feed") {
+        tabFeed.classList.add("active");
+        tabWeb.classList.remove("active");
+        paneFeed.classList.add("active");
+        paneWeb.classList.remove("active");
+        bottomHint.textContent = "scroll comme sur tiktok · URLs random";
+      } else {
+        tabWeb.classList.add("active");
+        tabFeed.classList.remove("active");
+        paneWeb.classList.add("active");
+        paneFeed.classList.remove("active");
+        bottomHint.textContent = "mini navigateur dans la smartwatch";
+      }
+    }
+
+    tabFeed.addEventListener("click", () => setMode("feed"));
+    tabWeb.addEventListener("click", () => setMode("web"));
+
+    // ---- FEED & WEB ----
+    const feedEl = document.getElementById("feed");
+    const statusCounter = document.getElementById("statusCounter");
+    const navPrev = document.getElementById("navPrev");
+    const navNext = document.getElementById("navNext");
+    const webFrame = document.getElementById("webFrame");
+    const webAddress = document.getElementById("webAddress");
+    const webNewTab = document.getElementById("webNewTab");
+    const webReload = document.getElementById("webReload");
+
+    let currentUrlIndex = 0;
+    let currentUrl = null;
+
+    const shuffled = urls
+      .map((u) => ({ u, r: Math.random() }))
+      .sort((a, b) => a.r - b.r)
+      .map((x) => x.u);
+
+    function renderFeed() {
+      feedEl.innerHTML = "";
+      shuffled.forEach((item, index) => {
+        const card = document.createElement("article");
+        card.className = "feed-card";
+        card.dataset.index = index;
+        card.innerHTML = `
+          <div class="feed-tag">${item.tag || "veille"}</div>
+          <div class="feed-url">${item.url}</div>
+          <div class="feed-title">${item.title}</div>
+          <div class="feed-meta">URL #${index + 1} dans la mémoire de la smartwatch Cyborg</div>
+          <div class="feed-actions">
+            <button class="btn-tiny btn-watch">
+              <span class="icon">⌚</span> sur la montre
+            </button>
+            <button class="btn-tiny btn-open">
+              <span class="icon">↗</span> onglet
+            </button>
+            <button class="btn-tiny btn-download">
+              <span class="icon">📥</span> .html
+            </button>
+            <button class="btn-tiny btn-copy">
+              <span class="icon">📋</span> copier
+            </button>
+          </div>
+        `;
+        feedEl.appendChild(card);
+      });
+      updateStatus(0);
+    }
+
+    function updateStatus(currentIndex) {
+      const total = shuffled.length;
+      statusCounter.textContent = (currentIndex + 1) + " / " + total;
+    }
+
+    function getCurrentCardIndex() {
+      const cards = Array.from(feedEl.querySelectorAll(".feed-card"));
+      if (!cards.length) return 0;
+      let bestIndex = 0;
+      let bestTop = Infinity;
+      const containerRect = feedEl.getBoundingClientRect();
+      cards.forEach((card, idx) => {
+        const rect = card.getBoundingClientRect();
+        const distance = Math.abs(rect.top - containerRect.top);
+        if (distance < bestTop) {
+          bestTop = distance;
+          bestIndex = idx;
         }
+      });
+      return bestIndex;
+    }
+
+    function scrollToIndex(i) {
+      const cards = feedEl.querySelectorAll(".feed-card");
+      if (!cards.length) return;
+      const clamped = Math.max(0, Math.min(i, cards.length - 1));
+      const target = cards[clamped];
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        updateStatus(clamped);
+      }
+    }
+
+    function openInWatch(index) {
+      const item = shuffled[index];
+      currentUrlIndex = index;
+      currentUrl = item.url;
+      webAddress.textContent = item.url;
+      webFrame.src = item.url;
+      setMode("web");
+      updateStatus(index);
+    }
+
+    navPrev.addEventListener("click", () => {
+      if (currentMode === "feed") {
+        scrollToIndex(getCurrentCardIndex() - 1);
+      } else {
+        const newIndex = Math.max(0, currentUrlIndex - 1);
+        openInWatch(newIndex);
+      }
+    });
+
+    navNext.addEventListener("click", () => {
+      if (currentMode === "feed") {
+        scrollToIndex(getCurrentCardIndex() + 1);
+      } else {
+        const newIndex = Math.min(shuffled.length - 1, currentUrlIndex + 1);
+        openInWatch(newIndex);
+      }
+    });
+
+    feedEl.addEventListener("scroll", () => {
+      if (currentMode === "feed") {
+        const idx = getCurrentCardIndex();
+        updateStatus(idx);
+      }
+    });
+
+    feedEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const card = e.target.closest(".feed-card");
+      if (!card) return;
+      const index = parseInt(card.dataset.index, 10);
+      const item = shuffled[index];
+
+      if (btn.classList.contains("btn-watch")) {
+        openInWatch(index);
+      }
+      if (btn.classList.contains("btn-open")) {
+        window.open(item.url, "_blank");
+      }
+      if (btn.classList.contains("btn-download")) {
+        downloadHtmlForUrl(item);
+      }
+      if (btn.classList.contains("btn-copy")) {
+        copyToClipboard(item.url);
+      }
+    });
+
+    function sanitizeFileName(text) {
+      return text
+        .replace(/^https?:\/\//, "")
+        .replace(/[^a-z0-9\-_.]+/gi, "_")
+        .slice(0, 60) || "cyborg_url";
+    }
+
+    function downloadHtmlForUrl(item) {
+      const html =
+`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>${item.title || "Lien Cyborg"}</title>
+</head>
+<body>
+  <h1>${item.title || "Lien depuis la smartwatch Cyborg"}</h1>
+  <p>Cette page a été générée par la smartwatch de la marque Cyborg (réplique d’une casio d’ultrageek avec miniclavier).</p>
+  <p>URL d’origine&nbsp;: <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.url}</a></p>
+</body>
+</html>`;
+      const blob = new Blob([html], { type: "text/html" });
+      const a = document.createElement("a");
+      const name = sanitizeFileName(item.url) + ".html";
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    function copyToClipboard(text) {
+      if (!navigator.clipboard) {
+        alert("Copie automatique indisponible, sélectionne et copie à la main si besoin.");
+        return;
+      }
+      navigator.clipboard.writeText(text).catch(() => {
+        alert("Impossible de copier automatiquement, copie à la main.");
       });
     }
 
-    function setStatus(message, type) {
-      codeStatus.textContent = message || "";
-      codeStatus.classList.remove("ok", "error");
-      if (type === "ok") codeStatus.classList.add("ok");
-      if (type === "error") codeStatus.classList.add("error");
+    webNewTab.addEventListener("click", () => {
+      if (!currentUrl) return;
+      window.open(currentUrl, "_blank");
+    });
+
+    webReload.addEventListener("click", () => {
+      if (!currentUrl) return;
+      webFrame.src = currentUrl;
+    });
+
+    // ---- ABOUT MODAL + WALLPAPER ----
+    const btnInfo = document.getElementById("btnInfo");
+    const aboutModal = document.getElementById("aboutModal");
+    const aboutClose = document.getElementById("aboutClose");
+    const wallInput = document.getElementById("wallInput");
+    const wallApply = document.getElementById("wallApply");
+
+    setWallpaper(wallInput.value);
+
+    wallApply.addEventListener("click", () => {
+      if (!wallInput.value.trim()) return;
+      setWallpaper(wallInput.value.trim());
+    });
+
+    btnInfo.addEventListener("click", () => {
+      aboutModal.classList.add("open");
+    });
+
+    aboutClose.addEventListener("click", () => {
+      aboutModal.classList.remove("open");
+    });
+
+    aboutModal.addEventListener("click", (e) => {
+      if (e.target === aboutModal) {
+        aboutModal.classList.remove("open");
+      }
+    });
+
+    // ---- LOG KONAMI ----
+    const logModal = document.getElementById("logModal");
+    const logClose = document.getElementById("logClose");
+    const logBody  = document.getElementById("logBody");
+    const logCopy  = document.getElementById("logCopy");
+    const logDownload = document.getElementById("logDownload");
+    const cyborgLogo = document.getElementById("cyborgLogo");
+
+    const KONAMI = ["UP","UP","DOWN","DOWN","LEFT","RIGHT","LEFT","RIGHT","B","A"];
+    let konamiBuffer = [];
+
+    function buildLogText() {
+      let text = "";
+      text += "=== CYBORG / SMARTWATCH LOG ===\n";
+      text += "marque : Cyborg\n";
+      text += "modèle : SW-404 · ULTRAGEEK\n";
+      text += "description : réplique d’une casio d’ultrageek avec miniclavier, qui boot, scrolle des URLs comme sur TikTok\n";
+      text += "fonction : téléchargement des URLs en fichier.html, navigation intégrée, fond d’écran personnalisable\n";
+      text += "logo : https://dl.ouaisfi.eu/images/coin.png\n";
+      text += "fond d’écran par défaut : https://dl.ouaisfi.eu/images/confidentiel.gif\n\n";
+      text += "--- URLs dans la mémoire de la smartwatch ---\n";
+      urls.forEach((item, i) => {
+        text += `#${i + 1} [${item.tag || "veille"}]\n`;
+        text += `titre : ${item.title}\n`;
+        text += `url   : ${item.url}\n\n`;
+      });
+      text += "--- raccourcis miniclavier ---\n";
+      text += "ESC : fermer modales / reboot\n";
+      text += "TAB : basculer Flux / Web\n";
+      text += "DL  : télécharger la page courante en fichier .html\n";
+      text += "↑   : précédent (flux ou url)\n";
+      text += "↓   : suivant (flux ou url)\n\n";
+      text += "--- Konami code ---\n";
+      text += "Clavier physique : ↑ ↑ ↓ ↓ ← → ← → B A\n";
+      text += "Sur la montre    : ↑ ↑ ↓ ↓ TAB DL TAB DL B A\n\n";
+      text += "Tout ce bloc est prévu pour être copié dans un fichier log.txt et glissé sur une clé USB.\n";
+      return text;
     }
 
-    function pickLoadingMessage(isFallback) {
-      const msg = LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
-      loadingMain.textContent = msg.main;
-      loadingSub.textContent = msg.sub + (isFallback ? " (code inconnu → fallback)." : "");
+    function openLog() {
+      logBody.textContent = buildLogText();
+      logModal.classList.add("open");
     }
 
-    function showViewerLoading(isFallback) {
-      pickLoadingMessage(isFallback);
-      viewerLoading.style.display = "flex";
-      viewerOverlay.style.display = "none";
-      openNewTabBtn.disabled = true;
+    function closeLog() {
+      logModal.classList.remove("open");
     }
 
-    function hideViewerLoading() {
-      viewerLoading.style.display = "none";
-      openNewTabBtn.disabled = !currentUrl;
+    function pushKonami(input) {
+      konamiBuffer.push(input);
+      if (konamiBuffer.length > KONAMI.length) konamiBuffer.shift();
+      const match = KONAMI.every((v, i) => konamiBuffer[i] === v);
+      if (match) {
+        openLog();
+      }
     }
 
-    function setCurrentUrl(url, isFallback) {
-      currentUrl = url;
-      currentUrlText.textContent = isFallback
-        ? url + " (fallback / code inconnu)"
-        : url;
-      showViewerLoading(isFallback);
-      siteFrame.src = url;
-    }
-
-    function clearCode() {
-      currentCode = "";
-      updateDigitSlots();
-      setStatus("", null);
-      codeDisplayWrapper.classList.remove("shake");
-    }
-
-    function submitCode() {
-      if (currentCode.length < 4) {
-        codeDisplayWrapper.classList.remove("shake");
-        void codeDisplayWrapper.offsetWidth;
-        codeDisplayWrapper.classList.add("shake");
-        setStatus("Tape d’abord 4 chiffres.", "error");
+    // clavier physique (↑ ↑ ↓ ↓ ← → ← → B A)
+    document.addEventListener("keydown", (e) => {
+      const key = e.key.toLowerCase();
+      if (key === "escape") {
+        aboutModal.classList.remove("open");
+        logModal.classList.remove("open");
         return;
       }
 
-      const isKnown = currentCode in CODE_MAP;
-      const url = isKnown ? CODE_MAP[currentCode] : DEFAULT_URL;
+      let token = null;
+      if (key === "arrowup") token = "UP";
+      else if (key === "arrowdown") token = "DOWN";
+      else if (key === "arrowleft") token = "LEFT";
+      else if (key === "arrowright") token = "RIGHT";
+      else if (key === "b") token = "B";
+      else if (key === "a") token = "A";
 
-      if (isKnown) {
-        setStatus("Code reconnu → ouverture du portail.", "ok");
-      } else {
-        setStatus("Code inconnu → redirection vers mouse-dun.", "error");
+      if (token) {
+        pushKonami(token);
       }
+    });
 
-      setCurrentUrl(url, !isKnown);
+    // mini-clavier de la montre (↑ ↑ ↓ ↓ TAB DL TAB DL B A)
+    const keyboard = document.getElementById("watchKeyboard");
+
+    function handleKeyAction(label) {
+      label = label.trim().toUpperCase();
+      if (label === "ESC") {
+        if (aboutModal.classList.contains("open")) aboutModal.classList.remove("open");
+        else if (logModal.classList.contains("open")) logModal.classList.remove("open");
+        else bootWatch();
+      } else if (label === "TAB") {
+        if (currentMode === "feed") setMode("web");
+        else setMode("feed");
+      } else if (label === "DL") {
+        if (currentMode === "feed") {
+          const idx = getCurrentCardIndex();
+          const item = shuffled[idx];
+          downloadHtmlForUrl(item);
+        } else if (currentMode === "web" && currentUrl) {
+          const item = { url: currentUrl, title: "Capture depuis la smartwatch Cyborg" };
+          downloadHtmlForUrl(item);
+        }
+      } else if (label === "↑") {
+        navPrev.click();
+      } else if (label === "↓") {
+        navNext.click();
+      }
     }
 
-    // ==========================
-    // EVENTS
-    // ==========================
-    document.getElementById("keypad").addEventListener("click", (event) => {
-      const btn = event.target.closest(".key");
-      if (!btn) return;
+    keyboard.addEventListener("click", (e) => {
+      const keyEl = e.target.closest(".key");
+      if (!keyEl) return;
+      const label = keyEl.textContent || "";
+      handleKeyAction(label);
 
-      const digit = btn.getAttribute("data-key");
-      const action = btn.getAttribute("data-action");
+      // mapping vers tokens Konami
+      const upper = label.trim().toUpperCase();
+      if (upper === "↑") pushKonami("UP");
+      else if (upper === "↓") pushKonami("DOWN");
+      else if (upper === "TAB") pushKonami("LEFT");
+      else if (upper === "DL") pushKonami("RIGHT");
+      else if (upper === "B") pushKonami("B");
+      else if (upper === "A") pushKonami("A");
+    });
 
-      if (digit !== null) {
-        if (currentCode.length >= 4) {
-          currentCode = digit;
-        } else {
-          currentCode += digit;
-        }
-        updateDigitSlots();
-        setStatus("", null);
+    // LOG actions
+    logClose.addEventListener("click", closeLog);
+    logModal.addEventListener("click", (e) => {
+      if (e.target === logModal) closeLog();
+    });
 
-        if (currentCode.length === 4) {
-          submitCode();
-        }
-      } else if (action === "clear") {
-        clearCode();
-      } else if (action === "submit") {
-        submitCode();
+    logCopy.addEventListener("click", () => {
+      const txt = logBody.textContent || "";
+      if (!navigator.clipboard) {
+        alert("Copie automatique indisponible, sélectionne le log et copie-le à la main.");
+        return;
       }
+      navigator.clipboard.writeText(txt).then(() => {
+        alert("Log copié dans le presse-papiers.");
+      }).catch(() => {
+        alert("Impossible de copier automatiquement, copie à la main.");
+      });
     });
 
-    openNewTabBtn.addEventListener("click", () => {
-      if (!currentUrl) return;
-      window.open(currentUrl, "_blank", "noopener,noreferrer");
+    logDownload.addEventListener("click", () => {
+      const txt = logBody.textContent || buildLogText();
+      const blob = new Blob([txt], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "cyborg-smartwatch-log.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     });
 
-    // Bouton plein écran visionneuse
-    toggleViewerSize.addEventListener("click", () => {
-      appRoot.classList.toggle("viewer-full");
-      const full = appRoot.classList.contains("viewer-full");
-      toggleViewerSize.innerHTML = full ? "⤡ MODE SPLIT" : "⤢ PLEIN ÉCRAN";
-    });
+    // Fallback : double clic sur le logo pour ouvrir le log
+    cyborgLogo.addEventListener("dblclick", openLog);
 
-    // Chargement de l'iframe : on cache le loader
-    siteFrame.addEventListener("load", () => {
-      if (!currentUrl) return;
-      hideViewerLoading();
-    });
-
-    // Clavier physique : 0-9, Enter, Backspace
-    document.addEventListener("keydown", (e) => {
-      if (e.key >= "0" && e.key <= "9") {
-        if (currentCode.length >= 4) {
-          currentCode = e.key;
-        } else {
-          currentCode += e.key;
-        }
-        updateDigitSlots();
-        setStatus("", null);
-        if (currentCode.length === 4) {
-          submitCode();
-        }
-      } else if (e.key === "Backspace") {
-        e.preventDefault();
-        if (currentCode.length > 0) {
-          currentCode = currentCode.slice(0, -1);
-          updateDigitSlots();
-          setStatus("", null);
-        }
-      } else if (e.key === "Enter") {
-        submitCode();
-      }
-    });
-
-    // Écran de boot : disparition douce
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        bootScreen.classList.add("boot-hidden");
-        setTimeout(() => {
-          bootScreen.style.display = "none";
-        }, 700);
-      }, 1600);
-    });
+    // init
+    renderFeed();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
