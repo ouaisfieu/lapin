@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>L’Organisation · Intranet Société Anonyme Sociale</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+:root {
+  --bg: #020617;
+  --panel: #020617;
+  --border: #1f2937;
+  --border-soft: #111827;
+  --text: #e5e7eb;
+  --text-soft: #9ca3af;
+  --accent: #22c55e;
+  --accent2: #a855f7;
+  --alert: #f97316;
+  --radius: 16px;
+  --shadow: 0 18px 45px rgba(0,0,0,0.85);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #0f172a 0, #020617 60%, #000 100%);
+  color: var(--text);
+}
+
+/* HEADER */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  background: rgba(15,23,42,0.98);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: conic-gradient(from 210deg,
+    #22c55e 0deg, #22c55e 120deg,
+    #a855f7 120deg, #a855f7 240deg,
+    #0ea5e9 240deg, #0ea5e9 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #020617;
+  font-weight: 900;
+  font-size: 16px;
+  box-shadow:
+    0 0 0 2px #020617,
+    0 0 18px rgba(34,197,94,0.9);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+.header-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+  align-items: center;
+}
+
+.tag {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+}
+
+.tag-green {
+  border-color: #22c55e;
+  color: #bbf7d0;
+  background: rgba(22,163,74,0.25);
+}
+
+.tag-purple {
+  border-color: #a855f7;
+  color: #e9d5ff;
+  background: rgba(129,140,248,0.25);
+}
+
+/* NAV UNIVERS */
+
+.universe-nav {
+  max-width: 1100px;
+  margin: 10px auto 0;
+  padding: 6px 14px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.universe-nav a {
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.universe-nav a:hover {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+/* LAYOUT */
+
+main {
+  max-width: 1100px;
+  margin: 8px auto 16px;
+  padding: 0 14px 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(260px, 1.2fr);
+  gap: 14px;
+}
+
+@media(max-width: 900px) {
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+/* ONGLET CONSOLE */
+
+.tabs-row {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.tab-btn {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  border-color: #22c55e;
+  background: rgba(22,163,74,0.3);
+  color: #bbf7d0;
+}
+
+.tab-panel {
+  margin-top: 8px;
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* ORGANIGRAMME SIMPLE */
+
+.org-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+@media(min-width: 720px) {
+  .org-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+.org-box {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.org-role {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 3px;
+  color: #e5e7eb;
+}
+
+/* MISSIONS */
+
+.mission-list {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.mission-list li {
+  margin-bottom: 4px;
+}
+
+/* TEST D’ENTRÉE */
+
+.question-block {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  padding: 8px 10px;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.question-block strong {
+  color: var(--text);
+}
+
+.options {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.options label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.options input {
+  accent-color: #22c55e;
+}
+
+/* BOUTONS */
+
+.btn-row {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: linear-gradient(90deg,#22c55e,#a855f7);
+  border-color: transparent;
+  color: #020617;
+  font-weight: 600;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+/* RESULTAT TEST */
+
+.test-result {
+  margin-top: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  padding: 8px 10px;
+  font-size: 12px;
+  display: none;
+}
+
+.test-result strong {
+  color: var(--accent);
+}
+
+/* SIDE : DOSSIERS + JOURNAL */
+
+.side-section h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.side-box {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  padding: 8px 10px;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.side-box ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.side-box li {
+  margin-bottom: 3px;
+}
+
+.log-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 4px 0 0;
+}
+
+.log-list li {
+  margin-bottom: 3px;
+}
+
+/* FOOTER */
+
+footer {
+  font-size: 10px;
+  color: var(--text-soft);
+  border-top: 1px solid var(--border-soft);
+  padding: 10px 16px 14px;
+  background: #020617;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">Ω</div>
+    <div class="brand-text">
+      <div class="brand-title">L’Organisation</div>
+      <div class="brand-sub">Société Anonyme Sociale · Intranet confidentiel (fictif)</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="tag tag-green">Veille civile</span>
+    <span class="tag tag-purple">Jeu sérieux</span>
+  </div>
+</header>
+
+<nav class="universe-nav">
+  <a href="index.html">🏠 Arcade</a>
+  <a href="tu-raques-ou-pas.html">💸 Tu Raques Ou Pas</a>
+  <a href="belgilikjes.html">💾 Belgilikjes</a>
+  <a href="mr-campagne.html">🔵 MR En Mieux</a>
+  <a href="campagne-clones.html">🎭 Clones Ecolo/PTB</a>
+  <a href="etagere.html">📚 Étagère</a>
+</nav>
+
+<main>
+  <!-- COLONNE GAUCHE : CONSOLE D’ACCÈS -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2>🧭 Console d’accès interne</h2>
+        <div style="font-size:11px; color:var(--text-soft);">
+          Point d’entrée dans l’univers de L’Organisation : structure, missions, test d’entrée.
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-row">
+      <button class="tab-btn active" data-tab="org" type="button">Organigramme</button>
+      <button class="tab-btn" data-tab="missions" type="button">Missions</button>
+      <button class="tab-btn" data-tab="test" type="button">Test d’entrée</button>
+    </div>
+
+    <!-- PANEL ORGANIGRAMME -->
+    <div id="tab-org" class="tab-panel active">
+      <p>
+        L’Organisation est pensée comme une <strong>agence de renseignement citoyen</strong> :
+        sérieuse sur le fond, volontairement opaque sur la forme.
+      </p>
+      <div class="org-grid">
+        <div class="org-box">
+          <div class="org-role">Cellule Radar</div>
+          <div><strong>Rôle :</strong> capter les signaux faibles dans la société civile.</div>
+          <div><strong>Profil :</strong> curieux·se, veilleur·euse, allergique aux bulles d’info.</div>
+        </div>
+        <div class="org-box">
+          <div class="org-role">Cellule Cartographie</div>
+          <div><strong>Rôle :</strong> relier les acteurs, initiatives, conflits et alliances.</div>
+          <div><strong>Profil :</strong> stratège patient·e, fan de cartes mentales & schémas.</div>
+        </div>
+        <div class="org-box">
+          <div class="org-role">Cellule Terrain</div>
+          <div><strong>Rôle :</strong> aller voir sur place ce qui se passe vraiment.</div>
+          <div><strong>Profil :</strong> sociable, empathique, aime discuter avec tout le monde.</div>
+        </div>
+        <div class="org-box">
+          <div class="org-role">Cellule Fiction</div>
+          <div><strong>Rôle :</strong> transformer les infos en récits, jeux, scénarios.</div>
+          <div><strong>Profil :</strong> créatif·ve, scénariste potentiel·le d’un film belge bizarre.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL MISSIONS -->
+    <div id="tab-missions" class="tab-panel">
+      <p>
+        Officiellement, L’Organisation se présente comme une “Société Anonyme Sociale”.
+        Officieusement, elle vise à :
+      </p>
+      <ul class="mission-list">
+        <li><strong>Observer</strong> les dynamiques de pouvoir et de vulnérabilité dans la société.</li>
+        <li><strong>Documenter</strong> ce qui se trame en coulisses (avec humour, mais rigueur).</li>
+        <li><strong>Outiller</strong> celles et ceux qui ne veulent plus subir en silence.</li>
+        <li><strong>Fictionnaliser</strong> pour rendre visible sans exposer n’importe qui.</li>
+      </ul>
+      <p style="font-size:11px; color:var(--text-soft); margin-top:4px;">
+        Dans ton univers, cette page peut devenir un vrai intranet :  
+        accès à des dossiers, procédures, outils de veille, etc.  
+        Ici, on reste en mode prototype ludique.
+      </p>
+    </div>
+
+    <!-- PANEL TEST D’ENTRÉE -->
+    <div id="tab-test" class="tab-panel">
+      <p>
+        Ce test d’entrée est un <strong>mini jeu de positionnement</strong>.
+        Il ne recrute personne pour de vrai, mais il te donne un rôle probable dans L’Organisation.
+      </p>
+
+      <div class="question-block">
+        <strong>1. Face à un scandale politico-médiatique :</strong>
+        <div class="options">
+          <label>
+            <input type="radio" name="q1" value="radar">
+            <span>Je veux comprendre ce qui s’est passé avant que tout le monde oublie.</span>
+          </label>
+          <label>
+            <input type="radio" name="q1" value="carto">
+            <span>Je veux voir qui est lié à qui, qui finance quoi, qui tire les ficelles.</span>
+          </label>
+          <label>
+            <input type="radio" name="q1" value="terrain">
+            <span>Je veux parler avec les gens directement concernés.</span>
+          </label>
+          <label>
+            <input type="radio" name="q1" value="fiction">
+            <span>Je veux en faire une histoire, un jeu, un film pour que ça reste en tête.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <strong>2. Quand tu tombes sur un document technique incompréhensible :</strong>
+        <div class="options">
+          <label>
+            <input type="radio" name="q2" value="radar">
+            <span>Je me demande d’abord pourquoi il existe et à qui il profite.</span>
+          </label>
+          <label>
+            <input type="radio" name="q2" value="carto">
+            <span>Je cherche les liens, annexes, références, schémas autour.</span>
+          </label>
+          <label>
+            <input type="radio" name="q2" value="terrain">
+            <span>Je contacte quelqu’un qui le comprend pour qu’il me l’explique.</span>
+          </label>
+          <label>
+            <input type="radio" name="q2" value="fiction">
+            <span>Je fais un résumé en langage humain, avec un peu de second degré.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="question-block">
+        <strong>3. Niveau disponibilité pour “jouer à L’Organisation” :</strong>
+        <div class="options">
+          <label>
+            <input type="radio" name="q3" value="light">
+            <span>Très léger : une info, un lien, un retour de temps en temps.</span>
+          </label>
+          <label>
+            <input type="radio" name="q3" value="medium">
+            <span>Régulier : un peu de temps chaque mois si ça a du sens.</span>
+          </label>
+          <label>
+            <input type="radio" name="q3" value="heavy">
+            <span>Intensif : j’adore ce genre de truc, on verra jusqu’où.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="btn-eval" type="button">
+          🔍 Calculer mon rôle fictif
+        </button>
+        <button class="btn" id="btn-reset" type="button">
+          ♻️ Effacer mes réponses
+        </button>
+      </div>
+
+      <div id="test-result" class="test-result"></div>
+
+      <p style="font-size:11px; color:var(--text-soft); margin-top:6px;">
+        Rien n’est sauvegardé ailleurs que dans ton navigateur.  
+        Si tu veux connecter ce test à d’autres pages (Tu Raques Ou Pas, Belgilikjes, etc.),
+        tu peux récupérer la logique et adapter.
+      </p>
+    </div>
+  </section>
+
+  <!-- COLONNE DROITE : DOSSIERS & JOURNAL -->
+  <section class="side-section">
+    <article class="card">
+      <div class="card-header">
+        <h2>📂 Dossiers actifs (fictifs)</h2>
+      </div>
+      <div class="side-box">
+        <h3>Types de dossiers :</h3>
+        <ul>
+          <li><strong>Veille sociale :</strong> conditions de travail, droits sociaux, galères du quotidien.</li>
+          <li><strong>Veille numérique :</strong> plateformes, données, attention, algorithmes.</li>
+          <li><strong>Veille institutionnelle :</strong> décrets, dispositifs, consultations publiques.</li>
+          <li><strong>Veille imaginaire :</strong> scénarios, mondes possibles, jeux sérieux.</li>
+        </ul>
+      </div>
+      <div class="side-box">
+        <h3>Liens dans ton univers :</h3>
+        <ul>
+          <li><code>belgilikjes.html</code> pour les fuites massives & leurs récits.</li>
+          <li><code>mr-campagne.html</code> + <code>campagne-clones.html</code> pour les fronts politiques.</li>
+          <li><code>tu-raques-ou-pas.html</code> pour la question : qui contribue, comment, pourquoi.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="card" style="margin-top:10px;">
+      <h2>📝 Journal interne (log fictif)</h2>
+      <ul class="log-list" id="log-list">
+        <li>[00:00] Initialisation de L’Organisation (version HTML statique).</li>
+        <li>[00:01] Aucun budget, aucune autorisation, mais beaucoup d’idées.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn" id="btn-log" type="button">
+          ➕ Ajouter une ligne de journal
+        </button>
+      </div>
+      <p style="font-size:11px; color:var(--text-soft); margin-top:4px;">
+        Ce journal ne sert à rien d’autre qu’à garder trace des délires de L’Organisation.
+        Dans une vraie version, il pourrait être un log de projets, réunions, décisions.
+      </p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  L’Organisation · Société Anonyme Sociale (fictive) · Intranet de jeu sérieux.
+  Ce site n’a aucun pouvoir réel, mais il peut aider à réfléchir à ceux qui en ont.
+</footer>
+
+<script>
+// TABS
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabPanels = {
+  org: document.getElementById("tab-org"),
+  missions: document.getElementById("tab-missions"),
+  test: document.getElementById("tab-test")
+};
+
+tabButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.getAttribute("data-tab");
+    tabButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    Object.keys(tabPanels).forEach(k => {
+      tabPanels[k].classList.toggle("active", k === target);
+    });
+  });
+});
+
+// TEST D’ENTRÉE
+const btnEval = document.getElementById("btn-eval");
+const btnReset = document.getElementById("btn-reset");
+const resultBox = document.getElementById("test-result");
+
+btnEval.addEventListener("click", () => {
+  const q1 = document.querySelector("input[name='q1']:checked");
+  const q2 = document.querySelector("input[name='q2']:checked");
+  const q3 = document.querySelector("input[name='q3']:checked");
+
+  if (!q1 || !q2 || !q3) {
+    resultBox.style.display = "block";
+    resultBox.innerHTML = `
+      <strong>Résultat :</strong> incomplet.<br>
+      Tu n’as pas répondu à toutes les questions.  
+      L’Organisation respecte aussi le droit à la non-réponse, mais pour le jeu,
+      coche au moins quelque chose à chaque fois.
+    `;
+    return;
+  }
+
+  const scores = { radar: 0, carto: 0, terrain: 0, fiction: 0 };
+
+  [q1.value, q2.value].forEach(v => {
+    if (scores[v] !== undefined) scores[v] += 1;
+  });
+
+  let archetype = "Profil indéfini";
+  let desc = "";
+
+  const maxScore = Math.max(...Object.values(scores));
+  const top = Object.keys(scores).filter(k => scores[k] === maxScore);
+
+  if (top.includes("radar")) {
+    archetype = "Cellule Radar";
+    desc = "Tu as un radar interne branché sur les signaux faibles. Tu repères ce qui cloche avant les autres.";
+  } else if (top.includes("carto")) {
+    archetype = "Cellule Cartographie";
+    desc = "Tu relis les points, tu dessines des cartes, tu refuses les explications trop simples.";
+  } else if (top.includes("terrain")) {
+    archetype = "Cellule Terrain";
+    desc = "Tu vas voir les gens, tu écoutes, tu observes, tu refuses de décider sans avoir entendu le terrain.";
+  } else if (top.includes("fiction")) {
+    archetype = "Cellule Fiction";
+    desc = "Tu transformes les infos en histoires, en images, en jeux, pour faire circuler autrement.";
+  }
+
+  let dispo = "";
+  if (q3.value === "light") {
+    dispo = "Disponibilité légère : parfait pour des contributions ponctuelles, des retours, des signaux.";
+  } else if (q3.value === "medium") {
+    dispo = "Disponibilité régulière : tu pourrais porter un petit bout de dispositif sans t’y perdre.";
+  } else {
+    dispo = "Disponibilité intense : à manier avec prudence, L’Organisation n’est pas une thérapie.";
+  }
+
+  resultBox.style.display = "block";
+  resultBox.innerHTML = `
+    <strong>Rôle fictif :</strong> ${archetype}<br>
+    ${desc}<br><br>
+    <strong>Positionnement :</strong> ${dispo}
+  `;
+});
+
+btnReset.addEventListener("click", () => {
+  document.querySelectorAll("input[name='q1'], input[name='q2'], input[name='q3']")
+    .forEach(i => i.checked = false);
+  resultBox.style.display = "none";
+  resultBox.innerHTML = "";
+});
+
+// JOURNAL INTERNE
+const logList = document.getElementById("log-list");
+const btnLog = document.getElementById("btn-log");
+
+btnLog.addEventListener("click", () => {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,"0");
+  const mm = String(now.getMinutes()).padStart(2,"0");
+  const samples = [
+    "Repérage d’un nouveau sigal faible dans les fuites de Belgilikjes.",
+    "Discussion improvisée autour d’un café : « Et si on rendait ça jouable ? ».",
+    "Quelqu’un propose de relier ce dossier à Tu Raques Ou Pas.",
+    "Idée : organiser un atelier 'Cartographier le bazar' avec des post-its."
+  ];
+  const txt = samples[Math.floor(Math.random()*samples.length)];
+  const li = document.createElement("li");
+  li.textContent = `[${hh}:${mm}] ${txt}`;
+  logList.prepend(li);
+});
+</script>
+
+</body>
+</html>
