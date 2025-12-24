@@ -1,0 +1,1197 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>MR EN MIEUX · Campagne Gamifiée 24/7</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    MR EN MIEUX · Campagne
+    ---------------------------------
+    Site de parodie / univers de jeu, NON officiel.
+    Adaptable : change les liens (boutique.html, 12-50.html, etc.)
+  -->
+  <style>
+    :root {
+      --blue: #0f5fdc;
+      --blue-dark: #0b3a86;
+      --blue-soft: #e0edff;
+      --bg: #020617;
+      --bg-alt: #0b1120;
+      --bg-card: #020617;
+      --border: #1f2937;
+      --border-soft: #111827;
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --text-softer: #6b7280;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.1);
+      --danger: #fb7185;
+      --danger-soft: rgba(248, 113, 113, 0.12);
+      --warning: #facc15;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.7);
+      --transition-fast: 0.15s ease-out;
+      --transition-med: 0.25s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 50%, #000 100%);
+      color: var(--text);
+    }
+
+    a {
+      color: var(--blue-soft);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER / BARRE DU HAUT */
+
+    .topbar {
+      background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+      color: #f9fafb;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
+    }
+
+    @media (min-width: 960px) {
+      .topbar {
+        padding: 10px 18px;
+      }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 30% 0, #ffffff, #dbeafe 40%, #60a5fa 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 800;
+      color: var(--blue-dark);
+      font-size: 14px;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.4);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .topbar-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .live-banner {
+      pointer-events: auto;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(248, 250, 252, 0.7);
+      background: rgba(15, 23, 42, 0.22);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      box-shadow: 0 0 12px rgba(248, 113, 113, 0.9);
+      animation: pulse 1.1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    .topbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 11px;
+    }
+
+    .streak-pill {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(248, 250, 252, 0.6);
+      background: rgba(15, 23, 42, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .streak-pill strong {
+      font-size: 12px;
+    }
+
+    .notif-btn {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(15, 23, 42, 0.7);
+      background: #facc15;
+      color: #111827;
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.6);
+    }
+
+    .notif-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #ef4444;
+    }
+
+    /* LAYOUT PRINCIPAL */
+
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto 16px;
+    }
+
+    @media (min-width: 1024px) {
+      .layout {
+        grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.8fr) minmax(260px, 1.1fr);
+        gap: 14px;
+        padding: 14px 18px 20px;
+      }
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #020617 0, #020617 60%, #000 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title span.icon {
+      font-size: 15px;
+    }
+
+    .badge {
+      font-size: 10px;
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      color: var(--text-softer);
+    }
+
+    .badge-blue {
+      border-color: var(--blue-soft);
+      color: var(--blue-soft);
+      background: rgba(37, 99, 235, 0.14);
+    }
+
+    .badge-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .badge-accent {
+      border-color: var(--accent);
+      color: #bbf7d0;
+      background: var(--accent-soft);
+    }
+
+    /* COL GAUCHE : PROFIL, FILTRES, MINI-MENU */
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #3b82f6, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      box-shadow:
+        0 0 0 2px rgba(15, 23, 42, 0.9),
+        0 0 16px rgba(59, 130, 246, 0.7);
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .profile-handle {
+      font-size: 11px;
+      color: var(--text-softer);
+    }
+
+    .profile-meta {
+      font-size: 11px;
+      color: var(--text-softer);
+      margin-top: 4px;
+    }
+
+    .profile-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: 6px;
+    }
+
+    .menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 6px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .menu-link span.label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .menu-link:hover {
+      background: rgba(15, 23, 42, 0.9);
+      transform: translateX(2px);
+    }
+
+    .menu-link small {
+      font-size: 10px;
+      color: var(--text-softer);
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-softer);
+      cursor: pointer;
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        color var(--transition-fast);
+    }
+
+    .chip.active {
+      border-color: var(--blue);
+      background: rgba(37, 99, 235, 0.18);
+      color: var(--blue-soft);
+    }
+
+    .search-box {
+      margin-top: 6px;
+      padding: 5px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: #020617;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      flex: 1;
+    }
+
+    /* COL CENTRALE : MRBOOK FEED */
+
+    .feed {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .composer {
+      background: radial-gradient(circle at top left, #0b1120, #020617 60%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 8px 10px;
+    }
+
+    .composer-top {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .composer-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #3b82f6, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .composer-input {
+      flex: 1;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #020617;
+      padding: 6px 8px;
+      font-size: 12px;
+      color: var(--text-softer);
+    }
+
+    .composer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      justify-content: space-between;
+    }
+
+    .composer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .composer-btn {
+      font-size: 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+      padding: 3px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .composer-btn:hover {
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .composer-publish {
+      font-size: 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, #22c55e, #a855ff);
+      color: #020617;
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow:
+        0 0 18px rgba(34, 197, 94, 0.6),
+        0 0 24px rgba(168, 85, 255, 0.5);
+    }
+
+    .post {
+      background: #020617;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .post-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #60a5fa, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .post-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .post-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .post-handle {
+      font-size: 11px;
+      color: var(--text-softer);
+    }
+
+    .post-time {
+      font-size: 10px;
+      color: var(--text-softer);
+    }
+
+    .post-body {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .post-body p {
+      margin: 0 0 4px;
+    }
+
+    .post-poll {
+      margin-top: 4px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 12px;
+    }
+
+    .poll-option {
+      margin-top: 4px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .poll-option:hover {
+      border-color: var(--blue);
+    }
+
+    .post-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-softer);
+      border-top: 1px solid var(--border-soft);
+      padding-top: 4px;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .post-btn:hover {
+      border-color: var(--border);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .post-counters {
+      font-size: 10px;
+    }
+
+    .hashtag-row {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .hashtag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text-softer);
+    }
+
+    /* COL DROITE : GAMIFICATION TOXIQUE */
+
+    .score-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-softer);
+      margin-top: 4px;
+    }
+
+    .score-pill {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .xp-bar {
+      margin-top: 6px;
+      height: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+    }
+
+    .xp-bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #a855ff);
+      transition: width var(--transition-med);
+    }
+
+    .quest-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    .quest-item {
+      padding: 4px 0;
+      border-bottom: 1px dashed var(--border-soft);
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .quest-label {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .quest-label span.desc {
+      font-size: 11px;
+      color: var(--text-softer);
+    }
+
+    .quest-btn {
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-soft);
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+
+    .quest-btn.done {
+      border-color: var(--accent);
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.15);
+    }
+
+    .ticker {
+      font-size: 11px;
+      color: var(--text-softer);
+      margin-top: 6px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .ticker span {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .links-vrac {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .links-vrac a::before {
+      content: "↗ ";
+      opacity: 0.6;
+    }
+
+    .disclaimer {
+      font-size: 10px;
+      color: var(--text-softer);
+      margin-top: 6px;
+      border-top: 1px solid var(--border-soft);
+      padding-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .topbar-center {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">MR+</div>
+        <div class="brand-text">
+          <div class="brand-title">MR EN MIEUX</div>
+          <div class="brand-sub">Mouvement Radical · Campagne 24/7</div>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <div class="live-banner">
+          <div class="live-dot"></div>
+          <span>MRbook · flux de campagne en continu</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="streak-pill">
+          🔥 Streak d’indignation :
+          <strong id="streak-count">0</strong> jours
+        </div>
+        <button id="notif-btn" class="notif-btn">
+          <span class="notif-dot"></span>
+          Activer les notifs toxiques
+        </button>
+      </div>
+    </header>
+
+    <!-- LAYOUT -->
+    <main class="layout">
+      <!-- COL GAUCHE -->
+      <aside class="col">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">👤</span>
+              Profil officiel MR EN MIEUX
+            </div>
+            <span class="badge badge-blue">MRbook</span>
+          </div>
+
+          <div class="profile-header">
+            <div class="profile-avatar">MR</div>
+            <div class="profile-info">
+              <div class="profile-name">MR EN MIEUX – Mouvement Radical</div>
+              <div class="profile-handle">@mr.en.mieux.officiel</div>
+            </div>
+          </div>
+          <div class="profile-meta">
+            <span>🌍 Timeline : univers parallèle belge</span>
+            <span>🔁 Rebrandings : ∞</span>
+          </div>
+
+          <div class="menu-links">
+            <div class="menu-link">
+              <span class="label">🏠 Mur de campagne</span>
+              <small>Infos en boucle, sans sommeil</small>
+            </div>
+            <div class="menu-link">
+              <span class="label">🗳️ Sondages contradictoires</span>
+              <small>Résultats en temps réel (ou pas)</small>
+            </div>
+            <div class="menu-link">
+              <span class="label">🎮 Mode gamifié toxique</span>
+              <small>XP de rage, badges de dépit</small>
+            </div>
+          </div>
+
+          <div class="filter-chips">
+            <button class="chip active">Tous les posts</button>
+            <button class="chip">Indignation</button>
+            <button class="chip">Promesses</button>
+            <button class="chip">Mèmes</button>
+            <button class="chip">Communiqués sérieux-ish</button>
+          </div>
+
+          <div class="search-box">
+            🔍
+            <input placeholder="Chercher une polémique, un buzz, un démenti..." />
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🔗</span>
+              Portails liés
+            </div>
+            <span class="badge">Univers ouaisfi.eu</span>
+          </div>
+          <div class="links-vrac">
+            <a href="mr-en-mieux.html">Communiqué officiel MR EN MIEUX</a>
+            <a href="boutique.html">Boutique 12,50 – contenus & prestations</a>
+            <a href="12-50.html">Jeu concours «12,50» – niveau campagne</a>
+            <a href="organisation.html">“L’Organisation” – back-office socialement anonyme</a>
+            <a href="pac.html">Fan club PAC – contre-modèle éducatif</a>
+            <a href="test-plaidoyer.html">Test plaidoyer citoyen – mode hardcore</a>
+          </div>
+        </section>
+      </aside>
+
+      <!-- COL CENTRALE : FLUX MRBOOK -->
+      <section class="col">
+        <div class="card composer">
+          <div class="composer-top">
+            <div class="composer-avatar">MR</div>
+            <div class="composer-input">
+              Que veut-on radicaliser aujourd’hui ? (écrire ici ne change rien, c’est toxique)
+            </div>
+          </div>
+          <div class="composer-bottom">
+            <div class="composer-actions">
+              <button class="composer-btn">📸 Ajouter un visuel outrageusement neutre</button>
+              <button class="composer-btn">📊 Joindre un sondage jamais représentatif</button>
+            </div>
+            <button class="composer-publish" id="fake-publish-btn">
+              ⚡ Publier quand même
+            </button>
+          </div>
+        </div>
+
+        <div class="feed">
+          <!-- Post 1 -->
+          <article class="card post">
+            <div class="post-header">
+              <div class="post-avatar">MR</div>
+              <div class="post-meta">
+                <div class="post-name">MR EN MIEUX – Mouvement Radical</div>
+                <div class="post-handle">@mr.en.mieux.officiel · Campagne 24/7</div>
+                <div class="post-time">il y a 3 minutes · sponsorisé par la fatigue générale</div>
+              </div>
+            </div>
+            <div class="post-body">
+              <p>
+                🌙 <strong>Campagne de nuit, campagne de jour, campagne au milieu du burn-out.</strong>
+              </p>
+              <p>
+                Ici, le flux ne s’arrête jamais&nbsp;: plus tu scrolles, plus tu gagnes
+                des <em>points de confusion politique</em>. À 10.000 points, tu débloques
+                un PDF de 84 pages que personne ne lira jamais.
+              </p>
+              <div class="post-poll">
+                <div><strong>Question du moment :</strong> à quel point es-tu fatigué·e de la campagne ?</div>
+                <div class="poll-option">
+                  <span>😴 Juste assez pour scroller sans lire</span>
+                  <span>Votes : ∞</span>
+                </div>
+                <div class="poll-option">
+                  <span>🤯 Assez pour tout lire, tout oublier, tout relire</span>
+                  <span>Votes : ∞</span>
+                </div>
+                <div class="poll-option">
+                  <span>🔥 Trop tard, j’ai déjà rejoint “L’Organisation”</span>
+                  <span>Votes : ∞</span>
+                </div>
+              </div>
+              <div class="hashtag-row">
+                <span class="hashtag">#CampagneSansFin</span>
+                <span class="hashtag">#MRbook</span>
+                <span class="hashtag">#ToutLeMondeEstFatigué</span>
+              </div>
+            </div>
+            <div class="post-footer">
+              <div class="post-actions">
+                <div class="post-btn" data-xp="2">👍 J’aime vaguement</div>
+                <div class="post-btn" data-xp="4">💬 Commenter sans lire</div>
+                <div class="post-btn" data-xp="6">🔁 Partager par réflexe</div>
+                <div class="post-btn" data-xp="10">😡 S’indigner très fort</div>
+              </div>
+              <div class="post-counters">
+                <span id="counter1-likes">12,5k j’aime</span> ·
+                <span id="counter1-comments">1,25k commentaires</span> ·
+                <span id="counter1-shares">125 partages</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Post 2 -->
+          <article class="card post">
+            <div class="post-header">
+              <div class="post-avatar">MR</div>
+              <div class="post-meta">
+                <div class="post-name">MR EN MIEUX – Mouvement Radical</div>
+                <div class="post-handle">@mr.en.mieux.officiel · Live fact-checking</div>
+                <div class="post-time">il y a 42 minutes · en direct d’une autre timeline</div>
+              </div>
+            </div>
+            <div class="post-body">
+              <p>
+                🧪 <strong>Expérience gamifiée :</strong> chaque fois que tu cliques sur un bouton
+                ici, on simule un micro-boost de dopamine.
+              </p>
+              <p>
+                Plus tu t’énerves, plus tu montes en <em>niveau d’engagement</em>.
+                À partir du niveau 12,50, tu peux débloquer un accès
+                à la <a href="organisation.html">salle des machines de l’Organisation</a>.
+              </p>
+              <p>
+                Rien de tout ça n’est connecté à une vraie API. C’est juste un
+                simulateur de toxicité ludique, en HTML/CSS/JS.
+              </p>
+            </div>
+            <div class="post-footer">
+              <div class="post-actions">
+                <div class="post-btn" data-xp="5">🎯 Booster mon karma militant</div>
+                <div class="post-btn" data-xp="3">🧊 Me calmer (un peu)</div>
+                <div class="post-btn" data-xp="7">📎 Lire le programme (ou pas)</div>
+              </div>
+              <div class="post-counters">
+                <span id="counter2-xp">XP de campagne simulée : 0</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Post 3 : lien vers autres sites -->
+          <article class="card post">
+            <div class="post-header">
+              <div class="post-avatar">MR</div>
+              <div class="post-meta">
+                <div class="post-name">MR EN MIEUX – Mouvement Radical</div>
+                <div class="post-handle">@mr.en.mieux.officiel · Cross-univers</div>
+                <div class="post-time">il y a 3 heures · univers partagé 2042</div>
+              </div>
+            </div>
+            <div class="post-body">
+              <p>
+                🎮 Tu veux vraiment “participer” à la campagne ?
+                Au lieu de liker à l’infini, tu peux explorer les autres niveaux :
+              </p>
+              <ul style="margin:0 0 4px 18px; padding:0;">
+                <li><a href="jeu-arcade.html">Arcade globale – hub de tous les sites</a></li>
+                <li><a href="boutique.html">Boutique 12,50 – où tout se monétise (ou se partage)</a></li>
+                <li><a href="bilan.html">Bilan.html – la campagne intérieure, version burn-out</a></li>
+                <li><a href="nyxo.html">NYXO – faux OS politique</a></li>
+              </ul>
+              <p>
+                Chaque clic te fait gagner de l’XP dans le <em>Scoreboard de confusion</em>
+                à droite. Mais tout est local, dans ton navigateur.
+              </p>
+            </div>
+            <div class="post-footer">
+              <div class="post-actions">
+                <div class="post-btn" data-xp="4">🚪 Sortir du flux (en théorie)</div>
+                <div class="post-btn" data-xp="2">🌀 Rester encore un peu</div>
+              </div>
+              <div class="post-counters">
+                <span>Personnes vraiment sorties : 0</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- COL DROITE : SCOREBOARD TOXIQUE -->
+      <aside class="col">
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📈</span>
+              Scoreboard de campagne
+            </div>
+            <span class="badge badge-accent">gamification toxique</span>
+          </div>
+          <div class="score-row">
+            <div class="score-pill">
+              💢 Indignation cumulée :
+              <strong id="score-indignation">0</strong> pts
+            </div>
+            <div class="score-pill">
+              🧠 Confusion politique :
+              <strong id="score-confusion">0</strong> pts
+            </div>
+          </div>
+          <div class="xp-bar">
+            <div id="xp-bar-inner" class="xp-bar-inner"></div>
+          </div>
+          <div style="font-size:11px; color:var(--text-softer); margin-top:4px;">
+            Niveau : <span id="xp-level">0</span> · Prochain palier à 12,50 points.
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🎯</span>
+              Quêtes du jour
+            </div>
+            <span class="badge badge-blue">à ne surtout pas faire</span>
+          </div>
+          <ul class="quest-list">
+            <li class="quest-item">
+              <div class="quest-label">
+                <span>Scrolle jusqu’en bas de cette page.</span>
+                <span class="desc">Récompense : +2 confusion, -1 énergie vitale.</span>
+              </div>
+              <button class="quest-btn" data-xp="2">Valider</button>
+            </li>
+            <li class="quest-item">
+              <div class="quest-label">
+                <span>Cliquer sur au moins 3 liens politiques.</span>
+                <span class="desc">Récompense : +3 indignation, +2 confusion.</span>
+              </div>
+              <button class="quest-btn" data-xp="5">Valider</button>
+            </li>
+            <li class="quest-item">
+              <div class="quest-label">
+                <span>Essayer de comprendre un programme complet.</span>
+                <span class="desc">Récompense : +12,5 XP, fatigue extrême.</span>
+              </div>
+              <button class="quest-btn" data-xp="13">Valider</button>
+            </li>
+          </ul>
+          <div class="ticker">
+            <span>🕒 Dernière actualisation : toutes les 12,50 secondes (dans notre imagination).</span>
+            <span>⚠️ Rappel : tout ça est local et fictif, rien n’est envoyé nulle part.</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🛰️</span>
+              Flux parallèle
+            </div>
+            <span class="badge">liens en vrac</span>
+          </div>
+          <div class="links-vrac">
+            <a href="mr-en-mieux.html">Communiqué “MR EN MIEUX – Mouvement Radical”</a>
+            <a href="pac.html">PAC : fan club & contre-pouvoir narratif</a>
+            <a href="etagere.html">Etagere : toutes les preuves dans un seul dashboard</a>
+            <a href="vsse.html">VSSE : test de recrutement fictif</a>
+            <a href="mr-campagne.html">Recharger ce site de campagne (boucle infinie)</a>
+          </div>
+          <div class="disclaimer">
+            Ceci est une <strong>parodie critique</strong> de la
+            gamification politique. Aucune donnée réelle, aucun
+            compte réel, aucun parti réel n’est relié à ce machin.
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // Petit script pour simuler la gamification toxique (tout en restant 100% local)
+
+    const scoreIndignationEl = document.getElementById("score-indignation");
+    const scoreConfusionEl = document.getElementById("score-confusion");
+    const xpBarInner = document.getElementById("xp-bar-inner");
+    const xpLevelEl = document.getElementById("xp-level");
+    const streakCountEl = document.getElementById("streak-count");
+    const notifBtn = document.getElementById("notif-btn");
+    const fakePublishBtn = document.getElementById("fake-publish-btn");
+
+    let scoreIndignation = 0;
+    let scoreConfusion = 0;
+    let xp = 0;
+    let streak = 0;
+    let notifsActive = false;
+
+    function updateScores() {
+      scoreIndignationEl.textContent = scoreIndignation;
+      scoreConfusionEl.textContent = scoreConfusion;
+
+      const level = Math.floor(xp / 12.5);
+      xpLevelEl.textContent = level;
+
+      // Max 100%
+      const pct = Math.max(0, Math.min(100, (xp % 12.5) / 12.5 * 100));
+      xpBarInner.style.width = pct + "%";
+    }
+
+    function addXp(amount) {
+      xp += amount;
+      scoreIndignation += Math.round(amount / 2);
+      scoreConfusion += Math.round(amount / 3);
+      updateScores();
+    }
+
+    // Boutons de posts
+    document.querySelectorAll(".post-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const xpValue = parseInt(btn.dataset.xp || "1", 10);
+        addXp(xpValue);
+      });
+    });
+
+    // Quêtes
+    document.querySelectorAll(".quest-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("done")) return;
+        const xpValue = parseInt(btn.dataset.xp || "1", 10);
+        addXp(xpValue);
+        btn.classList.add("done");
+        btn.textContent = "Validé";
+      });
+    });
+
+    // Notifs toxiques simulées
+    notifBtn.addEventListener("click", () => {
+      notifsActive = !notifsActive;
+      if (notifsActive) {
+        notifBtn.innerHTML = '<span class="notif-dot"></span> Notifs toxiques : ON';
+        notifBtn.style.background = "#f97316";
+      } else {
+        notifBtn.innerHTML = '<span class="notif-dot"></span> Activer les notifs toxiques';
+        notifBtn.style.background = "#facc15";
+      }
+    });
+
+    // Fake publish -> augmente streak
+    fakePublishBtn.addEventListener("click", () => {
+      streak++;
+      streakCountEl.textContent = streak;
+      addXp(3);
+    });
+
+    // Init
+    updateScores();
+  </script>
+</body>
+</html>
