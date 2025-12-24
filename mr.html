@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>MR EN MIEUX · Mouvement Radical</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --blue: #0f5fdc;
+      --blue-dark: #0b3a86;
+      --blue-soft: #e0edff;
+      --bg: #f3f4f6;
+      --bg-card: #ffffff;
+      --border: #d1d5db;
+      --text: #111827;
+      --text-soft: #4b5563;
+      --text-softer: #6b7280;
+      --accent: #22c55e;
+      --accent-soft: #dcfce7;
+      --danger: #ef4444;
+      --radius-lg: 16px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --shadow-strong: 0 18px 45px rgba(15, 23, 42, 0.16);
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #e5f0ff 0, #f9fafb 40%, #f3f4f6 100%);
+      color: var(--text);
+    }
+
+    a {
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+
+    .topbar {
+      background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+      color: white;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffffff, #dbeafe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-dark);
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .topbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 11px;
+    }
+
+    .badge-radical {
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255,255,255,0.7);
+      background: rgba(15,23,42,0.12);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .topbar-cta {
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(15, 23, 42, 0.15);
+      background: #facc15;
+      color: #422006;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.25);
+      text-decoration: none;
+    }
+
+    .topbar-cta span {
+      font-size: 14px;
+    }
+
+    /* NAV */
+
+    .nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .nav-item {
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+
+    .nav-item:hover {
+      background: #eff6ff;
+      color: var(--blue-dark);
+    }
+
+    .nav-item.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .nav-search {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      font-size: 12px;
+    }
+
+    .nav-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 12px;
+    }
+
+    /* LAYOUT PRINCIPAL */
+
+    .main {
+      flex: 1;
+      padding: 16px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(260px, 1.1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .col-main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .col-side {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 14px 12px;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-softer);
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--blue);
+      background: var(--blue-soft);
+      color: var(--blue-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .badge-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #fee2e2;
+    }
+
+    .badge-accent {
+      border-color: var(--accent);
+      color: #166534;
+      background: var(--accent-soft);
+    }
+
+    .press-meta {
+      font-size: 11px;
+      color: var(--text-softer);
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .press-body {
+      font-size: 14px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .press-body p {
+      margin: 0 0 8px;
+    }
+
+    .press-quote {
+      margin: 8px 0;
+      padding: 8px 10px;
+      border-left: 3px solid var(--blue);
+      background: #eff6ff;
+      font-size: 13px;
+    }
+
+    .press-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .press-list li {
+      margin-bottom: 4px;
+    }
+
+    .press-footer {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-softer);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .pill-link {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .pill-link:hover {
+      background: #eff6ff;
+      border-color: var(--blue);
+    }
+
+    /* COLONNE DROITE */
+
+    .side-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .side-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .side-list li {
+      padding: 4px 0;
+      border-bottom: 1px dashed #e5e7eb;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: var(--text-softer);
+    }
+
+    .tag.hot {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #fee2e2;
+    }
+
+    .tag.green {
+      border-color: var(--accent);
+      color: #166534;
+      background: var(--accent-soft);
+    }
+
+    .vrac-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .vrac-links a::before {
+      content: "↗ ";
+      opacity: 0.7;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: var(--text-softer);
+      padding: 12px 16px 20px;
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .footer strong {
+      color: var(--text-soft);
+    }
+
+    .badge-univers {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px dashed #9ca3af;
+      margin-left: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">MR+</div>
+        <div class="brand-text">
+          <div class="brand-title">MR EN MIEUX</div>
+          <div class="brand-sub">Mouvement Radical (mais gentil)</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="badge-radical">communiqué de radicalisation interne</div>
+        <a href="#communique" class="topbar-cta">
+          <span>⚡</span>
+          <span>Lire le communiqué choc</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <div class="nav-menu">
+        <div class="nav-item active">Mouvement</div>
+        <div class="nav-item">Actu & Communiqués</div>
+        <div class="nav-item">Programme 2025-2075</div>
+        <div class="nav-item">Radicalisation positive</div>
+        <div class="nav-item">FAQ électeurs paumés</div>
+        <div class="nav-item">Boutique & jeux</div>
+      </div>
+      <div class="nav-search">
+        🔍
+        <input type="search" placeholder="Chercher une position, un retournement, une promesse..." />
+      </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="main">
+      <!-- COLONNE PRINCIPALE -->
+      <section class="col-main">
+        <!-- COMMUNIQUÉ -->
+        <article id="communique" class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                Communiqué de presse · Refonte radicale du MR
+              </div>
+              <div class="card-subtitle">
+                Le Mouvement Réformateur annonce sa mutation en
+                <strong>MR EN MIEUX – Mouvement Radical</strong>.
+              </div>
+            </div>
+            <div class="badge badge-danger">Breaking · “Encore radicalisé”</div>
+          </div>
+
+          <div class="press-meta">
+            <span>Bruxelles, quartier Toison d’Or alternatif, version bêta</span>
+            <span>Diffusion : immédiate / univers parallèle</span>
+            <span>Réf. interne : MR-12.50-RAD</span>
+          </div>
+
+          <div class="press-body">
+            <p>
+              Après plusieurs décennies de communication contrôlée, de visuels bien peignés
+              et de slogans testés sur panel, le Mouvement Réformateur annonce aujourd’hui
+              sa radicalisation définitive&nbsp;: il devient
+              <strong>MR EN MIEUX, le Mouvement Radical</strong>.
+            </p>
+
+            <p class="press-quote">
+              «&nbsp;Nous avons décidé d’assumer jusqu’au bout notre tendance
+              naturelle à aller trop loin, mais cette fois-ci dans le bon sens&nbsp;:
+              transparence radicale, auto-dérision radicale, cohérence radicale.
+              On commence par dire tout haut ce que tout le monde pense tout bas&nbsp;:
+              on a changé de nom tellement de fois qu’on ne sait même plus
+              ce qu’on réformait.&nbsp;»
+              <br />
+              — Porte-parole imaginaire, cellule “Communication & Remise en question”
+            </p>
+
+            <p>
+              Concrètement, le MR EN MIEUX annonce une série de mesures internes
+              et symboliques, immédiatement applicables dans cet univers déjanté&nbsp;:
+            </p>
+
+            <ul class="press-list">
+              <li>
+                <strong>Changement de sigle</strong> :
+                MR = <em>Mouvement Radical</em>, mais aussi
+                <em>Mode Reboot</em>, <em>Mauvaise Réputation</em> ou
+                <em>Mais Réfléchissons</em>, selon l’humeur du jour.
+              </li>
+              <li>
+                <strong>Charte graphique radicale</strong> :
+                le bleu officiel reste, mais il clignote intérieurement
+                de vert fluo dès qu’on parle climat, social ou burn-out généralisé.
+              </li>
+              <li>
+                <strong>Transparence tarifaire</strong> :
+                toutes les idées sont désormais indexées sur une échelle unique
+                en 12,50&nbsp;€, avec des versions
+                nano (0,125&nbsp;€), micro (1,25&nbsp;€) et méga (12.500&nbsp;€)
+                pour les promesses «&nbsp;vraiment très très ambitieuses&nbsp;».
+              </li>
+              <li>
+                <strong>Auto-dérision obligatoire</strong> :
+                tout élu, militante ou sympathisant doit être capable
+                d’expliquer en 3 phrases pourquoi ce rebranding est à la fois
+                une bonne idée, une mauvaise idée, et une performance artistique.
+              </li>
+            </ul>
+
+            <p>
+              Sur le plan programmatique, rien ne change officiellement (parce que
+              tout est déjà «&nbsp;en consultation&nbsp;»), mais officieusement,
+              le MR EN MIEUX teste plusieurs lignes radicales simultanément&nbsp;:
+            </p>
+
+            <ul class="press-list">
+              <li>
+                <strong>Radicaliser la modération</strong> :
+                être tellement au centre qu’on finit par faire le tour
+                et apparaître dans un autre quadrant.
+              </li>
+              <li>
+                <strong>Radicaliser la nuance</strong> :
+                répondre «&nbsp;ça dépend&nbsp;» à toutes les questions,
+                mais avec des graphiques très sérieux et des PDF impeccables.
+              </li>
+              <li>
+                <strong>Radicaliser la proximité</strong> :
+                passer moins de temps en plateau TV et plus dans le
+                code source de la démocratie locale (HTML, CSS et participation).
+              </li>
+            </ul>
+
+            <p class="press-quote">
+              «&nbsp;Si on doit encore se radicaliser, autant le faire
+              du côté des gens cramés, des travailleurs éclatés
+              et des associations qui font le boulot pendant que tout le monde
+              fait semblant de découvrir la crise suivante.&nbsp;»
+              <br />
+              — Comité fantôme des militants qui lisent les petits caractères
+            </p>
+
+            <p>
+              Ce communiqué n’a aucune valeur juridique, mais une forte valeur
+              cathartique. Toute ressemblance avec un parti existant
+              serait évidemment totalement assumée, mais dans cet univers-ci
+              on parle de <strong>MR EN MIEUX</strong>, pas de l’original.
+            </p>
+
+            <div class="press-footer">
+              Pour plus d’informations, merci de vous adresser à
+              <strong>notre service de communication radicale</strong>,
+              disponible en HTML, JSON ou simple café froid.
+            </div>
+
+            <div class="pill-row">
+              <a href="boutique.html" class="pill-link">
+                🛒 MR Shop expérimental (échelle 12,50)
+              </a>
+              <a href="12-50.html" class="pill-link">
+                🎮 Jeu concours « 12,50 » – niveau radical
+              </a>
+              <a href="organisation.html" class="pill-link">
+                🕵️ Dossier “Organisation” (agence sociale secrète)
+              </a>
+              <a href="earl.html" class="pill-link">
+                🔍 EARL – moteur de recherche parallèle
+              </a>
+              <a href="mr-en-mieux.html" class="pill-link">
+                ♻ Recharger ce communiqué (version boucle temporelle)
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- ENCADRÉ SUPPLÉMENTAIRE -->
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">Questions fréquemment mal posées</div>
+            <span class="badge badge-accent">FAQ radicalisée</span>
+          </div>
+          <div class="press-body">
+            <p><strong>Q&nbsp;: Est-ce un vrai communiqué&nbsp;?</strong><br />
+              R&nbsp;: Non. C’est un exercice de fiction politique glissante,
+              dans un univers où les partis assument leurs rebrandings absurdes.
+            </p>
+            <p><strong>Q&nbsp;: Est-ce que le MR a vraiment changé de nom&nbsp;?</strong><br />
+              R&nbsp;: Dans cette timeline-ci, oui. Dans la tienne, à vérifier
+              sur les vrais sites institutionnels.</p>
+            <p><strong>Q&nbsp;: Peut-on rejoindre le Mouvement Radical&nbsp;?</strong><br />
+              R&nbsp;: Oui, en commençant par ouvrir un fichier HTML et en se
+              posant sérieusement la question&nbsp;: «&nbsp;Je veux jouer ou subir&nbsp;?&nbsp;»</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- COLONNE LATÉRALE -->
+      <aside class="col-side">
+        <section class="card">
+          <div class="side-title">Fiche signalétique (non contractuelle)</div>
+          <ul class="side-list">
+            <li><strong>Nom long :</strong> MR EN MIEUX · Mouvement Radical</li>
+            <li><strong>Nom court :</strong> MR+</li>
+            <li><strong>Siège imaginaire :</strong> Avenue de la Toison d’Or, étage méta</li>
+            <li><strong>Couleurs :</strong> Bleu institutionnel & vert fluo discret</li>
+            <li><strong>Slogan :</strong> «&nbsp;Plus radical que la réalité, mais moins dangereux.&nbsp;»</li>
+            <li><strong>Think tank :</strong> Centre Jean Gaulôis (version parodique)</li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <div class="side-title">Axes de radicalisation</div>
+          <div class="tag-cloud">
+            <span class="tag hot">Centre extrême</span>
+            <span class="tag">Réalisme fatigué</span>
+            <span class="tag green">Participation radicale</span>
+            <span class="tag">Burn-out systémique</span>
+            <span class="tag">Décorticage des programmes</span>
+            <span class="tag hot">Auto-critique obligatoire</span>
+            <span class="tag green">Éducation permanente</span>
+            <span class="tag">Intranet de la démocratie</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="side-title">Liens en vrac & dossiers parallèles</div>
+          <div class="vrac-links">
+            <a href="bilan.html">Bilan.html – site de quelqu’un qui en a marre</a>
+            <a href="pac.html">PAC.html – fan club non officiel & plan de domination éducative</a>
+            <a href="test-plaidoyer.html">Test plaidoyer – examen d’entrée (hardcore)</a>
+            <a href="nyxo.html">NYXO.html – faux OS politique sur navigateur</a>
+            <a href="etagere.html">Etagere.html – toutes les preuves dans une seule étagère</a>
+            <a href="vsse.html">VSSE.html – simulation de recrutement qui va trop loin</a>
+            <a href="mr-en-mieux.html#communique">Ce communiqué lui-même, en abyme</a>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <!-- FOOTER / DISCLAIMER -->
+    <footer class="footer">
+      <div>
+        <strong>Note importante :</strong>
+        ceci est une page de fiction satirique intégrée à un univers de jeu,
+        <em>non affiliée</em> à un parti réel.
+        Toute référence à des sigles existants est volontairement détournée
+        et doit être lue comme un exercice critique & ludique, pas comme un site officiel.
+        <span class="badge-univers">univers : ouaisfi.eu · mode déjanté</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
