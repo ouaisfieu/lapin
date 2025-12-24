@@ -1,0 +1,633 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Clones de Campagne · Ecolo & PTB vs MR EN MIEUX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+:root {
+  --bg: #020617;
+  --panel: #020617;
+  --border: #1f2937;
+  --text: #e5e7eb;
+  --text-soft: #9ca3af;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-mix: #a855f7;
+  --radius: 16px;
+  --shadow: 0 18px 45px rgba(0,0,0,0.85);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+  color: var(--text);
+}
+
+/* HEADER */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(15,23,42,0.96);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: conic-gradient(from 210deg,
+    #22c55e 0deg, #22c55e 120deg,
+    #ef4444 120deg, #ef4444 240deg,
+    #a855f7 240deg, #a855f7 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #020617;
+  font-weight: 900;
+  font-size: 14px;
+  box-shadow:
+    0 0 0 2px #020617,
+    0 0 18px rgba(168,85,247,0.85);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.tag {
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+}
+
+.tag-eco {
+  border-color: #22c55e;
+  color: #bbf7d0;
+  background: rgba(22,163,74,0.25);
+}
+
+.tag-ptb {
+  border-color: #ef4444;
+  color: #fecaca;
+  background: rgba(127,29,29,0.35);
+}
+
+/* NAV UNIVERSE */
+
+.universe-nav {
+  max-width: 1100px;
+  margin: 10px auto 0;
+  padding: 6px 12px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.universe-nav a {
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.universe-nav a:hover {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+/* LAYOUT */
+
+main {
+  max-width: 1100px;
+  margin: 8px auto 16px;
+  padding: 0 14px 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(260px, 1.2fr);
+  gap: 14px;
+}
+
+@media(max-width: 900px) {
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+/* SWITCH ECOLO / PTB */
+
+.switch-row {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.switch-btn {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  background: #020617;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.switch-btn.active-eco {
+  border-color: #22c55e;
+  background: rgba(22,163,74,0.35);
+  color: #bbf7d0;
+}
+
+.switch-btn.active-ptb {
+  border-color: #ef4444;
+  background: rgba(127,29,29,0.45);
+  color: #fecaca;
+}
+
+/* TIMELINE / FEED */
+
+.feed {
+  margin-top: 8px;
+}
+
+.feed h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.timeline {
+  list-style: none;
+  padding-left: 0;
+  margin: 6px 0 0;
+  border-left: 1px dashed #374151;
+}
+
+.timeline li {
+  margin: 0 0 8px;
+  padding-left: 10px;
+  position: relative;
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #6b7280;
+}
+
+.timeline li.eco::before {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(22,163,74,0.9);
+}
+
+.timeline li.ptb::before {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(248,113,113,0.9);
+}
+
+.timeline small {
+  display: block;
+  font-size: 10px;
+  color: var(--text-soft);
+}
+
+/* SLOGANS COMPARÉS */
+
+.grid-slogan {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+@media(min-width: 720px) {
+  .grid-slogan {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+.slogan-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  background: #020617;
+  font-size: 12px;
+}
+
+.slogan-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+
+.slogan-mr {
+  color: #bfdbfe;
+}
+
+.slogan-eco {
+  color: #bbf7d0;
+}
+
+.slogan-ptb {
+  color: #fecaca;
+}
+
+/* CTA / MICRO-JEU */
+
+.btn-row {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+/* SIDE */
+
+.side-section {
+  font-size: 12px;
+}
+
+.side-section h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.side-box {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+
+.side-box ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.side-box li {
+  margin-bottom: 3px;
+}
+
+/* FOOTER */
+
+footer {
+  font-size: 10px;
+  color: var(--text-soft);
+  border-top: 1px solid var(--border);
+  padding: 10px 16px 14px;
+  background: #020617;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">CL</div>
+    <div class="brand-text">
+      <div class="brand-title">CAMPAGNE CLONES</div>
+      <div class="brand-sub">Forks parodiques d’un site de campagne · Ecolo & PTB</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="tag tag-eco">Vue Ecolo</span>
+    <span class="tag tag-ptb">Vue PTB</span>
+  </div>
+</header>
+
+<nav class="universe-nav">
+  <a href="index.html">🏠 Arcade</a>
+  <a href="tu-raques-ou-pas.html">💸 Tu Raques Ou Pas</a>
+  <a href="belgilikjes.html">💾 Belgilikjes</a>
+  <a href="mr-campagne.html">🔵 MR En Mieux</a>
+  <a href="organisation.html">🕵️ L’Organisation</a>
+  <a href="etagere.html">📚 Étagère</a>
+</nav>
+
+<main>
+  <!-- COL GAUCHE : CLONES -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2>🎭 Forks de campagne : Ecolo & PTB remixent le MR EN MIEUX</h2>
+        <div style="font-size:11px; color:var(--text-soft);">
+          Chaque camp clone le site original, le re-skinne, et remplace les punchlines par ses obsessions.
+        </div>
+      </div>
+    </div>
+
+    <!-- SWITCH -->
+    <div class="switch-row">
+      <button id="btn-eco" class="switch-btn active-eco" type="button">Vue Ecolo remix</button>
+      <button id="btn-ptb" class="switch-btn" type="button">Vue PTB remix</button>
+    </div>
+
+    <!-- FEED ECOLO -->
+    <div id="view-eco" class="feed">
+      <h3>🌿 Vu par Ecolo EN PLUS WOKE</h3>
+      <p class="small">
+        Hypothèse fictive : quelqu’un a forké “MR EN MIEUX” pour en faire
+        un site surclimatisé où tout est filtres verts, “just transitions” et bilans carbone des tweets.
+      </p>
+
+      <ul class="timeline">
+        <li class="eco">
+          <strong>“EN MIEUX, MAIS POUR LE CLIMAT”</strong><br>
+          <small>Refonte du slogan central : on garde la forme, on change le fond.</small>
+        </li>
+        <li class="eco">
+          <strong>Dashboard carbone des notifications</strong><br>
+          <small>Chaque push sur le mur de campagne affiche sa “trace numérique équivalente”.</small>
+        </li>
+        <li class="eco">
+          <strong>Mode “sobriété communicationnelle”</strong><br>
+          <small>Un bouton coupe volontairement 30% des messages de campagne pour limiter la pollution attentionnelle.</small>
+        </li>
+        <li class="eco">
+          <strong>Filtre “démocratie participative EN MIEUX”</strong><br>
+          <small>Le mur de notifications se transforme en atelier de co-écriture de programme.</small>
+        </li>
+      </ul>
+    </div>
+
+    <!-- FEED PTB -->
+    <div id="view-ptb" class="feed" style="display:none;">
+      <h3>🔴 Vu par PTB EN PLUS POPULO</h3>
+      <p class="small">
+        Hypothèse fictive : quelqu’un a forké “MR EN MIEUX” en mode “tableau de bord du coût de la vie”,
+        où chaque graphique de communication devient un comparatif de facture.
+      </p>
+
+      <ul class="timeline">
+        <li class="ptb">
+          <strong>“EN MIEUX, MAIS POUR LES PORTE-MONNAIE”</strong><br>
+          <small>Slogan remixé : chaque phrase se termine par un chiffre en euros.</small>
+        </li>
+        <li class="ptb">
+          <strong>Heatmap des dividendes</strong><br>
+          <small>Le mur de campagne affiche où part chaque euro public et qui récupère le plus de bonus.</small>
+        </li>
+        <li class="ptb">
+          <strong>Mode “facture détaillée EN MIEUX”</strong><br>
+          <small>Chaque promesse de campagne est accompagnée d’une ligne “qui paye quoi, et pourquoi”.</small>
+        </li>
+        <li class="ptb">
+          <strong>Alertes “discours vs réalité”</strong><br>
+          <small>Quand un message trop lisse apparaît, le site affiche un tooltip “à vérifier dans la vraie vie”.</small>
+        </li>
+      </ul>
+    </div>
+
+    <!-- COMPARATEUR DE SLOGANS -->
+    <div style="margin-top:10px;">
+      <h3 style="margin:0 0 4px; font-size:14px; color:var(--text);">
+        📊 Comparateur de slogans (ultra simplifié, ultra fictif)
+      </h3>
+      <p class="small">
+        Juste pour visualiser comment un même format peut être retourné à toutes les sauces.
+      </p>
+
+      <div class="grid-slogan">
+        <div class="slogan-card">
+          <div class="slogan-title slogan-mr">MR EN MIEUX</div>
+          <div>« Travailler plus pour cliquer plus (EN MIEUX). »</div>
+        </div>
+        <div class="slogan-card">
+          <div class="slogan-title slogan-eco">ECOLO EN PLUS WOKE</div>
+          <div>« Respirer mieux, cliquer moins, décider ensemble. »</div>
+        </div>
+        <div class="slogan-card">
+          <div class="slogan-title slogan-mr">MR EN MIEUX</div>
+          <div>« Notre algorithme sait ce que vous voulez (EN MIEUX). »</div>
+        </div>
+        <div class="slogan-card">
+          <div class="slogan-title slogan-ptb">PTB EN PLUS POPULO</div>
+          <div>« Si ça ne baisse pas la facture, ce n’est pas EN MIEUX. »</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" id="btn-random" type="button">
+          🎲 Générer un slogan remixé
+        </button>
+        <button class="btn" id="btn-reset" type="button">
+          ♻️ Revenir à la baseline
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COL DROITE : META & DISCLAIMER -->
+  <section class="side-section">
+    <article class="card">
+      <h2>🧩 Méta-jeu de clones</h2>
+      <p>
+        Ici, la campagne se transforme en <strong>bac à sable de communication politique</strong> :
+        on clone un site, on change deux lignes, et tout le sens bascule.
+      </p>
+      <div class="side-box">
+        <h3>Comment lire ce site :</h3>
+        <ul>
+          <li><strong>Comme un miroir :</strong> même forme, contenus opposés.</li>
+          <li><strong>Comme un exercice :</strong> “et si ce discours était reframé ailleurs ?”.</li>
+          <li><strong>Comme un jeu :</strong> tu peux imaginer d’autres clones encore plus improbables.</li>
+        </ul>
+      </div>
+      <div class="side-box">
+        <h3>Pour aller plus loin (dans ton univers) :</h3>
+        <ul>
+          <li>Retourner au <code>mr-campagne.html</code> pour voir la version originale.</li>
+          <li>Brancher ça sur <code>belgilikjes.html</code> pour imaginer des leaks des clones.</li>
+          <li>Lier à <code>tu-raques-ou-pas.html</code> pour demander : “tu raques pour qui, pour quoi, ou pas du tout ?”.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="card" style="margin-top:10px;">
+      <h2>⚖️ Disclaimer important</h2>
+      <p class="small">
+        Ce site est une <strong>parodie</strong> et une <strong>fiction pédagogique</strong>.
+        Il ne représente pas les positions officielles d’un parti politique.
+      </p>
+      <p class="small">
+        Aucun appel réel à voter, aucun ciblage, aucun profilage.  
+        Le but est de jouer avec les codes de la communication électorale,
+        pas de faire de la propagande.
+      </p>
+      <p class="small">
+        Si tu veux faire de la vraie politique, il faudra sortir du jeu, rencontrer des gens,
+        écouter leurs réalités, et accepter que le HTML ne suffira pas.
+      </p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  Campagne Clones · Ecolo & PTB vs MR EN MIEUX · Simulation satirique en HTML statique.
+  Toute ressemblance avec des partis existants est volontairement caricaturale et sans effet réel.
+</footer>
+
+<script>
+// SWITCH ECOLO / PTB
+const btnEco = document.getElementById("btn-eco");
+const btnPtb = document.getElementById("btn-ptb");
+const viewEco = document.getElementById("view-eco");
+const viewPtb = document.getElementById("view-ptb");
+
+btnEco.addEventListener("click", () => {
+  viewEco.style.display = "block";
+  viewPtb.style.display = "none";
+  btnEco.classList.add("active-eco");
+  btnPtb.classList.remove("active-ptb");
+});
+
+btnPtb.addEventListener("click", () => {
+  viewEco.style.display = "none";
+  viewPtb.style.display = "block";
+  btnEco.classList.remove("active-eco");
+  btnPtb.classList.add("active-ptb");
+});
+
+// SLOGANS RANDOM
+const randomBtn = document.getElementById("btn-random");
+const resetBtn = document.getElementById("btn-reset");
+
+const mrSlogans = [
+  "« Ensemble, vers plus de tableau de bord (EN MIEUX). »",
+  "« Une notification à la fois, on change le pays (EN MIEUX). »",
+  "« L’avenir, c’est plus de push, moins de nuance (EN MIEUX). »"
+];
+
+const ecoSlogans = [
+  "« Si ce n’est pas soutenable, ce n’est pas EN MIEUX. »",
+  "« Zéro greenwashing, mais beaucoup de questions. »",
+  "« Mieux vaut un clic de moins qu’une planète de trop. »"
+];
+
+const ptbSlogans = [
+  "« Tant que la facture monte, ce n’est pas EN MIEUX. »",
+  "« On ne like pas les dividendes, on compte. »",
+  "« Si tu dois choisir entre te chauffer et cliquer, on a un problème. »"
+];
+
+function setSlogans(mr, eco, ptb) {
+  const cards = document.querySelectorAll(".slogan-card");
+  if (cards.length >= 4) {
+    cards[0].querySelector("div:nth-child(2)").textContent = mr;
+    cards[1].querySelector("div:nth-child(2)").textContent = eco;
+    cards[3].querySelector("div:nth-child(2)").textContent = ptb;
+  }
+}
+
+const baseline = {
+  mr1: "« Travailler plus pour cliquer plus (EN MIEUX). »",
+  eco: "« Respirer mieux, cliquer moins, décider ensemble. »",
+  ptb: "« Si ça ne baisse pas la facture, ce n’est pas EN MIEUX. »"
+};
+
+randomBtn.addEventListener("click", () => {
+  const mr = mrSlogans[Math.floor(Math.random() * mrSlogans.length)];
+  const eco = ecoSlogans[Math.floor(Math.random() * ecoSlogans.length)];
+  const ptb = ptbSlogans[Math.floor(Math.random() * ptbSlogans.length)];
+  setSlogans(mr, eco, ptb);
+});
+
+resetBtn.addEventListener("click", () => {
+  setSlogans(baseline.mr1, baseline.eco, baseline.ptb);
+});
+</script>
+
+</body>
+</html>
