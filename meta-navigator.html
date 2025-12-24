@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>MetaNavigator · Méta-moteur de recherche local</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020b20;
+      --bg-card: #020817;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.2);
+      --accent-strong: #4ade80;
+      --border: #1e293b;
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --danger: #f97373;
+      --shadow-soft: 0 18px 40px rgba(15,23,42,0.9);
+      --radius-lg: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #0b1220 0, #020617 45%, #000 100%);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(2,6,23,0.97), rgba(2,6,23,0.8));
+      border-bottom: 1px solid rgba(148,163,184,0.18);
+      padding: 10px 12px;
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-soft);
+    }
+
+    .brand-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #a7f3d0, #22c55e 40%, #0f172a 100%);
+      box-shadow: 0 0 20px rgba(34,197,94,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #022c22;
+    }
+
+    .brand span strong {
+      color: var(--accent-strong);
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 220px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-input-wrap input {
+      width: 100%;
+      padding: 9px 32px 9px 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.95));
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      box-shadow: 0 10px 25px rgba(15,23,42,0.8);
+    }
+
+    .search-input-wrap input::placeholder {
+      color: var(--text-soft);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .kbd {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 6px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 2px 5px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.3);
+      padding: 8px 10px;
+      font-size: 11px;
+      background: radial-gradient(circle at top left, #0b1120, #020617);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: #022c22;
+      background: radial-gradient(circle at 10% 0, #bbf7d0, #22c55e 40%, #0f172a 100%);
+      box-shadow: 0 0 20px rgba(34,197,94,0.5);
+      font-weight: 600;
+    }
+
+    .btn-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: transparent;
+    }
+
+    .btn small {
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    /* LAYOUT */
+
+    .app-shell {
+      flex: 1;
+      max-width: 1200px;
+      margin: 10px auto 24px auto;
+      padding: 0 10px 40px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1.8fr) minmax(0, 1.5fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 980px) {
+      .app-shell {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148,163,184,0.3);
+      box-shadow: var(--shadow-soft);
+      padding: 12px 12px 14px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .panel-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-title-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(34,197,94,0.9);
+    }
+
+    .sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .scroll-y {
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    /* FOLDERS */
+
+    .folder-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .folder-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .folder-item.active {
+      background: radial-gradient(circle at 0 0, var(--accent-soft), rgba(15,23,42,0.9));
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(34,197,94,0.5);
+    }
+
+    .folder-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+    }
+
+    .folder-main span {
+      font-size: 13px;
+    }
+
+    .folder-icon {
+      font-size: 14px;
+    }
+
+    .folder-count {
+      font-size: 11px;
+      color: var(--text-soft);
+      min-width: 26px;
+      text-align: right;
+    }
+
+    .folder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(148,163,184,0.3);
+    }
+
+    .folder-actions button {
+      flex: 1 1 30%;
+      font-size: 11px;
+    }
+
+    .folder-input {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .folder-input input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 5px 8px;
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* TAG CLOUD */
+
+    .tag-cloud-wrap {
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(148,163,184,0.3);
+    }
+
+    .tag-cloud-title {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-cloud-tag {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 2px 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+    }
+
+    .tag-cloud-tag:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 6px rgba(148,163,184,0.6);
+    }
+
+    .tag-cloud-tag.active {
+      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15,23,42,0.96));
+      border-color: var(--accent);
+      color: var(--accent-strong);
+      box-shadow: 0 0 10px rgba(34,197,94,0.6);
+    }
+
+    /* RESULTS */
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .filters-left,
+    .filters-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .filter-select {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-soft);
+      font-size: 11px;
+      padding: 3px 26px 3px 8px;
+      position: relative;
+      appearance: none;
+      outline: none;
+      min-width: 110px;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-55%);
+      font-size: 9px;
+      color: var(--text-soft);
+      pointer-events: none;
+    }
+
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .result-empty {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.9);
+      border: 1px dashed rgba(148,163,184,0.4);
+      font-size: 12px;
+      color: var(--text-soft);
+      text-align: center;
+    }
+
+    .result-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.95), #020617);
+      padding: 7px 8px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .result-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .result-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-strong);
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 2px;
+      word-break: break-word;
+    }
+
+    .result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .badge {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .badge-type-url {
+      border-color: #38bdf8;
+      color: #7dd3fc;
+    }
+
+    .badge-type-file {
+      border-color: #fb923c;
+      color: #fed7aa;
+    }
+
+    .badge-type-note {
+      border-color: #a855f7;
+      color: #e9d5ff;
+    }
+
+    .badge-folder {
+      border-color: rgba(148,163,184,0.7);
+    }
+
+    .result-description {
+      font-size: 12px;
+      color: var(--text-soft);
+      word-break: break-word;
+    }
+
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .result-actions button {
+      font-size: 11px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      border-width: 1px;
+    }
+
+    /* VIEWER */
+
+    .viewer-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 11px;
+    }
+
+    .viewer-tab {
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--text-soft);
+    }
+
+    .viewer-tab.active {
+      border-color: var(--accent);
+      background: radial-gradient(circle at top left, var(--accent-soft), rgba(15,23,42,0.9));
+      color: var(--accent-strong);
+      box-shadow: 0 0 10px rgba(34,197,94,0.5);
+    }
+
+    .viewer-status {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .viewer-frame {
+      flex: 1;
+      min-height: 0;
+      background: rgba(15,23,42,0.96);
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.5);
+      overflow: hidden;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+
+    .viewer-inner {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      padding: 8px;
+    }
+
+    .viewer-inner iframe,
+    .viewer-inner embed,
+    .viewer-inner object {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #020617;
+    }
+
+    .viewer-placeholder {
+      margin: auto;
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .viewer-code {
+      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .viewer-meta {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    /* MODAL */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 10px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      max-width: 460px;
+      width: 100%;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.7);
+      box-shadow: 0 26px 60px rgba(15,23,42,0.95);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 12px;
+    }
+
+    .field label {
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 6px 8px;
+      background: rgba(15,23,42,0.95);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .danger {
+      color: var(--danger);
+    }
+
+    /* SMALL UTILS */
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 1px 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .text-accent {
+      color: var(--accent-strong);
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .mt-4 { margin-top: 4px; }
+    .mt-6 { margin-top: 6px; }
+    .mt-8 { margin-top: 8px; }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .brand {
+        justify-content: space-between;
+      }
+      .btn span {
+        display: none;
+      }
+      .btn small {
+        display: inline;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">M</div>
+        <span>MetaNavigator · <strong>Méta-moteur local</strong></span>
+      </div>
+
+      <div class="search-box">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            id="globalSearch"
+            type="text"
+            autocomplete="off"
+            placeholder="Rechercher dans ton faux Internet (titre, tags, dossier, description)…"
+          />
+          <div class="kbd">Ctrl + K</div>
+        </div>
+        <button class="btn btn-ghost" id="btnClearSearch" title="Effacer la recherche">
+          ✕
+        </button>
+      </div>
+
+      <div class="search-box" style="flex: 0 0 auto; justify-content: flex-end;">
+        <button class="btn btn-ghost" id="btnAddUrl">
+          🌐 <span>Ajouter URL</span><small>URL</small>
+        </button>
+        <button class="btn btn-ghost" id="btnAddNote">
+          📝 <span>Nouvelle note</span><small>Note</small>
+        </button>
+        <button class="btn btn-primary" id="btnAddFiles">
+          📂 <span>Importer fichiers</span><small>Fichiers</small>
+        </button>
+        <input id="fileInput" type="file" multiple style="display:none" />
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP -->
+  <main class="app-shell">
+    <!-- FOLDERS -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="panel-title-dot"></span>
+          <span>Dossiers</span>
+        </div>
+      </div>
+      <div class="sub">
+        Classe tes pages comme sur un disque dur fictif. Clique sur un dossier pour filtrer.
+      </div>
+
+      <div class="scroll-y">
+        <div class="folder-list" id="folderList"></div>
+
+        <div class="folder-input">
+          <input type="text" id="newFolderName" placeholder="Nouveau dossier…" />
+          <button class="btn" id="btnCreateFolder" style="font-size:11px;padding:5px 8px;">+ </button>
+        </div>
+
+        <div class="folder-actions">
+          <button class="btn btn-ghost" id="btnExportIndex">
+            📤 Exporter index
+          </button>
+          <button class="btn btn-ghost" id="btnImportIndex">
+            📥 Importer index
+          </button>
+          <button class="btn btn-danger" id="btnResetSystem" title="Tout effacer et repartir de zéro">
+            🧨 Reset
+          </button>
+          <input id="importIndexInput" type="file" accept="application/json" style="display:none" />
+        </div>
+
+        <div class="tag-cloud-wrap">
+          <div class="tag-cloud-title">
+            <span>Nuage de tags</span>
+            <span style="font-size:10px;color:var(--text-soft);">
+              Clique pour filtrer
+            </span>
+          </div>
+          <div class="tag-cloud" id="tagCloud"></div>
+        </div>
+
+        <div class="sub mt-6" style="font-size:11px;">
+          <strong class="text-accent">Astuce :</strong> l’index (métadonnées) est
+          sauvegardé dans <span class="mono">localStorage</span>. Les fichiers
+          eux-mêmes restent dans ton navigateur (session en cours).
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="panel-title-dot"></span>
+          <span>Résultats</span>
+        </div>
+        <div class="sub" id="resultsCount"></div>
+      </div>
+
+      <div class="filters-row">
+        <div class="filters-left">
+          <span class="chip">Méta-moteur fictif</span>
+          <span id="currentFilterBadge" class="chip">Tous les dossiers · Tous les tags</span>
+        </div>
+        <div class="filters-right">
+          <div class="select-wrap">
+            <select id="typeFilter" class="filter-select">
+              <option value="all">Tous les types</option>
+              <option value="url">URLs</option>
+              <option value="file">Fichiers</option>
+              <option value="note">Notes</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select id="sortBy" class="filter-select">
+              <option value="score">Tri : pertinence</option>
+              <option value="title">Tri : titre A → Z</option>
+              <option value="date">Tri : plus récent</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-y">
+        <div id="resultsList" class="results-list"></div>
+      </div>
+    </section>
+
+    <!-- VIEWER -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="panel-title-dot"></span>
+          <span>Visionneuse</span>
+        </div>
+      </div>
+
+      <div class="viewer-tabs">
+        <button class="viewer-tab active" data-view="content">Contenu</button>
+        <button class="viewer-tab" data-view="meta">Métadonnées</button>
+      </div>
+
+      <div class="viewer-status" id="viewerStatus">
+        Sélectionne un résultat pour l’afficher ici.
+      </div>
+
+      <div class="viewer-frame">
+        <div class="viewer-inner" id="viewerInner">
+          <div class="viewer-placeholder">
+            🛰️ Rien à afficher pour l’instant.<br/>
+            Lance une recherche ou clique sur un résultat.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL (shared for URL + Note) -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Nouvelle entrée</div>
+        <button class="btn btn-ghost" id="modalClose" title="Fermer">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="modalTitleInput">Titre</label>
+          <input id="modalTitleInput" type="text" placeholder="Titre lisible…" />
+        </div>
+        <div class="field" id="modalUrlField">
+          <label for="modalUrlInput">URL</label>
+          <input id="modalUrlInput" type="url" placeholder="https://exemple.org/…" />
+        </div>
+        <div class="field" id="modalNoteField">
+          <label for="modalNoteInput">Contenu de la note</label>
+          <textarea id="modalNoteInput" placeholder="Texte, résumé, infos importantes…"></textarea>
+        </div>
+        <div class="field">
+          <label for="modalDescriptionInput">Description (facultatif)</label>
+          <textarea id="modalDescriptionInput" placeholder="Mini résumé pour le moteur de recherche…"></textarea>
+        </div>
+        <div class="field">
+          <label for="modalFolderSelect">Dossier</label>
+          <select id="modalFolderSelect"></select>
+        </div>
+        <div class="field">
+          <label for="modalTagsInput">Tags (séparés par des virgules)</label>
+          <input id="modalTagsInput" type="text" placeholder="dossier, veille, projet, fictif…" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="modalCancel">Annuler</button>
+        <button class="btn btn-primary" id="modalSave">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************************************************************
+     * MetaNavigator · mini faux-Internet + méta-moteur de recherche
+     ********************************************************************/
+
+    const STORAGE_KEY = "MetaNavigatorIndexV1";
+
+    /** @type {Array<any>} */
+    let pages = [];
+    let folders = ["Tous", "Inbox", "Veille", "Dossiers", "Projets", "Archives"];
+    let currentFolderFilter = "Tous";
+    let currentTagFilter = null; // nouveau : filtre de tag
+    let selectedPageId = null;
+    let currentViewTab = "content"; // "content" | "meta"
+
+    /* DOM refs */
+    const folderListEl = document.getElementById("folderList");
+    const newFolderNameEl = document.getElementById("newFolderName");
+    const btnCreateFolder = document.getElementById("btnCreateFolder");
+    const globalSearchEl = document.getElementById("globalSearch");
+    const btnClearSearch = document.getElementById("btnClearSearch");
+    const resultsListEl = document.getElementById("resultsList");
+    const resultsCountEl = document.getElementById("resultsCount");
+    const currentFilterBadgeEl = document.getElementById("currentFilterBadge");
+    const typeFilterEl = document.getElementById("typeFilter");
+    const sortByEl = document.getElementById("sortBy");
+    const viewerStatusEl = document.getElementById("viewerStatus");
+    const viewerInnerEl = document.getElementById("viewerInner");
+    const viewerTabsEls = document.querySelectorAll(".viewer-tab");
+    const tagCloudEl = document.getElementById("tagCloud");
+
+    const btnAddUrl = document.getElementById("btnAddUrl");
+    const btnAddNote = document.getElementById("btnAddNote");
+    const btnAddFiles = document.getElementById("btnAddFiles");
+    const fileInputEl = document.getElementById("fileInput");
+
+    const btnExportIndex = document.getElementById("btnExportIndex");
+    const btnImportIndex = document.getElementById("btnImportIndex");
+    const btnResetSystem = document.getElementById("btnResetSystem");
+    const importIndexInputEl = document.getElementById("importIndexInput");
+
+    /* Modal refs */
+    const modalBackdropEl = document.getElementById("modalBackdrop");
+    const modalTitleEl = document.getElementById("modalTitle");
+    const modalTitleInputEl = document.getElementById("modalTitleInput");
+    const modalUrlFieldEl = document.getElementById("modalUrlField");
+    const modalUrlInputEl = document.getElementById("modalUrlInput");
+    const modalNoteFieldEl = document.getElementById("modalNoteField");
+    const modalNoteInputEl = document.getElementById("modalNoteInput");
+    const modalDescriptionInputEl = document.getElementById("modalDescriptionInput");
+    const modalFolderSelectEl = document.getElementById("modalFolderSelect");
+    const modalTagsInputEl = document.getElementById("modalTagsInput");
+    const modalCloseEl = document.getElementById("modalClose");
+    const modalCancelEl = document.getElementById("modalCancel");
+    const modalSaveEl = document.getElementById("modalSave");
+
+    let modalMode = null; // "url" | "note"
+
+    /* Utils */
+
+    function generateId() {
+      return "p_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+    }
+
+    function buildSearchText(page) {
+      const parts = [
+        page.title || "",
+        page.description || "",
+        page.folder || "",
+        (page.tags || []).join(" "),
+        page.type || "",
+        page.url || "",
+        page.noteContent || ""
+      ];
+      return parts.join(" ").toLowerCase();
+    }
+
+    function saveIndexToStorage() {
+      try {
+        const serializable = pages
+          .filter(p => p.type !== "file") // on ne stocke pas les blobs
+          .map(p => {
+            const { blobUrl, ...rest } = p;
+            return rest;
+          });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          pages: serializable,
+          folders
+        }));
+      } catch (err) {
+        console.warn("Impossible de sauvegarder l’index :", err);
+      }
+    }
+
+    function loadIndexFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          createDefaultSampleData();
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        folders = Array.isArray(parsed.folders) && parsed.folders.length
+          ? parsed.folders
+          : folders;
+        const storedPages = Array.isArray(parsed.pages) ? parsed.pages : [];
+        pages = storedPages.map(p => ({
+          ...p,
+          searchText: buildSearchText(p)
+        }));
+        if (!pages.length) {
+          createDefaultSampleData();
+        }
+      } catch (err) {
+        console.warn("Erreur de lecture de l’index, on repart sur un exemple :", err);
+        createDefaultSampleData();
+      }
+    }
+
+    function createDefaultSampleData() {
+      const now = Date.now();
+      pages = [
+        {
+          id: generateId(),
+          type: "url",
+          title: "Portail de veille MetaNavigator",
+          description: "Une page fictive qui centralise toutes tes missions de veille citoyenne.",
+          folder: "Veille",
+          tags: ["veille", "citoyenne", "faux-web"],
+          url: "https://example.com/meta-veille",
+          createdAt: now - 100000,
+          searchText: ""
+        },
+        {
+          id: generateId(),
+          type: "note",
+          title: "Brief : Projet secret 12,50",
+          description: "Note interne sur le concours statique 12,50 et les prochaines étapes.",
+          folder: "Projets",
+          tags: ["jeu", "concours", "static-site"],
+          noteContent: "Objectif : construire un faux Internet citoyen ultra ludique. Étapes : 1) Prototype 2) Tests 3) Lancement.",
+          createdAt: now - 50000,
+          searchText: ""
+        },
+        {
+          id: generateId(),
+          type: "url",
+          title: "Intranet fictif « Organisation »",
+          description: "Démo d’un intranet d’intelligence économique totalement imaginaire.",
+          folder: "Dossiers",
+          tags: ["intranet", "intelligence", "organisation"],
+          url: "https://example.com/organisation",
+          createdAt: now - 25000,
+          searchText: ""
+        }
+      ];
+      pages.forEach(p => p.searchText = buildSearchText(p));
+      saveIndexToStorage();
+    }
+
+    /* TAG CLOUD */
+
+    function renderTagCloud() {
+      tagCloudEl.innerHTML = "";
+
+      // Récupère tous les tags
+      const tagCounts = {};
+      for (const p of pages) {
+        if (!p.tags) continue;
+        for (const t of p.tags) {
+          const tag = t.trim();
+          if (!tag) continue;
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        }
+      }
+
+      const tags = Object.keys(tagCounts).sort();
+      if (!tags.length) {
+        const empty = document.createElement("div");
+        empty.style.fontSize = "11px";
+        empty.style.color = "var(--text-soft)";
+        empty.textContent = "Aucun tag pour l’instant.";
+        tagCloudEl.appendChild(empty);
+        return;
+      }
+
+      // Bouton "Tous les tags"
+      const allTag = document.createElement("span");
+      allTag.className = "tag-cloud-tag" + (currentTagFilter === null ? " active" : "");
+      allTag.textContent = "Tous";
+      allTag.style.fontSize = "11px";
+      allTag.addEventListener("click", () => {
+        currentTagFilter = null;
+        renderTagCloud();
+        renderResults();
+      });
+      tagCloudEl.appendChild(allTag);
+
+      const counts = Object.values(tagCounts);
+      const minCount = Math.min(...counts);
+      const maxCount = Math.max(...counts);
+      const minSize = 11;
+      const maxSize = 18;
+
+      for (const tag of tags) {
+        const count = tagCounts[tag];
+        let size = minSize;
+        if (maxCount !== minCount) {
+          size = minSize + (maxSize - minSize) * ((count - minCount) / (maxCount - minCount));
+        }
+        const span = document.createElement("span");
+        span.className = "tag-cloud-tag" + (currentTagFilter === tag ? " active" : "");
+        span.textContent = "#" + tag;
+        span.style.fontSize = size.toFixed(1) + "px";
+        span.addEventListener("click", () => {
+          currentTagFilter = currentTagFilter === tag ? null : tag;
+          renderTagCloud();
+          renderResults();
+        });
+        tagCloudEl.appendChild(span);
+      }
+    }
+
+    /* Rendu dossiers */
+
+    function renderFolders() {
+      // Évite les doublons : ajoute les dossiers trouvés sur les pages
+      const existing = new Set(folders);
+      for (const p of pages) {
+        if (p.folder && !existing.has(p.folder)) {
+          folders.push(p.folder);
+          existing.add(p.folder);
+        }
+      }
+
+      folderListEl.innerHTML = "";
+      const countsByFolder = {};
+      for (const p of pages) {
+        const f = p.folder || "Inbox";
+        countsByFolder[f] = (countsByFolder[f] || 0) + 1;
+      }
+      const totalCount = pages.length;
+
+      const orderedFolders = ["Tous", ...folders.filter(f => f !== "Tous")];
+
+      for (const folderName of orderedFolders) {
+        const item = document.createElement("div");
+        item.className = "folder-item" + (folderName === currentFolderFilter ? " active" : "");
+        item.dataset.folder = folderName;
+
+        const main = document.createElement("div");
+        main.className = "folder-main";
+
+        const icon = document.createElement("div");
+        icon.className = "folder-icon";
+        icon.textContent = folderName === "Tous" ? "🌍" : "📁";
+
+        const label = document.createElement("span");
+        label.textContent = folderName;
+
+        main.appendChild(icon);
+        main.appendChild(label);
+
+        const cnt = document.createElement("div");
+        cnt.className = "folder-count";
+        const n = folderName === "Tous" ? totalCount : (countsByFolder[folderName] || 0);
+        cnt.textContent = n;
+
+        item.appendChild(main);
+        item.appendChild(cnt);
+
+        item.addEventListener("click", () => {
+          currentFolderFilter = folderName;
+          renderFolders();
+          renderResults();
+        });
+
+        folderListEl.appendChild(item);
+      }
+
+      const folderLabel =
+        currentFolderFilter === "Tous"
+          ? "Tous les dossiers"
+          : `Dossier : ${currentFolderFilter}`;
+      const tagLabel =
+        currentTagFilter === null
+          ? "Tous les tags"
+          : `Tag : #${currentTagFilter}`;
+      currentFilterBadgeEl.textContent = `${folderLabel} · ${tagLabel}`;
+    }
+
+    /* Rendu résultats */
+
+    function getFilteredAndScoredPages() {
+      const query = globalSearchEl.value.trim().toLowerCase();
+      const typeFilter = typeFilterEl.value; // "all" | "url" | "file" | "note"
+      const sortBy = sortByEl.value; // "score" | "title" | "date"
+
+      const terms = query ? query.split(/\s+/).filter(Boolean) : [];
+
+      const results = [];
+
+      for (const p of pages) {
+        if (currentFolderFilter !== "Tous" && p.folder !== currentFolderFilter) {
+          continue;
+        }
+        if (typeFilter !== "all" && p.type !== typeFilter) {
+          continue;
+        }
+        if (currentTagFilter !== null) {
+          const tags = (p.tags || []).map(t => t.toLowerCase());
+          if (!tags.includes(currentTagFilter.toLowerCase())) {
+            continue;
+          }
+        }
+
+        let score = 0;
+        if (terms.length === 0) {
+          score = 1; // tout passe, mais on aura un score minimal
+        } else {
+          for (const term of terms) {
+            const idx = p.searchText.indexOf(term);
+            if (idx !== -1) {
+              score += 5;
+            }
+          }
+        }
+        if (score === 0 && terms.length > 0) continue;
+
+        results.push({ page: p, score });
+      }
+
+      if (sortBy === "title") {
+        results.sort((a, b) => a.page.title.localeCompare(b.page.title));
+      } else if (sortBy === "date") {
+        results.sort((a, b) => (b.page.createdAt || 0) - (a.page.createdAt || 0));
+      } else {
+        results.sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return (b.page.createdAt || 0) - (a.page.createdAt || 0);
+        });
+      }
+
+      return results;
+    }
+
+    function renderResults() {
+      const results = getFilteredAndScoredPages();
+      const total = pages.length;
+      resultsCountEl.textContent = `${results.length} / ${total} pages indexées`;
+
+      resultsListEl.innerHTML = "";
+
+      if (!results.length) {
+        const empty = document.createElement("div");
+        empty.className = "result-empty";
+        empty.innerHTML = `
+          Aucun résultat.<br/>
+          Essaie d’élargir ta recherche, de changer de dossier ou de tag,
+          ou d’ajouter de nouvelles pages (URL, fichiers, notes).
+        `;
+        resultsListEl.appendChild(empty);
+        return;
+      }
+
+      for (const { page } of results) {
+        const card = document.createElement("article");
+        card.className = "result-card";
+        card.dataset.id = page.id;
+
+        const header = document.createElement("div");
+        header.className = "result-header";
+
+        const titleGroup = document.createElement("div");
+        titleGroup.className = "result-title-group";
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "result-title";
+        titleEl.textContent = page.title || "(Sans titre)";
+        titleEl.addEventListener("click", () => selectPage(page.id));
+
+        const metaEl = document.createElement("div");
+        metaEl.className = "result-meta";
+
+        const typeBadge = document.createElement("span");
+        typeBadge.className = "badge";
+        if (page.type === "url") {
+          typeBadge.classList.add("badge-type-url");
+          typeBadge.textContent = "URL";
+        } else if (page.type === "file") {
+          typeBadge.classList.add("badge-type-file");
+          typeBadge.textContent = "Fichier";
+        } else {
+          typeBadge.classList.add("badge-type-note");
+          typeBadge.textContent = "Note";
+        }
+
+        const folderBadge = document.createElement("span");
+        folderBadge.className = "badge badge-folder";
+        folderBadge.textContent = page.folder || "Inbox";
+
+        metaEl.appendChild(typeBadge);
+        metaEl.appendChild(folderBadge);
+
+        if (page.tags && page.tags.length) {
+          for (const t of page.tags) {
+            const tagSpan = document.createElement("span");
+            tagSpan.className = "badge";
+            tagSpan.textContent = "#" + t;
+            metaEl.appendChild(tagSpan);
+          }
+        }
+
+        titleGroup.appendChild(titleEl);
+        titleGroup.appendChild(metaEl);
+
+        const actions = document.createElement("div");
+        actions.className = "result-actions";
+
+        const btnPreview = document.createElement("button");
+        btnPreview.className = "btn btn-ghost";
+        btnPreview.textContent = "👁 Prévisualiser";
+        btnPreview.addEventListener("click", () => selectPage(page.id));
+
+        const btnOpen = document.createElement("button");
+        btnOpen.className = "btn btn-ghost";
+        btnOpen.textContent = "🡕 Ouvrir";
+        btnOpen.addEventListener("click", () => openPageExternally(page));
+
+        actions.appendChild(btnPreview);
+        actions.appendChild(btnOpen);
+
+        if (page.type === "file" && page.blobUrl) {
+          const btnDownload = document.createElement("button");
+          btnDownload.className = "btn btn-ghost";
+          btnDownload.textContent = "⬇ Télécharger";
+          btnDownload.addEventListener("click", () => downloadFilePage(page));
+          actions.appendChild(btnDownload);
+        }
+
+        header.appendChild(titleGroup);
+        header.appendChild(actions);
+
+        const desc = document.createElement("div");
+        desc.className = "result-description";
+        desc.textContent = page.description || "";
+
+        card.appendChild(header);
+        if (page.description) card.appendChild(desc);
+
+        resultsListEl.appendChild(card);
+      }
+    }
+
+    /* Sélection & viewer */
+
+    function selectPage(id) {
+      selectedPageId = id;
+      const page = pages.find(p => p.id === id);
+      if (!page) return;
+      updateViewer();
+    }
+
+    function updateViewer() {
+      const page = pages.find(p => p.id === selectedPageId);
+      if (!page) {
+        viewerStatusEl.textContent = "Sélectionne un résultat pour l’afficher ici.";
+        viewerInnerEl.innerHTML = `
+          <div class="viewer-placeholder">
+            🛰️ Rien à afficher pour l’instant.<br/>
+            Lance une recherche ou clique sur un résultat.
+          </div>
+        `;
+        return;
+      }
+
+      viewerStatusEl.innerHTML = `
+        <span class="text-accent">${page.title || "(Sans titre)"}</span>
+        · Type : <span class="mono">${page.type}</span>
+        · Dossier : <span class="mono">${page.folder || "Inbox"}</span>
+      `;
+
+      if (currentViewTab === "meta") {
+        renderMetaView(page);
+      } else {
+        renderContentView(page);
+      }
+    }
+
+    function renderContentView(page) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "viewer-inner";
+
+      if (page.type === "url") {
+        const info = document.createElement("div");
+        info.className = "viewer-meta";
+        info.innerHTML = `
+          Cette URL est chargée comme dans un navigateur. Certains sites
+          peuvent refuser d’être affichés dans un iframe, mais le bouton
+          <span class="mono">Ouvrir</span> reste toujours disponible.
+        `;
+        const iframe = document.createElement("iframe");
+        iframe.src = page.url || "about:blank";
+
+        wrapper.appendChild(info);
+        wrapper.appendChild(iframe);
+      } else if (page.type === "note") {
+        const meta = document.createElement("div");
+        meta.className = "viewer-meta";
+        meta.textContent = "Note interne stockée uniquement dans cet index.";
+
+        const pre = document.createElement("pre");
+        pre.className = "viewer-code";
+        pre.textContent = page.noteContent || "";
+
+        wrapper.appendChild(meta);
+        wrapper.appendChild(pre);
+      } else if (page.type === "file") {
+        const meta = document.createElement("div");
+        meta.className = "viewer-meta";
+        meta.innerHTML = `
+          Fichier : <span class="mono">${page.fileName || ""}</span>
+          · Type : <span class="mono">${page.fileType || "?"}</span>
+          · Taille : <span class="mono">${formatBytes(page.fileSize || 0)}</span>
+        `;
+
+        wrapper.appendChild(meta);
+
+        if (!page.blobUrl) {
+          const warn = document.createElement("div");
+          warn.className = "viewer-placeholder";
+          warn.innerHTML = `
+            Impossible de prévisualiser ce fichier (blob manquant).<br/>
+            Réimporte-le via « Importer fichiers ».
+          `;
+          wrapper.appendChild(warn);
+        } else if (page.isTextPreview && page.textContent) {
+          const pre = document.createElement("pre");
+          pre.className = "viewer-code";
+          pre.textContent = page.textContent;
+          wrapper.appendChild(pre);
+        } else if (page.fileType && page.fileType.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = page.blobUrl;
+          img.alt = page.fileName || "";
+          img.style.maxWidth = "100%";
+          img.style.height = "auto";
+          img.style.display = "block";
+          img.style.margin = "0 auto 8px";
+          wrapper.appendChild(img);
+        } else if (page.fileType === "application/pdf") {
+          const object = document.createElement("object");
+          object.data = page.blobUrl;
+          object.type = "application/pdf";
+          object.style.width = "100%";
+          object.style.height = "100%";
+          wrapper.appendChild(object);
+        } else {
+          const warn = document.createElement("div");
+          warn.className = "viewer-placeholder";
+          warn.innerHTML = `
+            Prévisualisation non supportée pour ce type de fichier.<br/>
+            Utilise le bouton « Télécharger » ou « Ouvrir ».
+          `;
+          wrapper.appendChild(warn);
+        }
+      }
+
+      viewerInnerEl.innerHTML = "";
+      viewerInnerEl.appendChild(wrapper);
+    }
+
+    function renderMetaView(page) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "viewer-inner";
+
+      const title = document.createElement("div");
+      title.className = "viewer-meta";
+      title.innerHTML = "<strong>Métadonnées complètes</strong>";
+      wrapper.appendChild(title);
+
+      const metaPre = document.createElement("pre");
+      metaPre.className = "viewer-code";
+      const clone = { ...page };
+      delete clone.blobUrl;
+      metaPre.textContent = JSON.stringify(clone, null, 2);
+      wrapper.appendChild(metaPre);
+
+      viewerInnerEl.innerHTML = "";
+      viewerInnerEl.appendChild(wrapper);
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes) return "0 B";
+      const units = ["B", "KB", "MB", "GB"];
+      let i = 0;
+      let value = bytes;
+      while (value >= 1024 && i < units.length - 1) {
+        value /= 1024;
+        i++;
+      }
+      return value.toFixed(1) + " " + units[i];
+    }
+
+    function openPageExternally(page) {
+      if (page.type === "url" && page.url) {
+        window.open(page.url, "_blank", "noopener,noreferrer");
+      } else if (page.type === "file" && page.blobUrl) {
+        window.open(page.blobUrl, "_blank");
+      } else if (page.type === "note") {
+        const blob = new Blob([page.noteContent || ""], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        window.open(url, "_blank");
+      }
+    }
+
+    function downloadFilePage(page) {
+      if (!page.blobUrl) return;
+      const a = document.createElement("a");
+      a.href = page.blobUrl;
+      a.download = page.fileName || "fichier";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    /* Ajout d’URL / notes (modal) */
+
+    function openModal(mode) {
+      modalMode = mode; // "url" | "note"
+
+      modalTitleInputEl.value = "";
+      modalUrlInputEl.value = "";
+      modalNoteInputEl.value = "";
+      modalDescriptionInputEl.value = "";
+      modalTagsInputEl.value = "";
+
+      modalFolderSelectEl.innerHTML = "";
+      for (const f of folders) {
+        if (f === "Tous") continue;
+        const opt = document.createElement("option");
+        opt.value = f;
+        opt.textContent = f;
+        if (f === currentFolderFilter) opt.selected = true;
+        modalFolderSelectEl.appendChild(opt);
+      }
+      if (!modalFolderSelectEl.value && folders.length) {
+        modalFolderSelectEl.value = folders[1] || "Inbox";
+      }
+
+      if (mode === "url") {
+        modalTitleEl.textContent = "Ajouter une URL";
+        modalUrlFieldEl.style.display = "";
+        modalNoteFieldEl.style.display = "none";
+      } else {
+        modalTitleEl.textContent = "Nouvelle note";
+        modalUrlFieldEl.style.display = "none";
+        modalNoteFieldEl.style.display = "";
+      }
+
+      modalBackdropEl.classList.add("active");
+      modalTitleInputEl.focus();
+    }
+
+    function closeModal() {
+      modalBackdropEl.classList.remove("active");
+      modalMode = null;
+    }
+
+    function saveModalEntry() {
+      if (!modalMode) return;
+
+      const title = modalTitleInputEl.value.trim();
+      const folder = modalFolderSelectEl.value || "Inbox";
+      const description = modalDescriptionInputEl.value.trim();
+      const tags = modalTagsInputEl.value.trim()
+        ? modalTagsInputEl.value.split(",").map(t => t.trim()).filter(Boolean)
+        : [];
+
+      if (!title) {
+        alert("Donne au moins un titre.");
+        return;
+      }
+
+      if (modalMode === "url") {
+        const url = modalUrlInputEl.value.trim();
+        if (!url) {
+          alert("Donne une URL.");
+          return;
+        }
+
+        const page = {
+          id: generateId(),
+          type: "url",
+          title,
+          description,
+          folder,
+          tags,
+          url,
+          createdAt: Date.now()
+        };
+        page.searchText = buildSearchText(page);
+        pages.push(page);
+      } else {
+        const noteContent = modalNoteInputEl.value.trim();
+        const page = {
+          id: generateId(),
+          type: "note",
+          title,
+          description,
+          folder,
+          tags,
+          noteContent,
+          createdAt: Date.now()
+        };
+        page.searchText = buildSearchText(page);
+        pages.push(page);
+      }
+
+      saveIndexToStorage();
+      renderFolders();
+      renderTagCloud();
+      renderResults();
+      closeModal();
+    }
+
+    /* Import de fichiers */
+
+    async function handleFilesSelected(fileList) {
+      if (!fileList || !fileList.length) return;
+
+      const defaultFolder = currentFolderFilter === "Tous" ? "Inbox" : currentFolderFilter;
+
+      for (const file of fileList) {
+        const blobUrl = URL.createObjectURL(file);
+        const mime = file.type || "application/octet-stream";
+
+        const page = {
+          id: generateId(),
+          type: "file",
+          title: file.name,
+          description: "",
+          folder: defaultFolder,
+          tags: [],
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: mime,
+          blobUrl,
+          createdAt: Date.now(),
+          isTextPreview: false,
+          textContent: ""
+        };
+
+        // Essaye de générer un aperçu texte pour certains types
+        if (
+          mime.startsWith("text/") ||
+          mime === "application/json" ||
+          mime === "application/javascript"
+        ) {
+          try {
+            const text = await readFileAsText(file);
+            page.textContent = text.slice(0, 10000);
+            page.isTextPreview = true;
+          } catch (err) {
+            console.warn("Impossible de lire le fichier en texte :", err);
+          }
+        }
+
+        page.searchText = buildSearchText(page);
+        pages.push(page);
+      }
+
+      saveIndexToStorage();
+      renderFolders();
+      renderTagCloud();
+      renderResults();
+    }
+
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(reader.error || new Error("Erreur FileReader"));
+        reader.readAsText(file);
+      });
+    }
+
+    /* Export / import index (JSON) */
+
+    function exportIndex() {
+      const data = {
+        exportedAt: new Date().toISOString(),
+        pages: pages.filter(p => p.type !== "file").map(p => {
+          const { blobUrl, ...rest } = p;
+          return rest;
+        }),
+        folders
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "MetaNavigator-index.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function importIndexFromFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const text = String(reader.result || "");
+          const data = JSON.parse(text);
+          if (!Array.isArray(data.pages)) {
+            alert("Fichier d’index invalide.");
+            return;
+          }
+          folders = Array.isArray(data.folders) && data.folders.length ? data.folders : folders;
+          pages = data.pages.map(p => ({
+            ...p,
+            searchText: buildSearchText(p)
+          }));
+          currentFolderFilter = "Tous";
+          currentTagFilter = null;
+          saveIndexToStorage();
+          renderFolders();
+          renderTagCloud();
+          renderResults();
+          updateViewer();
+          alert("Index importé avec succès (les fichiers doivent être réimportés séparément).");
+        } catch (err) {
+          console.error(err);
+          alert("Impossible de lire ce fichier comme un index MetaNavigator.");
+        }
+      };
+      reader.onerror = () => {
+        alert("Erreur pendant la lecture du fichier.");
+      };
+      reader.readAsText(file);
+    }
+
+    /* Reset système */
+
+    function resetSystem() {
+      const ok = confirm(
+        "Tu vas effacer tout l’index local (dossiers, URLs, notes, tags) et revenir à l’exemple par défaut.\n\nLes fichiers importés dans cette session seront aussi oubliés.\n\nContinuer ?"
+      );
+      if (!ok) return;
+
+      // Révoque les blobs existants
+      for (const p of pages) {
+        if (p.blobUrl) {
+          try { URL.revokeObjectURL(p.blobUrl); } catch (_) {}
+        }
+      }
+
+      localStorage.removeItem(STORAGE_KEY);
+      folders = ["Tous", "Inbox", "Veille", "Dossiers", "Projets", "Archives"];
+      pages = [];
+      currentFolderFilter = "Tous";
+      currentTagFilter = null;
+      selectedPageId = null;
+
+      createDefaultSampleData();
+      renderFolders();
+      renderTagCloud();
+      renderResults();
+      updateViewer();
+    }
+
+    /* Événements globaux */
+
+    function setupEvents() {
+      btnCreateFolder.addEventListener("click", () => {
+        const name = newFolderNameEl.value.trim();
+        if (!name) return;
+        if (!folders.includes(name)) {
+          folders.push(name);
+        }
+        newFolderNameEl.value = "";
+        renderFolders();
+        saveIndexToStorage();
+      });
+
+      newFolderNameEl.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") {
+          btnCreateFolder.click();
+        }
+      });
+
+      globalSearchEl.addEventListener("input", () => {
+        renderResults();
+      });
+
+      btnClearSearch.addEventListener("click", () => {
+        globalSearchEl.value = "";
+        renderResults();
+        globalSearchEl.focus();
+      });
+
+      typeFilterEl.addEventListener("change", renderResults);
+      sortByEl.addEventListener("change", renderResults);
+
+      btnAddUrl.addEventListener("click", () => openModal("url"));
+      btnAddNote.addEventListener("click", () => openModal("note"));
+
+      btnAddFiles.addEventListener("click", () => {
+        fileInputEl.click();
+      });
+
+      fileInputEl.addEventListener("change", (ev) => {
+        const files = ev.target.files;
+        handleFilesSelected(files);
+        fileInputEl.value = "";
+      });
+
+      modalCloseEl.addEventListener("click", closeModal);
+      modalCancelEl.addEventListener("click", closeModal);
+      modalBackdropEl.addEventListener("click", (ev) => {
+        if (ev.target === modalBackdropEl) {
+          closeModal();
+        }
+      });
+
+      modalSaveEl.addEventListener("click", saveModalEntry);
+
+      viewerTabsEls.forEach(tab => {
+        tab.addEventListener("click", () => {
+          viewerTabsEls.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          currentViewTab = tab.dataset.view;
+          updateViewer();
+        });
+      });
+
+      btnExportIndex.addEventListener("click", exportIndex);
+      btnImportIndex.addEventListener("click", () => {
+        importIndexInputEl.click();
+      });
+
+      importIndexInputEl.addEventListener("change", (ev) => {
+        const file = ev.target.files[0];
+        if (file) {
+          importIndexFromFile(file);
+        }
+        importIndexInputEl.value = "";
+      });
+
+      btnResetSystem.addEventListener("click", resetSystem);
+
+      // Raccourci clavier Ctrl+K pour focus la recherche
+      window.addEventListener("keydown", (ev) => {
+        if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "k") {
+          ev.preventDefault();
+          globalSearchEl.focus();
+          globalSearchEl.select();
+        }
+      });
+    }
+
+    /* Init */
+
+    function init() {
+      loadIndexFromStorage();
+      renderFolders();
+      renderTagCloud();
+      renderResults();
+      setupEvents();
+    }
+
+    init();
+  </script>
+</body>
+</html>
