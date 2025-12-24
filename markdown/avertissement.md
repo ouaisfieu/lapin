@@ -1,8 +1,6 @@
----
-cssclasses: bd-perso
----
+# ⭕
 
-# Alerte Fiction Réaliste Improbable mais Tangible
+## Alerte Fiction Réaliste Improbable mais Tangible
 
 > Alerte à l'AFRIT donc ?
 > [[SOS Samouraï]] aussi non ?
