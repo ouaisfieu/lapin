@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="la">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOREM 2 • Roman graphique noir interactif</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020814;
+      --fg: #e5e7eb;
+      --muted: #6b7280;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.25);
+      --panel: #020617;
+      --line: rgba(15, 23, 42, 0.9);
+      --shadow: 0 20px 40px rgba(0,0,0,0.8);
+      --border-radius: 1.25rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 10% 0%, #020617 0, #000 55%, #020617 100%);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem 5rem;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 960px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(249,115,22,0.15) 0, transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(15,23,42,0.9) 0, #020617 55%);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scanline {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(15,23,42,0.3) 0,
+        rgba(15,23,42,0.3) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.5;
+    }
+
+    .chrome {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .5rem .75rem;
+      border-radius: 1rem;
+      background: linear-gradient(90deg, rgba(15,23,42,0.9), rgba(15,23,42,0.6));
+      border: 1px solid rgba(148,163,184,0.35);
+      margin-bottom: .75rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chrome-left {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .dot {
+      width: .65rem;
+      height: .65rem;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #f9fafb, #f97316 40%, #7c2d12 100%);
+      box-shadow: 0 0 10px rgba(249,115,22,0.7);
+      opacity: 0.9;
+    }
+
+    .chrome-title {
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .chrome-title strong {
+      color: var(--accent);
+    }
+
+    .chrome-right {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: .1rem .6rem;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: radial-gradient(circle at 10% 0%, rgba(148,163,184,0.2), transparent 55%);
+    }
+
+    .chip span {
+      color: var(--accent);
+      margin-left: .3rem;
+    }
+
+    .grid {
+      position: absolute;
+      inset: -40%;
+      background-image:
+        linear-gradient(rgba(15,23,42,0.9) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.9) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      transform: perspective(900px) rotateX(65deg) scale(1.4);
+      transform-origin: top center;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      border-radius: 1.25rem;
+      background: radial-gradient(circle at 30% 0%, rgba(15,23,42,0.9) 0, #020617 40%);
+      border: 1px solid rgba(30,64,175,0.35);
+      overflow: hidden;
+    }
+
+    .scene {
+      display: none;
+      padding: 1.25rem 1rem 1rem;
+      min-height: 420px;
+    }
+
+    .scene:target {
+      display: block;
+    }
+
+    #start:target,
+    #scene-1:target ~ #start,
+    body:not(:target) #start {
+      display: none;
+    }
+
+    /* Fallback: if no hash, show start */
+    body:not(:target) .scene--start {
+      display: block;
+    }
+
+    .scene--start {
+      display: block;
+    }
+
+    .scene-header {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .scene-kicker {
+      font-size: .7rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scene-title {
+      font-size: 1.4rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .scene-sub {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .comic {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .75rem;
+    }
+
+    @media (min-width: 720px) {
+      .scene {
+        padding: 1.5rem 1.5rem 1.25rem;
+      }
+      .comic {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      position: relative;
+      border-radius: var(--border-radius);
+      background: radial-gradient(circle at 10% 0%, #0f172a, #020617 55%);
+      border: 1px solid rgba(15,23,42,0.9);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: .85rem .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, background .35s ease;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(249,115,22,0.4), transparent 55%),
+        radial-gradient(circle at 90% 90%, rgba(15,23,42,0.9), transparent 60%);
+      opacity: .4;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .panel:hover {
+      transform: translateY(-3px);
+      border-color: rgba(249,115,22,0.7);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.85);
+      background: radial-gradient(circle at 5% 0%, #0f172a, #020617 70%);
+    }
+
+    .panel-label {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: var(--muted);
+    }
+
+    .panel-text {
+      font-size: .82rem;
+      line-height: 1.6;
+      color: #e5e7eb;
+      text-shadow: 0 0 12px rgba(0,0,0,0.7);
+    }
+
+    .panel-text strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .panel-footer {
+      margin-top: .25rem;
+      font-size: .7rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+    }
+
+    .panel-footer span {
+      opacity: .75;
+    }
+
+    .panel-footnote {
+      font-size: .65rem;
+      color: var(--muted);
+      margin-top: .1rem;
+    }
+
+    .image-strip {
+      margin-top: .35rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: .25rem;
+    }
+
+    .img {
+      position: relative;
+      height: 70px;
+      border-radius: .7rem;
+      overflow: hidden;
+      border: 1px solid rgba(15,23,42,0.8);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    }
+
+    .img--city {
+      background:
+        radial-gradient(circle at 20% 10%, rgba(249,115,22,0.8), transparent 50%),
+        linear-gradient(to top, #020617 0, #020617 35%, #02061700 36%),
+        repeating-linear-gradient(
+          to right,
+          rgba(15,23,42,0.8) 0,
+          rgba(15,23,42,0.8) 2px,
+          rgba(15,23,42,0.1) 3px,
+          rgba(15,23,42,0.1) 6px
+        );
+    }
+
+    .img--alley {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(148,163,184,0.9), transparent 55%),
+        repeating-linear-gradient(
+          to bottom,
+          #020617 0,
+          #020617 4px,
+          #02061700 5px,
+          #02061700 10px
+        ),
+        radial-gradient(circle at 10% 80%, rgba(249,115,22,0.6), transparent 65%);
+    }
+
+    .img--window {
+      background:
+        radial-gradient(circle at 80% 20%, rgba(248,250,252,0.8), transparent 60%),
+        linear-gradient(135deg, #020617 0, #020617 45%, rgba(15,23,42,0.3) 55%, #020617 85%);
+    }
+
+    .img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(120deg, rgba(15,23,42,0.1), rgba(249,115,22,0.25), rgba(15,23,42,0.1));
+      mix-blend-mode: soft-light;
+      opacity: .8;
+    }
+
+    .caption {
+      font-size: .7rem;
+      color: var(--muted);
+      margin-top: .15rem;
+    }
+
+    /* Branching choices (radio + CSS) */
+    .branch-wrap {
+      margin-top: .5rem;
+    }
+
+    .branch-toggle {
+      display: flex;
+      gap: .35rem;
+      margin-bottom: .4rem;
+    }
+
+    .branch-toggle label {
+      flex: 1;
+      font-size: .7rem;
+      padding: .35rem .5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      color: var(--muted);
+      text-align: center;
+      cursor: pointer;
+      background: radial-gradient(circle at 10% 0%, rgba(148,163,184,0.2), transparent 55%);
+      transition: all .25s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .branch-toggle label:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.4);
+    }
+
+    .branch-body {
+      position: relative;
+      border-radius: .9rem;
+      border: 1px solid rgba(15,23,42,0.9);
+      background: radial-gradient(circle at 10% 0%, #020617, #000 85%);
+      padding: .65rem .7rem;
+      font-size: .78rem;
+      color: var(--fg);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.8);
+      overflow: hidden;
+    }
+
+    .branch-body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(249,115,22,0.3), transparent 65%),
+        radial-gradient(circle at 100% 100%, rgba(15,23,42,0.9), transparent 70%);
+      opacity: .5;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .branch {
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .branch p {
+      line-height: 1.65;
+    }
+
+    .branch p + p {
+      margin-top: .3rem;
+    }
+
+    .branch-tag {
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      color: var(--muted);
+      margin-bottom: .2rem;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    #s1-a:checked ~ .branch-wrap .branch--a,
+    #s2-a:checked ~ .branch-wrap .branch--a {
+      display: block;
+    }
+    #s1-b:checked ~ .branch-wrap .branch--b,
+    #s2-b:checked ~ .branch-wrap .branch--b {
+      display: block;
+    }
+
+    #s1-a:checked ~ .branch-wrap .btn-a,
+    #s2-a:checked ~ .branch-wrap .btn-a {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.4);
+      background: radial-gradient(circle at 10% 0%, rgba(249,115,22,0.2), transparent 55%);
+    }
+
+    #s1-b:checked ~ .branch-wrap .btn-b,
+    #s2-b:checked ~ .branch-wrap .btn-b {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.4);
+      background: radial-gradient(circle at 10% 0%, rgba(249,115,22,0.2), transparent 55%);
+    }
+
+    .choices {
+      margin-top: 1rem;
+      display: grid;
+      gap: .45rem;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .55rem .7rem;
+      border-radius: .9rem;
+      border: 1px solid rgba(51,65,85,0.9);
+      background: radial-gradient(circle at 0% 0%, rgba(15,23,42,0.9), #020617 70%);
+      font-size: .78rem;
+      color: #e5e7eb;
+      transition: all .25s ease;
+    }
+
+    .choice:hover {
+      border-color: var(--accent);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.8);
+      transform: translateY(-2px);
+    }
+
+    .choice-text {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .choice-icon {
+      font-size: .9rem;
+      opacity: .8;
+    }
+
+    .timeline {
+      position: fixed;
+      left: 50%;
+      bottom: .75rem;
+      transform: translateX(-50%);
+      width: min(960px, 100% - 2rem);
+      z-index: 10;
+    }
+
+    .timeline-inner {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: radial-gradient(circle at 50% 0%, rgba(15,23,42,0.95), rgba(15,23,42,0.9));
+      padding: .25rem .5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 40px rgba(0,0,0,0.9);
+    }
+
+    .timeline-left {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .7rem;
+      color: var(--muted);
+    }
+
+    .timeline-dots {
+      display: flex;
+      gap: .25rem;
+    }
+
+    .timeline-dot {
+      width: .4rem;
+      height: .4rem;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.5);
+    }
+
+    .timeline-dot--hot {
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(249,115,22,0.9);
+    }
+
+    .timeline-right {
+      display: flex;
+      gap: .25rem;
+    }
+
+    .timeline-link {
+      font-size: .7rem;
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      color: var(--muted);
+      background: radial-gradient(circle at 0% 0%, rgba(15,23,42,0.9), #020617);
+      white-space: nowrap;
+      transition: all .2s ease;
+    }
+
+    .timeline-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .timeline-link--main {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.4);
+    }
+
+    .intro-center {
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 1.2rem;
+      position: relative;
+    }
+
+    .intro-orbit {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148,163,184,0.3);
+      transform: rotate(-8deg);
+    }
+
+    .intro-orbit::before {
+      content: "";
+      position: absolute;
+      inset: 14%;
+      border-radius: inherit;
+      border: 1px solid rgba(249,115,22,0.35);
+      box-shadow: 0 0 40px rgba(249,115,22,0.4);
+    }
+
+    .intro-logo {
+      font-size: 2rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: #f9fafb;
+      text-shadow: 0 0 30px rgba(0,0,0,0.95);
+    }
+
+    .intro-tagline {
+      max-width: 18rem;
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .intro-badge {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .24em;
+      color: var(--accent);
+      padding: .3rem .8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(249,115,22,0.4);
+      background: radial-gradient(circle at 10% 0%, rgba(249,115,22,0.15), transparent 60%);
+      box-shadow: 0 0 18px rgba(0,0,0,0.8);
+    }
+
+    .intro-actions {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      margin-top: .5rem;
+    }
+
+    .btn-main {
+      font-size: .82rem;
+      font-weight: 500;
+      padding: .65rem 1.4rem;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at 0% 0%, #f97316, #7c2d12);
+      color: #020617;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      box-shadow: 0 10px 30px rgba(249,115,22,0.7);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      text-decoration: none;
+    }
+
+    .btn-main span:last-child {
+      font-size: 1.1rem;
+    }
+
+    .btn-ghost {
+      font-size: .72rem;
+      padding: .4rem .8rem;
+      border-radius: 999px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      background: radial-gradient(circle at 100% 0%, rgba(148,163,184,0.2), transparent 55%);
+      text-decoration: none;
+    }
+
+    @media (min-width: 640px) {
+      .intro-actions {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+  </style>
+</head>
+<body id="top">
+
+  <main>
+    <div class="shell">
+      <div class="grid"></div>
+      <div class="scanline"></div>
+
+      <header class="chrome">
+        <div class="chrome-left">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="chrome-title">
+            <strong>LOREM 2</strong> · NOX / NEBULA
+          </div>
+        </div>
+        <div class="chrome-right">
+          <div class="chip">mode <span>noir</span></div>
+          <div class="chip">textus <span>ipsum</span></div>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- INTRO / COUVERTURE -->
+        <section class="scene scene--start" id="start">
+          <div class="intro-center">
+            <div class="intro-orbit"></div>
+            <div class="intro-badge">roman graphicus · interactivus</div>
+            <div class="intro-logo">LOREM 2</div>
+            <p class="intro-tagline">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nox infinita, pluvia tacita,
+              vicus umidus, lumen solitarium. Tu es oculus in umbra.
+            </p>
+            <div class="intro-actions">
+              <a href="#scene-1" class="btn-main">
+                <span>incipere casum</span> <span>▶</span>
+              </a>
+              <a href="#scene-2" class="btn-ghost">continuare ipsum</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCÈNE 1 : LA RUE -->
+        <section class="scene" id="scene-1">
+          <div class="scene-header">
+            <div class="scene-kicker">caput i</div>
+            <h1 class="scene-title">vicus pluvialem</h1>
+            <p class="scene-sub">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Noctis margine, civitas
+              dormit, sed verba occulta in pabulo lucis micant.
+            </p>
+          </div>
+
+          <div class="comic">
+            <!-- panneau image / ambiance -->
+            <article class="panel">
+              <div class="panel-label">tabula · urbs</div>
+              <div class="image-strip">
+                <div class="img img--city"></div>
+                <div class="img img--alley"></div>
+                <div class="img img--window"></div>
+              </div>
+              <p class="caption">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vicos umidi, fenestrae
+                obscurae, lumen fractum super pavimentum lucet.
+              </p>
+              <div class="panel-footer">
+                <span>lumen: tenuis</span>
+                <span>hora: 02:17</span>
+              </div>
+            </article>
+
+            <!-- panneau texte + embranchement -->
+            <article class="panel">
+              <div class="panel-label">vox · internus</div>
+              <div class="panel-text">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Nulla inter
+                  noctem et te</strong> nisi tunica madida et silentium civitatis. Mauris
+                  scelerisque nibh quis risus cursus, at vulputate urna sagittis.
+                </p>
+                <p>
+                  Vestibulum id quam in justo tincidunt convallis. Morbi vehicula, neque nec
+                  aliquam rhoncus, turpis lorem dictum urna, vitae dapibus felis urna ac mauris.
+                  Integer lacinia, ipsum in malesuada iaculis, metus massa gravida magna, ac
+                  imperdiet ipsum mi ac elit.
+                </p>
+              </div>
+
+              <!-- BRANCHES INTERACTIVES SCÈNE 1 -->
+              <input type="radio" name="scene1-branch" id="s1-a" checked>
+              <input type="radio" name="scene1-branch" id="s1-b">
+
+              <div class="branch-wrap">
+                <div class="branch-toggle">
+                  <label class="btn-a" for="s1-a">
+                    Lorem ipsum in vico
+                  </label>
+                  <label class="btn-b" for="s1-b">
+                    Dolor sed fenestra
+                  </label>
+                </div>
+                <div class="branch-body">
+                  <div class="branch branch--a">
+                    <div class="branch-tag">iter a · vestigium pluviale</div>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, sem
+                      nec consequat pharetra, neque lorem porta mi, id euismod nunc nibh ac dolor.
+                      Suspendisse potenti. Curabitur egestas purus id arcu tempor, quis finibus
+                      lacus volutpat.
+                    </p>
+                    <p>
+                      Morbi aliquet, magna id bibendum consequat, ligula risus sagittis neque, at
+                      tristique lacus augue vitae nunc. Integer dapibus nunc ac neque bibendum, in
+                      pretium mi gravida.
+                    </p>
+                  </div>
+                  <div class="branch branch--b">
+                    <div class="branch-tag">iter b · lumen clandestinum</div>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum commodo
+                      nisi nec arcu laoreet, a posuere dolor iaculis. Nunc porta, metus at placerat
+                      imperdiet, dui justo dictum nisi, vitae viverra justo nibh at neque.
+                    </p>
+                    <p>
+                      Proin bibendum, turpis id hendrerit maximus, nisl ipsum consectetur nisl, et
+                      aliquet dui tellus eu massa. Aliquam et lorem sit amet odio imperdiet
+                      dictum. In hac habitasse platea dictumst.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-footnote">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempus, ipsum vel
+                accumsan pulvinar, turpis nisl sollicitudin nisl.
+              </div>
+            </article>
+          </div>
+
+          <!-- CHOIX DE SCÈNE -->
+          <div class="choices">
+            <a class="choice" href="#scene-2">
+              <div class="choice-text">
+                <strong>Lorem</strong> ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
+                tincidunt urna in lorem rhoncus fringilla.
+              </div>
+              <div class="choice-icon">➜</div>
+            </a>
+            <a class="choice" href="#scene-3">
+              <div class="choice-text">
+                <strong>Dolor</strong> sit amet consectetur, adipiscing elit. Nulla facilisi. Sed
+                convallis ipsum in lectus tristique, non tristique dui ullamcorper.
+              </div>
+              <div class="choice-icon">⟲</div>
+            </a>
+          </div>
+        </section>
+
+        <!-- SCÈNE 2 : L’INTÉRIEUR -->
+        <section class="scene" id="scene-2">
+          <div class="scene-header">
+            <div class="scene-kicker">caput ii</div>
+            <h2 class="scene-title">camera obscura</h2>
+            <p class="scene-sub">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Porta clausa, lumen tenue
+              per rimam, umbra immota super parietem.
+            </p>
+          </div>
+
+          <div class="comic">
+            <article class="panel">
+              <div class="panel-label">tabula · fenestra</div>
+              <div class="image-strip">
+                <div class="img img--window"></div>
+                <div class="img img--alley"></div>
+                <div class="img img--city"></div>
+              </div>
+              <p class="caption">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fenestra fracta, vitrum
+                umidum, figura tenuis in speculo fugit.
+              </p>
+              <div class="panel-footer">
+                <span>silentium: altum</span>
+                <span>pulsus: incertus</span>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-label">scriptum · secretum</div>
+              <div class="panel-text">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae varius mi.
+                  Suspendisse potenti. Aenean efficitur lorem a justo faucibus, et dictum ex
+                  ultricies.
+                </p>
+                <p>
+                  Integer ornare, ipsum ac convallis pulvinar, justo mi tempus ligula, sed
+                  consequat neque felis ac magna. Duis euismod, sem in egestas placerat, magna
+                  lorem finibus felis, sed commodo arcu justo ac velit.
+                </p>
+              </div>
+
+              <!-- BRANCHES SCÈNE 2 -->
+              <input type="radio" name="scene2-branch" id="s2-a" checked>
+              <input type="radio" name="scene2-branch" id="s2-b">
+
+              <div class="branch-wrap">
+                <div class="branch-toggle">
+                  <label class="btn-a" for="s2-a">
+                    Lorem in charta
+                  </label>
+                  <label class="btn-b" for="s2-b">
+                    Ipsum in umbra
+                  </label>
+                </div>
+                <div class="branch-body">
+                  <div class="branch branch--a">
+                    <div class="branch-tag">scriptum · linea prima</div>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
+                      ultricies, mi eget laoreet suscipit, quam magna tristique dui, sit amet
+                      condimentum urna nibh eget lacus.
+                    </p>
+                    <p>
+                      Phasellus viverra urna vitae urna vehicula, sed porta lacus cursus. Integer
+                      eu felis eget erat tempus varius. In iaculis nibh a turpis bibendum, nec
+                      posuere arcu placerat.
+                    </p>
+                  </div>
+                  <div class="branch branch--b">
+                    <div class="branch-tag">umbra · murmur tectum</div>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum
+                      sapien sit amet malesuada lor em. Mauris fermentum, dui a auctor tempor,
+                      nulla ligula porta justo, a porttitor velit ligula sit amet arcu.
+                    </p>
+                    <p>
+                      Vivamus bibendum, eros vel placerat suscipit, ex lorem suscipit erat, eget
+                      fringilla lacus arcu non diam. Suspendisse potenti.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-footnote">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
+              </div>
+            </article>
+          </div>
+
+          <div class="choices">
+            <a class="choice" href="#scene-3">
+              <div class="choice-text">
+                <strong>Lorem</strong> ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                vulputate arcu id est dignissim, sed faucibus mi dictum.
+              </div>
+              <div class="choice-icon">➜</div>
+            </a>
+            <a class="choice" href="#start">
+              <div class="choice-text">
+                <strong>Ipsum</strong> dolor sit amet, consectetur adipiscing elit. Integer sed
+                libero at metus laoreet finibus. (Loop in tenebris.)
+              </div>
+              <div class="choice-icon">⤾</div>
+            </a>
+          </div>
+        </section>
+
+        <!-- SCÈNE 3 : LA BOUCLE NOIRE -->
+        <section class="scene" id="scene-3">
+          <div class="scene-header">
+            <div class="scene-kicker">caput iii</div>
+            <h2 class="scene-title">circulus niger</h2>
+            <p class="scene-sub">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Iter idem, lumen idem,
+              umbra tamen mutata.
+            </p>
+          </div>
+
+          <div class="comic">
+            <article class="panel">
+              <div class="panel-label">tabula · eco</div>
+              <div class="image-strip">
+                <div class="img img--alley"></div>
+                <div class="img img--city"></div>
+                <div class="img img--window"></div>
+              </div>
+              <p class="caption">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vicus idem, sed vestigia
+                tua in pavimento duplicata sunt.
+              </p>
+              <div class="panel-footer">
+                <span>iter: clausum</span>
+                <span>casus: lorem 2</span>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-label">monologus · internus</div>
+              <div class="panel-text">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fermentum,
+                  justo vel egestas scelerisque, mi augue eleifend nisi, nec fermentum mauris
+                  magna in odio.
+                </p>
+                <p>
+                  Morbi vulputate enim non ultrices faucibus. Quisque convallis purus a arcu
+                  cursus, vitae viverra mi luctus. Sed pharetra lorem vel eros hendrerit, et
+                  consectetur purus aliquam.
+                </p>
+                <p>
+                  Aliquam erat volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Suspendisse tristique nunc ac commodo cursus.
+                </p>
+              </div>
+
+              <div class="panel-footnote">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. In fine, textus te
+                legit sicut tu legis textum.
+              </div>
+            </article>
+          </div>
+
+          <div class="choices">
+            <a class="choice" href="#scene-1">
+              <div class="choice-text">
+                <strong>Lorem</strong> ipsum dolor sit amet, consectetur adipiscing elit. Revertere
+                ad initium, sed cum memoria fracta.
+              </div>
+              <div class="choice-icon">∞</div>
+            </a>
+            <a class="choice" href="#start">
+              <div class="choice-text">
+                <strong>Ipsum</strong> dolor sit amet, consectetur adipiscing elit. Redi ad
+                tegumentum, quasi nihil factum sit.
+              </div>
+              <div class="choice-icon">⭯</div>
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- TIMELINE GLOBALE -->
+  <nav class="timeline">
+    <div class="timeline-inner">
+      <div class="timeline-left">
+        <span>lorem 2 · nox</span>
+        <div class="timeline-dots">
+          <div class="timeline-dot timeline-dot--hot"></div>
+          <div class="timeline-dot"></div>
+          <div class="timeline-dot"></div>
+        </div>
+      </div>
+      <div class="timeline-right">
+        <a href="#start" class="timeline-link">incipit</a>
+        <a href="#scene-1" class="timeline-link timeline-link--main">caput i</a>
+        <a href="#scene-2" class="timeline-link">caput ii</a>
+        <a href="#scene-3" class="timeline-link">circulus</a>
+      </div>
+    </div>
+  </nav>
+
+</body>
+</html>
