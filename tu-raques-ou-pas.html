@@ -1,0 +1,1476 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tu raques ou pas ? · Parcours gamifié 12,50</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    Tu raques ou pas ?
+    -------------------
+    Jeu sérieux satirique, HTML/CSS/JS pur.
+    Parcours en plusieurs étapes, mini-jeux + quiz,
+    final "pilule rouge ou pas" autour de 12,50 EUR/an.
+    Aucune transaction réelle, tout est fictif.
+  -->
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #030712;
+      --border: #111827;
+      --border-soft: #1f2937;
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --text-softer: #6b7280;
+
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.16);
+      --accent2: #a855ff;
+      --accent2-soft: rgba(168, 85, 247, 0.18);
+      --danger: #f97316;
+      --danger-soft: rgba(248, 113, 113, 0.16);
+      --pill-red: #ef4444;
+      --pill-blue: #3b82f6;
+
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.8);
+      --transition-fast: 0.15s ease-out;
+      --transition-med: 0.25s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+      color: var(--text);
+    }
+
+    a {
+      color: #bfdbfe;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 10px 12px;
+      background: radial-gradient(circle at top left, #111827 0, #020617 45%, #000 100%);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (min-width: 960px) {
+      .topbar {
+        padding: 10px 20px;
+      }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 0, #a855f7, #22c55e 40%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #020617;
+      box-shadow:
+        0 0 0 2px rgba(15, 23, 42, 0.9),
+        0 0 18px rgba(168, 85, 247, 0.9);
+      font-size: 16px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .topbar-center {
+      flex: 1;
+      display: none;
+      justify-content: center;
+    }
+
+    @media (min-width: 900px) {
+      .topbar-center {
+        display: flex;
+      }
+    }
+
+    .question-pill {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(248, 250, 252, 0.7);
+      background: rgba(15, 23, 42, 0.85);
+      color: #fefce8;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .xp-pill {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      padding: 4px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .xp-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+    }
+
+    .btn-mini {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(15, 23, 42, 0.7);
+      background: #f97316;
+      color: #111827;
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    }
+
+    /* LAYOUT */
+
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto 18px;
+      padding: 12px;
+      gap: 12px;
+    }
+
+    @media (min-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0, 3fr) minmax(260px, 1.4fr);
+        padding: 16px 20px 22px;
+        gap: 16px;
+      }
+    }
+
+    .col-main {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .col-side {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #020617 0, #020617 65%, #000 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title span.icon {
+      font-size: 16px;
+    }
+
+    .badge {
+      font-size: 10px;
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      color: var(--text-softer);
+    }
+
+    .badge-step {
+      border-color: #4b5563;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .badge-accent {
+      border-color: #bbf7d0;
+      color: #bbf7d0;
+      background: var(--accent-soft);
+    }
+
+    .badge-danger {
+      border-color: #fed7aa;
+      color: #fed7aa;
+      background: var(--danger-soft);
+    }
+
+    /* PROGRESSION */
+
+    .progress-wrapper {
+      margin-bottom: 6px;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 11px;
+      color: var(--text-softer);
+      margin-bottom: 4px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #a855f7, #f97316);
+      transition: width var(--transition-med);
+    }
+
+    /* STEPS */
+
+    .steps-track {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .step-chip {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-softer);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .step-chip.active {
+      border-color: var(--accent2);
+      background: var(--accent2-soft);
+      color: #e9d5ff;
+    }
+
+    .step-chip.done {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #bbf7d0;
+    }
+
+    .step-chip span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4b5563;
+    }
+
+    .step-chip.done span.dot {
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+    }
+
+    .step-chip.active span.dot {
+      background: #a855f7;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+    }
+
+    .step {
+      display: none;
+      margin-top: 4px;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .step h2 {
+      font-size: 15px;
+      margin: 0 0 6px;
+      color: var(--text);
+    }
+
+    .step p {
+      margin: 0 0 6px;
+    }
+
+    .step-quiz {
+      margin-top: 6px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      font-size: 13px;
+    }
+
+    .quiz-question {
+      margin-bottom: 6px;
+    }
+
+    .quiz-question strong {
+      color: var(--text);
+    }
+
+    .quiz-options {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 12px;
+    }
+
+    .quiz-options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .quiz-options input {
+      accent-color: #22c55e;
+    }
+
+    .mini-game {
+      margin-top: 6px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      font-size: 12px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .slider-row label {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .slider-row input[type="range"] {
+      width: 100%;
+    }
+
+    .slider-value {
+      font-size: 11px;
+      color: var(--text-softer);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .pill-choice {
+      flex: 1 1 130px;
+      border-radius: 16px;
+      border: 1px solid var(--border-soft);
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .pill-choice.red {
+      background: radial-gradient(circle at top, rgba(248, 113, 113, 0.18), #020617 70%);
+      border-color: rgba(248, 113, 113, 0.6);
+    }
+
+    .pill-choice.blue {
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.18), #020617 70%);
+      border-color: rgba(59, 130, 246, 0.6);
+    }
+
+    .pill-choice:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    .pill-icon {
+      width: 38px;
+      height: 18px;
+      border-radius: 999px;
+      margin: 0 auto 4px;
+    }
+
+    .pill-icon.red {
+      background: radial-gradient(circle at 30% 0, #fecaca, #ef4444 45%, #7f1d1d 100%);
+    }
+
+    .pill-icon.blue {
+      background: radial-gradient(circle at 30% 0, #bfdbfe, #3b82f6 45%, #1e3a8a 100%);
+    }
+
+    .pill-choice h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .pill-choice p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    /* NAV STEPS */
+
+    .step-nav {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+    }
+
+    .step-btn {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-soft);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+      padding: 5px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .step-btn.primary {
+      background: linear-gradient(90deg, #22c55e, #a855f7);
+      color: #020617;
+      font-weight: 600;
+    }
+
+    .step-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    /* SIDE COL */
+
+    .side-block {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .side-block p {
+      margin: 0 0 6px;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-softer);
+    }
+
+    .tag.good {
+      border-color: #bbf7d0;
+      color: #bbf7d0;
+      background: var(--accent-soft);
+    }
+
+    .tag.weird {
+      border-color: #a5b4fc;
+      color: #e0e7ff;
+      background: rgba(129, 140, 248, 0.25);
+    }
+
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill-mini {
+      flex: 1 1 110px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      font-size: 11px;
+      color: var(--text-softer);
+    }
+
+    .summary-box {
+      margin-top: 4px;
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      font-size: 11px;
+    }
+
+    .export-btn {
+      margin-top: 6px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+
+    .export-hint {
+      margin-top: 3px;
+      font-size: 10px;
+      color: var(--text-softer);
+    }
+
+    /* FOOTER */
+
+    .footer {
+      font-size: 10px;
+      color: var(--text-softer);
+      padding: 10px 16px 16px;
+      border-top: 1px solid var(--border-soft);
+      background: #020617;
+    }
+
+    .footer strong {
+      color: var(--text-soft);
+    }
+
+    @media (max-width: 720px) {
+      .step-nav {
+        flex-direction: column;
+      }
+      .step-nav > * {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">12</div>
+        <div class="brand-text">
+          <div class="brand-title">TU RAQUES OU PAS ?</div>
+          <div class="brand-sub">jeu sérieux techno-anar · 12,50 / an (en théorie)</div>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <div class="question-pill">
+          ❓ Question centrale · <span>“TU RAQUES OU PAS ?”</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="xp-pill">
+          <span class="xp-dot"></span>
+          <span><strong id="xp-value">0</strong> XP</span>
+        </div>
+        <button class="btn-mini" onclick="scrollToSteps()">
+          🎮 Reprendre la partie
+        </button>
+      </div>
+    </header>
+
+    <!-- LAYOUT -->
+    <main class="layout">
+      <!-- MAIN -->
+      <section class="col-main">
+        <article class="card" id="steps-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🎮</span>
+              Parcours gamifié · de “curieux” à “je raque (ou pas)”
+            </div>
+            <span class="badge badge-step">5 étapes · durées variables</span>
+          </div>
+
+          <!-- Progression -->
+          <div class="progress-wrapper">
+            <div class="progress-labels">
+              <span>Progression globale</span>
+              <span id="progress-label">Étape 1 / 5</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progress-inner" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <!-- Steps chips -->
+          <div class="steps-track">
+            <div class="step-chip active" data-step-chip="0">
+              <span class="dot"></span> 0 · Accueil
+            </div>
+            <div class="step-chip" data-step-chip="1">
+              <span class="dot"></span> 1 · Qui es-tu ?
+            </div>
+            <div class="step-chip" data-step-chip="2">
+              <span class="dot"></span> 2 · Mini-jeu 12,50
+            </div>
+            <div class="step-chip" data-step-chip="3">
+              <span class="dot"></span> 3 · Comment tu raques ?
+            </div>
+            <div class="step-chip" data-step-chip="4">
+              <span class="dot"></span> 4 · Pilule rouge ou pas
+            </div>
+          </div>
+
+          <!-- STEP 0: INTRO -->
+          <div class="step active" data-step="0">
+            <h2>Étape 0 · Accueil dans le sas</h2>
+            <p>
+              Bienvenue dans un <strong>jeu sérieux plein d’anars & technogeeks</strong>
+              bien de chez nous. Tout tourne autour d’une seule question obsédante&nbsp;:
+            </p>
+            <p style="font-size:14px; color:#fef3c7;">
+              <strong>“Tu raques ou pas ?”</strong>
+            </p>
+            <p>
+              Raquer, ça peut vouloir dire de l’<strong>argent</strong> (12,50 EUR / an),
+              mais aussi du <strong>temps</strong>, de l’<strong>attention</strong>,
+              du <strong>partage de connaissances</strong>, du <strong>code</strong>, des
+              <strong>coups de main IRL</strong>.
+            </p>
+            <p>
+              Ton parcours va se faire en plusieurs mini-étapes :
+            </p>
+            <ul>
+              <li>te situer dans l’univers (profil joueur),</li>
+              <li>jouer avec un mini-jeu autour de 12,50,</li>
+              <li>choisir tes modes de contribution préférés,</li>
+              <li>et finir par la question centrale : pilule rouge ou pas.</li>
+            </ul>
+            <p style="font-size:11px; color:var(--text-softer);">
+              Rien n’est envoyé nulle part. Tout se passe dans ton navigateur, le reste dans ta tête.
+            </p>
+
+            <div class="step-nav">
+              <button class="step-btn" disabled>◀ Étape précédente</button>
+              <button class="step-btn primary" id="btn-next-0">
+                Commencer le jeu ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 1: QUI ES-TU ? -->
+          <div class="step" data-step="1">
+            <h2>Étape 1 · Qui es-tu dans ce bazar ?</h2>
+            <p>
+              Mini-quiz de positionnement. Il n’y a pas de mauvaise réponse, juste des façons
+              différentes de “raquer” ou pas.
+            </p>
+
+            <div class="step-quiz" id="quiz-step-1">
+              <div class="quiz-question">
+                <strong>1. Quand on te parle de “jeu sérieux” :</strong>
+                <div class="quiz-options">
+                  <label>
+                    <input type="radio" name="q1" value="lol" />
+                    <span>Je rigole et je clique quand même.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="q1" value="curieux" />
+                    <span>Je suis curieux·se de voir ce que ça cache.</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="q1" value="meh" />
+                    <span>Je me méfie, ça sent le marketing.</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="quiz-question">
+                <strong>2. Côté “anars & technogeeks”, tu es plutôt :</strong>
+                <div class="quiz-options">
+                  <label>
+                    <input type="radio" name="q2" value="anar" />
+                    <span>“Tout brûle, on reconstruit mieux.”</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="q2" value="geek" />
+                    <span>“Montre-moi le code, on verra après.”</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="q2" value="hybride" />
+                    <span>Un peu des deux, un peu fatigué·e aussi.</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="quiz-question">
+                <strong>3. 12,50 EUR / an pour un truc collectif :</strong>
+                <div class="quiz-options">
+                  <label>
+                    <input type="radio" name="q3" value="nope" />
+                    <span>“Même ça, j’hésite, j’ai mes raisons.”</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="q3" value="why-not" />
+                    <span>“Pourquoi pas, si ça a du sens.”</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="q3" value="easy" />
+                    <span>“C’est rien si le truc est utile & fun.”</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <p id="quiz-step-1-warning" style="font-size:11px; color:#f97316; display:none; margin-top:4px;">
+              Réponds aux 3 questions avant de continuer. Tu peux répondre honnêtement ou en freestyle, c’est ton jeu.
+            </p>
+
+            <div class="step-nav">
+              <button class="step-btn" onclick="goToStep(0)">◀ Retour à l’accueil</button>
+              <button class="step-btn primary" id="btn-next-1">
+                Valider l’étape 1 ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 2: MINI-JEU 12,50 -->
+          <div class="step" data-step="2">
+            <h2>Étape 2 · Mini-jeu “Répartition 12,50”</h2>
+            <p>
+              Ici, 12,50 n’est pas qu’une somme d’argent : c’est aussi une unité symbolique.
+              Tu vas répartir <strong>12,50 points</strong> entre différentes formes de contribution.
+            </p>
+
+            <div class="mini-game">
+              <p style="margin-bottom:4px;">
+                <strong>Glisse les curseurs</strong> pour indiquer là où tu es prêt·e à “raquer”.
+                L’équilibre total n’est pas strictement vérifié, mais vise ~12,5 en tout.
+              </p>
+
+              <div class="slider-row">
+                <label>Temps (réunions, coups de main, présence)</label>
+                <input type="range" id="slider-temps" min="0" max="12" value="3"
+                  oninput="updateSliders()" />
+                <div class="slider-value">Temps : <span id="slider-temps-value">3</span> points</div>
+              </div>
+              <div class="slider-row">
+                <label>Argent (12,50 EUR / an, plus ou moins)</label>
+                <input type="range" id="slider-argent" min="0" max="12" value="3"
+                  oninput="updateSliders()" />
+                <div class="slider-value">Argent : <span id="slider-argent-value">3</span> points</div>
+              </div>
+              <div class="slider-row">
+                <label>Attention / cerveau disponible (lectures, veille, feedback)</label>
+                <input type="range" id="slider-attention" min="0" max="12" value="3"
+                  oninput="updateSliders()" />
+                <div class="slider-value">Attention : <span id="slider-attention-value">3</span> points</div>
+              </div>
+              <div class="slider-row">
+                <label>Contribution créative (textes, code, graphisme, idées cheloues)</label>
+                <input type="range" id="slider-creation" min="0" max="12" value="3"
+                  oninput="updateSliders()" />
+                <div class="slider-value">Création : <span id="slider-creation-value">3</span> points</div>
+              </div>
+
+              <div class="slider-value" style="margin-top:4px;">
+                Total approximatif : <strong id="slider-total">12</strong> / 12,5 “unités de raquage”.
+              </div>
+              <p id="slider-hint" style="font-size:11px; color:var(--text-softer); margin-top:2px;">
+                Ce n’est pas un examen de maths. C’est un miroir symbolique de là où tu te sens capable de donner.
+              </p>
+            </div>
+
+            <div class="step-nav">
+              <button class="step-btn" onclick="goToStep(1)">◀ Retour étape 1</button>
+              <button class="step-btn primary" id="btn-next-2">
+                Valider ma répartition ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 3: COMMENT TU RAQUES ? -->
+          <div class="step" data-step="3">
+            <h2>Étape 3 · Tu raques comment, concrètement ?</h2>
+            <p>
+              Ici, on transforme les curseurs en “modes de contribution”.
+              Coche ce qui te parle le plus, <strong>même si tu ne peux pas tout assumer maintenant</strong>.
+            </p>
+
+            <div class="mini-game" id="contrib-boxes">
+              <p style="margin-bottom:4px;">
+                Choisis au moins <strong>un mode</strong> (ou aucun, c’est aussi un message) :
+              </p>
+              <div class="quiz-options">
+                <label>
+                  <input type="checkbox" value="euros" />
+                  <span>Je peux raquer quelques euros / an si le projet reste propre & transparent.</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="temps" />
+                  <span>Je peux raquer du temps (réunions, entraide, animation ponctuelle).</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="skills" />
+                  <span>Je peux raquer des compétences (texte, code, design, facilitation).</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="relai" />
+                  <span>Je peux raquer du relai (parler du projet autour de moi).</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="rien" />
+                  <span>Pour l’instant je ne peux pas “raquer”. Je veux juste explorer tranquillou.</span>
+                </label>
+              </div>
+            </div>
+
+            <p id="contrib-warning" style="font-size:11px; color:#f97316; display:none; margin-top:4px;">
+              Tu peux cocher “rien” si tu veux, mais ne coche pas “rien” ET d’autres contributions en même temps.  
+              Sinon le système se gratte la tête.
+            </p>
+
+            <div class="step-nav">
+              <button class="step-btn" onclick="goToStep(2)">◀ Retour étape 2</button>
+              <button class="step-btn primary" id="btn-next-3">
+                Passer à la foutue pilule ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 4: PILULE ROUGE OU PAS -->
+          <div class="step" data-step="4">
+            <h2>Étape 4 · Pilule rouge, pilule bleue & passage à la caisse (symbolique)</h2>
+            <p>
+              On y est. Tu as répondu, joué, glissé des curseurs, coché des trucs.
+              Maintenant : <strong>tu raques ou pas ?</strong>
+            </p>
+
+            <div class="pill-row">
+              <div class="pill-choice red" onclick="choosePill('red')">
+                <div class="pill-icon red"></div>
+                <h3>Pilule rouge · “OK, je raque (en théorie)”</h3>
+                <p>
+                  Je suis prêt·e à contribuer d’une façon ou d’une autre :
+                  12,50 EUR / an, du temps, de la matière grise, des coups de main.
+                  On voit comment on s’organise concrètement plus tard.
+                </p>
+              </div>
+              <div class="pill-choice blue" onclick="choosePill('blue')">
+                <div class="pill-icon blue"></div>
+                <h3>Pilule bleue · “Non, pas maintenant”</h3>
+                <p>
+                  Je garde le droit de flâner, d’explorer, d’hésiter, de disparaître.
+                  Pas de culpabilisation, pas de pression. Le jeu reste accessible.
+                </p>
+              </div>
+            </div>
+
+            <div class="mini-game" id="pill-result" style="margin-top:8px; display:none;">
+              <p id="pill-result-text">
+                Résultat à afficher ici.
+              </p>
+              <p style="font-size:11px; color:var(--text-softer); margin-top:4px;">
+                Rien de tout ça ne déclenche un vrai paiement.  
+                Pour un jour “vraiment” raquer, il faudra un autre canal (et une vraie décision).
+              </p>
+            </div>
+
+            <div class="step-nav">
+              <button class="step-btn" onclick="goToStep(3)">◀ Retour étape 3</button>
+              <button class="step-btn primary" id="btn-replay">
+                Rejouer depuis le début 🔁
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- SIDE -->
+      <aside class="col-side">
+        <!-- mémo univers -->
+        <article class="card side-block">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🧭</span>
+              Mémo de l’univers
+            </div>
+            <span class="badge badge-accent">anars & technogeeks</span>
+          </div>
+          <p>
+            Ce jeu est pensé comme <strong>hub narratif</strong> entre :
+          </p>
+          <ul>
+            <li>l’arcade (pages HTML précédentes),</li>
+            <li>les intranets fictifs, sites de campagnes parodiés,</li>
+            <li>les fuites massives de <code>belgilikjes.html</code>,</li>
+            <li>et d’autres morceaux de ton univers numérique.</li>
+          </ul>
+          <p>
+            Ici, on décide juste si on est du côté
+            <strong>“je reste spectateur”</strong> ou
+            <strong>“je deviens coproprio du bazar”</strong>.
+          </p>
+
+          <div class="tag-cloud">
+            <span class="tag good">#jeuSérieux</span>
+            <span class="tag good">#12_50</span>
+            <span class="tag weird">#cryptoSansCrypto</span>
+            <span class="tag">#anarchoGeek</span>
+            <span class="tag">#FifthPower</span>
+            <span class="tag weird">#piluleRougeOuPas</span>
+          </div>
+        </article>
+
+        <!-- Profil joueur -->
+        <article class="card side-block">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">👤</span>
+              Profil joueur (résumé)
+            </div>
+            <span class="badge badge-soft">basé sur tes choix</span>
+          </div>
+          <div class="summary-box">
+            <div style="margin-bottom:4px; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-softer);">
+              ARCHÉTYPE
+            </div>
+            <div id="summary-archetype">
+              En attente : joue l’étape 1 pour activer ton archétype.
+            </div>
+
+            <div style="margin:6px 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-softer);">
+              CONTRIBUTIONS FAVORITES
+            </div>
+            <div id="summary-contrib">
+              Rien de déclaré pour l’instant. Tu peux cocher des options à l’étape 3.
+            </div>
+
+            <div style="margin:6px 0 4px; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-softer);">
+              POSITION ACTUELLE
+            </div>
+            <div id="summary-pill">
+              Tu n’as pas encore choisi ta pilule. Arrive à l’étape 4 pour décider.
+            </div>
+          </div>
+
+          <button class="export-btn" onclick="exportProfile()">
+            ⬇️ Exporter mon “profil joueur” (JSON)
+          </button>
+          <div class="export-hint">
+            Le fichier contiendra seulement ce que tu as choisi dans ce jeu (XP, sliders, cases cochées).
+            Tu peux l’ouvrir avec un éditeur de texte, l’archiver, le balancer ailleurs…
+          </div>
+        </article>
+
+        <!-- Note légal/satire -->
+        <article class="card side-block">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">⚖️</span>
+              Note importante
+            </div>
+            <span class="badge badge-danger">fiction & satire</span>
+          </div>
+          <p>
+            Ce site ne gère <strong>aucune vraie caisse</strong>, aucun paiement, aucune inscription.
+            Les 12,50 EUR / an sont <strong>un symbole</strong> pour parler de contribution
+            à un projet commun.
+          </p>
+          <p>
+            Si un jour tu veux vraiment “raquer”, il faudra passer par un autre canal explicite
+            (et idéalement avec audit citoyen du système).
+          </p>
+        </article>
+      </aside>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>
+        <strong>Tu raques ou pas ?</strong> fait partie d’un univers de jeu satirique en HTML statique.
+        Toutes les références à des montants, paiements ou organisations sont <em>fictives</em>
+        et servent à explorer les questions de contribution, de confiance et de participation,
+        pas à récolter de vrais fonds ni à faire de la vraie propagande.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ========= ÉTAT GLOBAL =========
+    const TOTAL_STEPS = 5; // 0 à 4
+    let currentStep = 0;
+    let xp = 0;
+
+    const state = {
+      quiz: { q1: null, q2: null, q3: null },
+      sliders: { temps: 3, argent: 3, attention: 3, creation: 3, total: 12 },
+      contrib: [],
+      pill: null
+    };
+
+    // ========= DOM HELPERS =========
+    const xpValueEl = document.getElementById("xp-value");
+    const progressInnerEl = document.getElementById("progress-inner");
+    const progressLabelEl = document.getElementById("progress-label");
+    const stepChips = document.querySelectorAll(".step-chip");
+    const stepsEls = document.querySelectorAll(".step");
+
+    const quizWarningEl = document.getElementById("quiz-step-1-warning");
+    const contribWarningEl = document.getElementById("contrib-warning");
+
+    const sliderTemps = document.getElementById("slider-temps");
+    const sliderArgent = document.getElementById("slider-argent");
+    const sliderAttention = document.getElementById("slider-attention");
+    const sliderCreation = document.getElementById("slider-creation");
+
+    const sliderTempsValue = document.getElementById("slider-temps-value");
+    const sliderArgentValue = document.getElementById("slider-argent-value");
+    const sliderAttentionValue = document.getElementById("slider-attention-value");
+    const sliderCreationValue = document.getElementById("slider-creation-value");
+    const sliderTotalValue = document.getElementById("slider-total");
+    const sliderHint = document.getElementById("slider-hint");
+
+    const pillResultBox = document.getElementById("pill-result");
+    const pillResultText = document.getElementById("pill-result-text");
+
+    const summaryArchetype = document.getElementById("summary-archetype");
+    const summaryContrib = document.getElementById("summary-contrib");
+    const summaryPill = document.getElementById("summary-pill");
+
+    // ========= MISE À JOUR UI =========
+    function updateXP(delta) {
+      xp = Math.max(0, xp + delta);
+      xpValueEl.textContent = xp;
+    }
+
+    function updateProgress() {
+      const progressPercent = ((currentStep + 1) / TOTAL_STEPS) * 100;
+      progressInnerEl.style.width = progressPercent + "%";
+      progressLabelEl.textContent = `Étape ${currentStep} / 4`.replace("0 / 4","0 / 4");
+    }
+
+    function updateStepVisibility() {
+      stepsEls.forEach((el) => {
+        const stepIndex = parseInt(el.getAttribute("data-step"), 10);
+        el.classList.toggle("active", stepIndex === currentStep);
+      });
+
+      stepChips.forEach((chip) => {
+        const idx = parseInt(chip.getAttribute("data-step-chip"), 10);
+        chip.classList.toggle("active", idx === currentStep);
+        chip.classList.toggle("done", idx < currentStep);
+      });
+
+      updateProgress();
+    }
+
+    function scrollToSteps() {
+      const card = document.getElementById("steps-card");
+      if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // ========= STEP NAV =========
+    function goToStep(stepIndex) {
+      if (stepIndex < 0 || stepIndex >= TOTAL_STEPS) return;
+      currentStep = stepIndex;
+      updateStepVisibility();
+      scrollToSteps();
+    }
+
+    // ========= STEP 1: QUIZ =========
+    function readQuizAnswers() {
+      ["q1", "q2", "q3"].forEach((q) => {
+        const selected = document.querySelector(`input[name="${q}"]:checked`);
+        state.quiz[q] = selected ? selected.value : null;
+      });
+    }
+
+    function validateStep1() {
+      readQuizAnswers();
+      const { q1, q2, q3 } = state.quiz;
+      const ok = q1 && q2 && q3;
+      quizWarningEl.style.display = ok ? "none" : "block";
+
+      if (!ok) return false;
+
+      // XP bonus une seule fois (si on vient pour la 1ère fois)
+      if (!stepChips[1].classList.contains("done")) {
+        updateXP(4);
+      }
+
+      // Archétype approximatif
+      let archetype = "Explorateur·rice indéfini·e";
+      if (q2 === "anar" && q3 === "nope") {
+        archetype = "Anar fauché·e lucide";
+      } else if (q2 === "geek" && q3 === "easy") {
+        archetype = "Technogeek bien câblé·e";
+      } else if (q2 === "hybride" && q3 === "why-not") {
+        archetype = "Hybrid curieux·se pragmatique";
+      } else if (q1 === "meh") {
+        archetype = "Sceptique fonctionnel·le";
+      }
+
+      summaryArchetype.textContent = archetype;
+      return true;
+    }
+
+    // ========= STEP 2: SLIDERS =========
+    function updateSliders() {
+      const t = parseInt(sliderTemps.value, 10);
+      const a = parseInt(sliderArgent.value, 10);
+      const at = parseInt(sliderAttention.value, 10);
+      const c = parseInt(sliderCreation.value, 10);
+      const total = t + a + at + c;
+
+      state.sliders = { temps: t, argent: a, attention: at, creation: c, total };
+
+      sliderTempsValue.textContent = t;
+      sliderArgentValue.textContent = a;
+      sliderAttentionValue.textContent = at;
+      sliderCreationValue.textContent = c;
+      sliderTotalValue.textContent = total;
+
+      if (total < 8) {
+        sliderHint.textContent = "Total bas : ça peut vouloir dire “je protège mes ressources”, et c’est valide.";
+        sliderHint.style.color = "#fbbf24";
+      } else if (total > 16) {
+        sliderHint.textContent = "Total élevé : fais gaffe à ne pas tout donner partout, tout le temps.";
+        sliderHint.style.color = "#f97316";
+      } else {
+        sliderHint.textContent = "Total approximatif correct. Ce n’est pas un examen de maths.";
+        sliderHint.style.color = "var(--text-softer)";
+      }
+    }
+
+    function validateStep2() {
+      // Bonus XP si pas déjà compté
+      if (!stepChips[2].classList.contains("done")) {
+        updateXP(4);
+      }
+      return true;
+    }
+
+    // ========= STEP 3: CONTRIBUTIONS =========
+    function readContrib() {
+      const boxContainer = document.getElementById("contrib-boxes");
+      const inputs = boxContainer.querySelectorAll("input[type='checkbox']");
+      const values = [];
+      inputs.forEach((inp) => {
+        if (inp.checked) values.push(inp.value);
+      });
+      state.contrib = values;
+      return values;
+    }
+
+    function validateStep3() {
+      const values = readContrib();
+      const hasRien = values.includes("rien");
+      const others = values.filter((v) => v !== "rien");
+
+      if (hasRien && others.length > 0) {
+        contribWarningEl.style.display = "block";
+        return false;
+      }
+      contribWarningEl.style.display = "none";
+
+      // XP : donner un peu même si on coche “rien”
+      if (!stepChips[3].classList.contains("done")) {
+        updateXP(4);
+      }
+
+      if (values.length === 0) {
+        summaryContrib.textContent =
+          "Tu n’as sélectionné aucun mode de contribution. C’est aussi une info : position d’observation.";
+      } else if (hasRien) {
+        summaryContrib.textContent =
+          "Tu as explicitement choisi de ne pas “raquer” pour l’instant. Le jeu prend note et n’insiste pas.";
+      } else {
+        const labels = {
+          euros: "Euros (12,50 / an en théorie)",
+          temps: "Temps (réunions, entraide)",
+          skills: "Compétences (texte, code, facilitation...)",
+          relai: "Relais (parler du projet autour de toi)"
+        };
+        const txt = values.map((v) => labels[v] || v).join(", ");
+        summaryContrib.textContent = txt;
+      }
+
+      return true;
+    }
+
+    // ========= STEP 4: PILULES =========
+    function choosePill(type) {
+      state.pill = type;
+
+      let text = "";
+      if (type === "red") {
+        text =
+          "Tu as choisi la pilule rouge (symbolique). Tu te déclares prêt·e à contribuer d’une manière ou d’une autre – " +
+          "pas forcément en argent, pas forcément tout de suite, mais clairement du côté “je veux co-construire quelque chose”.";
+        updateXP(4); // bonus final
+        summaryPill.textContent =
+          "Position assumée : pilule rouge. Tu te vois comme partie prenante potentielle du projet.";
+      } else {
+        text =
+          "Tu as choisi la pilule bleue (symbolique). Tu préfères garder la distance : explorer, flâner, observer, " +
+          "sans engagement concret pour l’instant. Le jeu respecte ça.";
+        summaryPill.textContent =
+          "Position assumée : pilule bleue. Tu gardes la liberté totale de ne pas t’engager, sans culpabilisation.";
+      }
+
+      pillResultText.textContent = text;
+      pillResultBox.style.display = "block";
+    }
+
+    // ========= EXPORT PROFIL =========
+    function exportProfile() {
+      const profile = {
+        xp,
+        quiz: state.quiz,
+        sliders: state.sliders,
+        contrib: state.contrib,
+        pill: state.pill,
+        exported_at: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(profile, null, 2)], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "profil-tu-raques-ou-pas.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ========= INIT & ÉVÉNEMENTS =========
+    document.getElementById("btn-next-0").addEventListener("click", () => {
+      goToStep(1);
+    });
+
+    document.getElementById("btn-next-1").addEventListener("click", () => {
+      if (validateStep1()) {
+        goToStep(2);
+      }
+    });
+
+    document.getElementById("btn-next-2").addEventListener("click", () => {
+      if (validateStep2()) {
+        goToStep(3);
+      }
+    });
+
+    document.getElementById("btn-next-3").addEventListener("click", () => {
+      if (validateStep3()) {
+        goToStep(4);
+      }
+    });
+
+    document.getElementById("btn-replay").addEventListener("click", () => {
+      // Reset simple (sans recharger la page)
+      xp = 0;
+      xpValueEl.textContent = "0";
+      state.quiz = { q1: null, q2: null, q3: null };
+      state.contrib = [];
+      state.pill = null;
+      pillResultBox.style.display = "none";
+      summaryArchetype.textContent = "En attente : rejoue l’étape 1 pour activer ton archétype.";
+      summaryContrib.textContent = "Rien de déclaré pour l’instant. Tu peux cocher des options à l’étape 3.";
+      summaryPill.textContent = "Tu n’as pas encore choisi ta pilule.";
+
+      // clear inputs
+      document
+        .querySelectorAll("#quiz-step-1 input[type='radio']")
+        .forEach((el) => (el.checked = false));
+      document
+        .querySelectorAll("#contrib-boxes input[type='checkbox']")
+        .forEach((el) => (el.checked = false));
+
+      // reset step chips
+      stepChips.forEach((c) => c.classList.remove("done"));
+
+      goToStep(0);
+    });
+
+    // sliders init
+    updateSliders();
+
+    // petite sauvegarde localStorage facultative
+    window.addEventListener("beforeunload", () => {
+      try {
+        const data = {
+          xp,
+          state
+        };
+        localStorage.setItem("tu_raques_ou_pas_save", JSON.stringify(data));
+      } catch (e) {
+        // ignore
+      }
+    });
+
+    window.addEventListener("load", () => {
+      try {
+        const raw = localStorage.getItem("tu_raques_ou_pas_save");
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved) return;
+
+        xp = saved.xp || 0;
+        xpValueEl.textContent = xp;
+
+        Object.assign(state.quiz, saved.state.quiz || {});
+        Object.assign(state.sliders, saved.state.sliders || {});
+        state.contrib = saved.state.contrib || [];
+        state.pill = saved.state.pill || null;
+
+        // re-appliquer quiz
+        Object.entries(state.quiz).forEach(([k, v]) => {
+          if (!v) return;
+          const el = document.querySelector(`input[name="${k}"][value="${v}"]`);
+          if (el) el.checked = true;
+        });
+
+        // sliders
+        sliderTemps.value = state.sliders.temps || 3;
+        sliderArgent.value = state.sliders.argent || 3;
+        sliderAttention.value = state.sliders.attention || 3;
+        sliderCreation.value = state.sliders.creation || 3;
+        updateSliders();
+
+        // contrib
+        const boxContainer = document.getElementById("contrib-boxes");
+        boxContainer
+          .querySelectorAll("input[type='checkbox']")
+          .forEach((inp) => (inp.checked = state.contrib.includes(inp.value)));
+
+        // pill
+        if (state.pill) {
+          choosePill(state.pill);
+        }
+
+        // recalcul UI (archétype + contrib)
+        if (state.quiz.q1 && state.quiz.q2 && state.quiz.q3) {
+          validateStep1();
+        }
+        if (state.contrib.length > 0) {
+          validateStep3();
+        }
+      } catch (e) {
+        // ignore
+      }
+      updateStepVisibility();
+    });
+
+    // exposer quelques fonctions globales
+    window.scrollToSteps = scrollToSteps;
+    window.goToStep = goToStep;
+    window.updateSliders = updateSliders;
+    window.choosePill = choosePill;
+    window.exportProfile = exportProfile;
+  </script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Belgilikjes · Fuite Massive · CryptoLeaks</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* --------------------
+   PALETTE & VARIABLES 
+---------------------*/
+:root {
+  --bg: #05070d;
+  --bg2: #0b0f17;
+  --panel: #131a26;
+  --border: #2a3242;
+  --text: #e2e8f0;
+  --text-soft: #94a3b8;
+  --accent: #22c55e;
+  --accent2: #a855f7;
+  --danger: #f43f5e;
+  --radius: 14px;
+}
+
+/* --------------------
+     LAYOUT GLOBAL
+---------------------*/
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: radial-gradient(circle at center, #0f172a 0%, #05070d 80%);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+header {
+  padding: 16px 22px;
+  background: rgba(5,7,13,0.85);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(5px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+/* --------------------
+   ANIMATION GLITCH
+---------------------*/
+@keyframes glitch {
+  0% { opacity: 1; }
+  20% { opacity: 0.95; transform: translate(1px, -1px); }
+  40% { opacity: 1; transform: translate(-1px, 1px); }
+  60% { opacity: 0.98; transform: translate(1px, 0); }
+  80% { opacity: 1; transform: translate(0, 1px); }
+  100% { opacity: 1; }
+}
+
+.glitch {
+  animation: glitch 0.4s infinite;
+}
+
+/* --------------------
+     NAV UNIVERSELLE
+---------------------*/
+.nav {
+  margin: 18px;
+  padding: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nav a {
+  color: var(--text-soft);
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: #0d121c;
+}
+
+.nav a:hover {
+  background: #1e293b;
+  color: #fff;
+}
+
+/* --------------------
+       SECTION
+---------------------*/
+.section {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 18px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+/* --------------------
+       LEAK LIST
+---------------------*/
+.leak-list {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media(min-width: 768px) {
+  .leak-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(min-width: 1100px) {
+  .leak-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.leak-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.leak-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.7);
+}
+
+.leak-card h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.leak-meta {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+/* --------------------
+        MODALE
+---------------------*/
+.modal-bg {
+  display: none;
+  position: fixed;
+  left: 0; top: 0;
+  right:0; bottom:0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.9);
+}
+
+.modal h3 { margin-top: 0; }
+.modal p { font-size: 14px; }
+
+.modal-close {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--text-soft);
+}
+
+.modal-close:hover { color: #fff; }
+
+/* --------------------
+    FOOTER
+---------------------*/
+footer {
+  text-align: center;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1 class="glitch">Belgilikjes — Fuite Massive</h1>
+  <div class="subtitle">Le site de crypto-fuite le plus insolent du Royaume</div>
+</header>
+
+<!-- NAV UNIVERSELLE -->
+<div class="nav">
+  <a href="index.html">🏠 Arcade</a>
+  <a href="tu-raques-ou-pas.html">💸 Tu Raques Ou Pas</a>
+  <a href="mr-campagne.html">🔵 MR En Mieux</a>
+  <a href="campagne-clones.html">💚❤️ Clones Ecolo/PTB</a>
+  <a href="organisation.html">🕵️ L’Organisation</a>
+  <a href="etagere.html">📚 Étagère</a>
+</div>
+
+<div class="section">
+
+  <!-- INTRO -->
+  <div class="panel">
+    <h2>💥 La plus grosse fuite de données du Royaume</h2>
+    <p>
+      Bienvenue sur <strong>Belgilikjes</strong>, plateforme de crypto-fuites citoyennes, 
+      alimentée par un collectif d’insupportables têtes brûlées qui pensent que 
+      <em>“si l’État ne protège rien, on protégera l’ironie”</em>.
+    </p>
+    <p>
+      Ce site regroupe :
+    </p>
+    <ul>
+      <li>des leaks institutionnels,</li>
+      <li>des leaks privés,</li>
+      <li>des leaks de leaks (oui),</li>
+      <li>des archives de fichiers corrompus,</li>
+      <li>des dossiers auto-dénonciateurs,</li>
+      <li>et des documents trop vrais pour être faux.</li>
+    </ul>
+    <p>
+      Tout est 100% fictif, satirique, et doucement toxique.  
+      Bienvenue dans le pire des mondes possibles… mais en HTML statique.
+    </p>
+  </div>
+
+  <!-- LEAKS -->
+  <div class="panel">
+    <h2>📂 Fuites récentes (générées dynamiquement)</h2>
+
+    <div id="leakList" class="leak-list"></div>
+  </div>
+</div>
+
+<!-- MODALE -->
+<div id="modal-bg" class="modal-bg">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal()">✖</div>
+    <h3 id="modal-title"></h3>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<footer>
+  Belgilikjes · CryptoLeaks FWB · Fuite massive fictive. Rien n’est réel (heureusement).
+</footer>
+
+<script>
+/* -------------------------
+   GÉNÉRATION DE FAUSSES FUITES
+--------------------------*/
+const leakSamples = [
+  {
+    title: "Fuite interne SPF Intérieur : le plan 'Passendaele++'",
+    info: "Stratégie nationale 2026, version corrompue 13-B",
+    content: "Document révélant que la cybersécurité fédérale repose en grande partie sur un tableur Excel protégé par le mot de passe « bruxelles123 »."
+  },
+  {
+    title: "Bases de données mutuelles — version 'full passoires'",
+    info: "77.000 entrées exposées (en théorie)",
+    content: "Contient des champs vides, des adresses datant de 1998, et un fichier 'ne_pas_ouvrir_final_def_def(1).xls'."
+  },
+  {
+    title: "Données SNCB — Rapport 'Retards Prévisibles 2035'",
+    info: "Rapport secret Bêta",
+    content: "Analyse prospective montrant que les trains auront statistiquement 8 minutes de retard par défaut… et davantage si météo belge."
+  },
+  {
+    title: "Leak RTBF : Carte de neutralité journalistique",
+    info: "Version brouillon (n’a pas été relue)",
+    content: "Une carte thermique où la couleur 'objectivité' est introuvable. Par contre le rouge vif sur 'polémique' marche très bien."
+  },
+  {
+    title: "Écoles — Dossier 'Plan d’urgence pédagogico-numérique'",
+    info: "PDF scanné 12 fois",
+    content: "On y apprend que le réseau Wi-Fi des écoles est alimenté par un routeur de 2008."
+  },
+  {
+    title: "Fuite Ores : Plans de maintenance 2025-2042",
+    info: "Version ZIP 8 Go",
+    content: "Des fichiers vides, un fichier 'vraiplan.pdf', et un dossier nommé 'ancien_cauchemar/NE_PAS_TOUCHER/'."
+  },
+  {
+    title: "Transit STIB — Données GPS anonymisées (lol)",
+    info: "CSV 4 millions de lignes",
+    content: "Les données sont tellement anonymisées que même la ligne 95 apparaît comme une ligne fantôme jamais vue par la population."
+  }
+];
+
+function generateLeaks() {
+  const container = document.getElementById("leakList");
+  container.innerHTML = "";
+
+  leakSamples.forEach((leak, idx) => {
+    const card = document.createElement("div");
+    card.className = "leak-card";
+    card.onclick = () => openModal(leak);
+
+    card.innerHTML = `
+      <h3>${leak.title}</h3>
+      <div class="leak-meta">${leak.info}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+/* -------------------------
+      MODALE
+--------------------------*/
+function openModal(leak) {
+  document.getElementById("modal-title").textContent = leak.title;
+  document.getElementById("modal-content").innerHTML = `
+    <p>${leak.content}</p>
+    <p style="color:#94a3b8; font-size:12px; margin-top:10px;">
+      Dossier généré dynamiquement. Aucun de ces contenus n’existe réellement.
+    </p>
+  `;
+  document.getElementById("modal-bg").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal-bg").style.display = "none";
+}
+
+/* -------------------------
+   INIT
+--------------------------*/
+generateLeaks();
+
+</script>
+
+</body>
+</html>
