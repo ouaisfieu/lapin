@@ -1,6 +1,3 @@
----
-cssclasses: bd-perso
----
 # 📊 Face à l’Info
 
 
