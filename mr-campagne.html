@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>MR EN MIEUX · Tableau de Campagne Radicalisé</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+:root {
+  --bg: #020617;
+  --bg2: #020617;
+  --panel: #0b1120;
+  --border: #1e293b;
+  --text: #e5e7eb;
+  --text-soft: #9ca3af;
+  --accent-blue: #3b82f6;
+  --accent-gold: #facc15;
+  --accent-red: #f97316;
+  --accent-green: #22c55e;
+  --radius: 16px;
+  --shadow: 0 16px 45px rgba(0,0,0,0.8);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+  color: var(--text);
+}
+
+/* HEADER */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(15,23,42,0.96);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 0, #bfdbfe, #3b82f6 40%, #0f172a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0b1120;
+  font-weight: 900;
+  font-size: 16px;
+  box-shadow:
+    0 0 0 2px #020617,
+    0 0 14px rgba(59,130,246,0.8);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-title {
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.badge-live {
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(248,113,113,0.9);
+  color: #fecaca;
+  background: rgba(127,29,29,0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #ef4444;
+  box-shadow: 0 0 12px rgba(239,68,68,0.9);
+}
+
+.header-meter {
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+}
+
+/* NAV UNIVERSE */
+
+.universe-nav {
+  margin: 12px auto 0;
+  padding: 8px 12px;
+  max-width: 1100px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.universe-nav a {
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.universe-nav a:hover {
+  background: #1e293b;
+  color: #f9fafb;
+}
+
+/* LAYOUT */
+
+main {
+  max-width: 1100px;
+  margin: 10px auto 20px;
+  padding: 0 14px 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1.2fr);
+  gap: 14px;
+}
+
+@media(max-width: 900px) {
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-label {
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+.tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+}
+
+.tag-blue {
+  border-color: #60a5fa;
+  color: #dbeafe;
+  background: rgba(37,99,235,0.25);
+}
+
+.tag-gold {
+  border-color: #facc15;
+  color: #fef9c3;
+  background: rgba(234,179,8,0.22);
+}
+
+/* PROGRESS METERS */
+
+.meters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+@media(min-width: 700px) {
+  .meters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.meter {
+  font-size: 11px;
+}
+
+.meter-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.meter-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  transition: width 0.25s ease-out;
+}
+
+.meter-fill.blue {
+  background: linear-gradient(90deg,#3b82f6,#22c55e);
+}
+
+.meter-fill.gold {
+  background: linear-gradient(90deg,#facc15,#f97316);
+}
+
+.meter-fill.red {
+  background: linear-gradient(90deg,#fb7185,#f97316);
+}
+
+.meter-fill.green {
+  background: linear-gradient(90deg,#22c55e,#a855f7);
+}
+
+/* NOTIFICATIONS */
+
+.notifs-list {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 8px;
+  padding-right: 4px;
+}
+
+.notif {
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  margin-bottom: 5px;
+}
+
+.notif small {
+  display: block;
+  font-size: 10px;
+  color: var(--text-soft);
+}
+
+/* GAMIFICATION ENGAGEMENT */
+
+.engagement-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+@media(min-width: 700px) {
+  .engagement-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+.eng-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+/* CTA */
+
+.btn-row {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text-soft);
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: linear-gradient(90deg,#3b82f6,#22c55e);
+  border-color: transparent;
+  color: #020617;
+  font-weight: 600;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+/* SIDE: FEED & DISCL */
+
+.feed {
+  font-size: 12px;
+}
+
+.feed h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.feed-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 4px 0 0;
+}
+
+.feed-list li {
+  margin-bottom: 3px;
+}
+
+.small {
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+/* FOOTER */
+
+footer {
+  font-size: 10px;
+  color: var(--text-soft);
+  border-top: 1px solid var(--border);
+  padding: 10px 16px 14px;
+  background: #020617;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">MR</div>
+    <div class="brand-text">
+      <div class="brand-title">MR EN MIEUX</div>
+      <div class="brand-sub">Mouvement Radical — Dashboard de campagne (fictif)</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge-live">
+      <span class="live-dot"></span>
+      Campagne toxique en continu 24/7
+    </div>
+    <div class="header-meter">
+      Radicabilité : <span id="score-radic">87</span> %
+    </div>
+  </div>
+</header>
+
+<nav class="universe-nav">
+  <a href="index.html">🏠 Arcade</a>
+  <a href="tu-raques-ou-pas.html">💸 Tu Raques Ou Pas</a>
+  <a href="belgilikjes.html">💾 Belgilikjes</a>
+  <a href="campagne-clones.html">💚❤️ Clones Ecolo/PTB</a>
+  <a href="organisation.html">🕵️ L’Organisation</a>
+  <a href="etagere.html">📚 Étagère</a>
+</nav>
+
+<main>
+  <!-- COLONNE GAUCHE : DASHBOARD -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2>🎛️ Tableau de campagne radicalisé</h2>
+        <div class="card-label">Vue interne — version “MR EN MIEUX”</div>
+      </div>
+      <span class="tag tag-blue">Bêta interne</span>
+    </div>
+
+    <p>
+      Ceci est le <strong>back-office fictif</strong> du “Mouvement Radical (EN MIEUX)”.
+      Toute ressemblance avec des organisations existantes serait pure coïncidence ou satire.
+    </p>
+
+    <p class="small">
+      Objectif affiché : saturer l’espace médiatique à coups de notifications, de slogans “EN MIEUX”
+      et de gamification politique.  
+      Objectif réel : voir jusqu’où on peut aller avant que quelqu’un ne coupe le Wi-Fi.
+    </p>
+
+    <!-- METERS -->
+    <div class="meters">
+      <div class="meter">
+        <div class="meter-label">
+          <span>Radicalité marketing</span>
+          <span id="m-rad-val">91 %</span>
+        </div>
+        <div class="meter-bar">
+          <div class="meter-fill.blue" id="m-rad" style="width: 91%;"></div>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="meter-label">
+          <span>Storytelling “EN MIEUX”</span>
+          <span id="m-story-val">78 %</span>
+        </div>
+        <div class="meter-bar">
+          <div class="meter-fill.gold" id="m-story" style="width: 78%;"></div>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="meter-label">
+          <span>Toxicité gamifiée</span>
+          <span id="m-toxic-val">64 %</span>
+        </div>
+        <div class="meter-bar">
+          <div class="meter-fill.red" id="m-toxic" style="width: 64%;"></div>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="meter-label">
+          <span>Capacité d’auto-dérision</span>
+          <span id="m-derision-val">3 %</span>
+        </div>
+        <div class="meter-bar">
+          <div class="meter-fill.green" id="m-derision" style="width: 3%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENGAGEMENT GAMIFIÉ -->
+    <div style="margin-top:10px;">
+      <h3 style="margin:0 0 4px; font-size:14px; color:var(--text);">🎮 Gamification des militants</h3>
+      <p class="small">
+        Chaque interaction est convertie en “points de loyauté”.  
+        Plus tu cliques, plus on présume que tu es d’accord — logique douteuse assumée.
+      </p>
+
+      <div class="engagement-grid">
+        <div class="eng-card">
+          <strong>Niveau militant·e :</strong>
+          <div id="level-label">Flasher débutant</div>
+          <div class="small">Basé sur le nombre de clics toxiques ci-dessous.</div>
+        </div>
+        <div class="eng-card">
+          <strong>Clicks toxiques cumulés :</strong>
+          <span id="clicks-count">0</span>
+          <div class="small">Plus tu testes, plus le compteur grimpe, mais ça reste dans ton navigateur.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="btn-like" type="button">
+          👍 J’aime ce message (EN MIEUX)
+        </button>
+        <button class="btn" id="btn-share" type="button">
+          🔁 Partager rageusement (fictif)
+        </button>
+        <button class="btn" id="btn-poll" type="button">
+          📊 Booster un sondage truqué
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLONNE DROITE : FEED & DISCL -->
+  <section>
+    <article class="card feed">
+      <div class="card-header">
+        <div>
+          <h2>📢 Mur de notifications (fictif)</h2>
+          <div class="card-label">“EN MIEUX” veut dire : toujours plus de push.</div>
+        </div>
+        <span class="tag tag-gold">Flux interne</span>
+      </div>
+
+      <div class="notifs-list" id="notifs-list"></div>
+
+      <button class="btn" id="btn-more" type="button" style="margin-top:6px;">
+        ➕ Ajouter une notification absurde
+      </button>
+    </article>
+
+    <article class="card" style="margin-top:10px;">
+      <h2>⚖️ Disclamer satirique</h2>
+      <p class="small">
+        Ce site de campagne “MR EN MIEUX” est une fiction complète.  
+        Il ne reflète pas la position réelle d’un parti, d’un mouvement ou d’une organisation.
+      </p>
+      <p class="small">
+        Il sert uniquement à explorer, par le jeu, les logiques de communication politique,
+        de gamification et de saturation médiatique.  
+        Il n’appelle à voter pour personne, ne fait pas de publicité réelle, 
+        et ne vise pas à influencer des électeurs dans la vraie vie.
+      </p>
+      <p class="small">
+        Si tu veux faire de la vraie politique, il faudra sortir du HTML statique
+        et aller parler avec des gens en dehors de ton écran.
+      </p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  MR EN MIEUX · Mouvement Radical (fictif) · Tableau de campagne satirique.
+  Toute ressemblance avec des partis existants est volontairement caricaturale et sans effet réel.
+</footer>
+
+<script>
+// État simple pour la gamification
+let toxicClicks = 0;
+
+const clicksCountEl = document.getElementById("clicks-count");
+const levelLabelEl = document.getElementById("level-label");
+
+const mRadVal = document.getElementById("m-rad-val");
+const mStoryVal = document.getElementById("m-story-val");
+const mToxicVal = document.getElementById("m-toxic-val");
+const mDerisionVal = document.getElementById("m-derision-val");
+
+const mRad = document.getElementById("m-rad");
+const mStory = document.getElementById("m-story");
+const mToxic = document.getElementById("m-toxic");
+const mDerision = document.getElementById("m-derision");
+
+// PETIT FEED NOTIFS
+const notifListEl = document.getElementById("notifs-list");
+
+const baseNotifs = [
+  "Nouveau slogan testé : « ENCORE PLUS EN MIEUX ».",
+  "Push interne : « Objectif du jour : être en tendance 3 fois avant midi. »",
+  "Briefing comm’ : « On met “EN MIEUX” dans tous les titres, même la météo. »",
+  "Alert sondage : « 93% des répondant·es trouvent ce chiffre suspect. »",
+  "Notification : « On a ajouté 4 niveaux de plus au système de points. Personne ne comprend, mais tout le monde clique. »"
+];
+
+function addNotif(text, meta) {
+  const div = document.createElement("div");
+  div.className = "notif";
+  div.innerHTML = `
+    ${text}
+    <small>${meta}</small>
+  `;
+  notifListEl.prepend(div);
+}
+
+function seedNotifs() {
+  baseNotifs.forEach((t, idx) => {
+    addNotif(t, `Flux interne #${idx+1}`);
+  });
+}
+
+// GAMIFICATION CLICS
+
+function updateGamification() {
+  clicksCountEl.textContent = toxicClicks;
+
+  // Niveau
+  let level = "Flasher débutant";
+  if (toxicClicks >= 3 && toxicClicks < 10) level = "Cliquant compulsif";
+  if (toxicClicks >= 10 && toxicClicks < 25) level = "Militant EN MIEUX";
+  if (toxicClicks >= 25) level = "Boss final des notifications";
+
+  levelLabelEl.textContent = level;
+
+  // Faire varier un peu les barres (juste visuel)
+  const rad = Math.min(100, 90 + toxicClicks * 0.4);
+  const story = Math.min(100, 70 + toxicClicks * 0.3);
+  const toxic = Math.min(100, 55 + toxicClicks * 0.6);
+  const derision = Math.min(30, 3 + toxicClicks * 0.1);
+
+  mRadVal.textContent = Math.round(rad) + " %";
+  mStoryVal.textContent = Math.round(story) + " %";
+  mToxicVal.textContent = Math.round(toxic) + " %";
+  mDerisionVal.textContent = Math.round(derision) + " %";
+
+  mRad.style.width = rad + "%";
+  mStory.style.width = story + "%";
+  mToxic.style.width = toxic + "%";
+  mDerision.style.width = derision + "%";
+}
+
+// Boutons
+
+document.getElementById("btn-like").addEventListener("click", () => {
+  toxicClicks++;
+  updateGamification();
+  addNotif(
+    "Un·e visiteur·e vient de liker un message « EN MIEUX ». Algorithme satisfait.",
+    "Interaction simulée · compteur +" + toxicClicks
+  );
+});
+
+document.getElementById("btn-share").addEventListener("click", () => {
+  toxicClicks++;
+  updateGamification();
+  addNotif(
+    "Partage rageur détecté. Portée émotionnelle en hausse de 47 points (fictifs).",
+    "Rage-share fantôme"
+  );
+});
+
+document.getElementById("btn-poll").addEventListener("click", () => {
+  toxicClicks++;
+  updateGamification();
+  addNotif(
+    "Sondage interne mis à jour : 101% des gens approuvent ce graphique.",
+    "DataLab EN MIEUX"
+  );
+});
+
+document.getElementById("btn-more").addEventListener("click", () => {
+  const randomExtra = [
+    "Nouveau KPI ajouté : « intensité des yeux plissés pendant les débats TV ».",
+    "Le tableau de bord a crashé sous le poids des bullet points.",
+    "L’algorithme propose de rajouter « EN MIEUX » après chaque prénom.",
+    "Une notification vient d’annoncer la suppression de 20% des notifications. Ironie inconnue."
+  ];
+  const txt = randomExtra[Math.floor(Math.random() * randomExtra.length)];
+  addNotif(txt, "Overflow de flux");
+});
+
+// INIT
+seedNotifs();
+updateGamification();
+</script>
+
+</body>
+</html>
