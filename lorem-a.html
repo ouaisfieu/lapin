@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOREM - Polar Noir Interactif</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Cfilter id="noise"%3E%3CfeTurbulence baseFrequency="0.9" numOctaves="4"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="0.05"/%3E%3C/svg%3E');
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .title-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 1s, visibility 1s;
+        }
+
+        .title-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .title-screen h1 {
+            font-size: 8rem;
+            font-weight: bold;
+            color: #ff4444;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.5),
+                         0 0 40px rgba(255, 68, 68, 0.3);
+            letter-spacing: 2rem;
+            margin-bottom: 2rem;
+            animation: flicker 3s infinite;
+        }
+
+        .title-screen p {
+            font-size: 1.5rem;
+            color: #888;
+            margin-bottom: 3rem;
+            letter-spacing: 0.5rem;
+        }
+
+        .title-screen button {
+            padding: 1.5rem 4rem;
+            font-size: 1.2rem;
+            font-family: 'Courier New', monospace;
+            background: transparent;
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.3rem;
+        }
+
+        .title-screen button:hover {
+            background: #ff4444;
+            color: #0a0a0a;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            51% { opacity: 1; }
+            52% { opacity: 0.9; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .container.visible {
+            opacity: 1;
+        }
+
+        .scene {
+            display: none;
+            animation: fadeIn 0.8s;
+        }
+
+        .scene.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel {
+            background: #151515;
+            border: 3px solid #333;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .panel-image {
+            width: 100%;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            filter: contrast(1.2) brightness(0.8);
+            cursor: zoom-in;
+            transition: all 0.3s;
+        }
+
+        .panel-image:hover {
+            filter: contrast(1.3) brightness(0.9);
+            transform: scale(1.02);
+        }
+
+        .image-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .image-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 0.5rem 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .image-btn:hover {
+            background: #ff4444;
+            color: #0a0a0a;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+
+        .scene-1 .panel-image {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)),
+                        url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="400"%3E%3Crect fill="%23222" width="800" height="400"/%3E%3Cpath d="M0 300 L200 250 L400 280 L600 240 L800 270 L800 400 L0 400 Z" fill="%23111"/%3E%3Ccircle cx="650" cy="80" r="40" fill="%23ffcc00" opacity="0.3"/%3E%3Crect x="100" y="200" width="80" height="200" fill="%23181818"/%3E%3Crect x="300" y="180" width="100" height="220" fill="%231a1a1a"/%3E%3Crect x="500" y="220" width="90" height="180" fill="%23161616"/%3E%3C/svg%3E');
+        }
+
+        .scene-2 .panel-image {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+                        url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="400"%3E%3Crect fill="%23181818" width="800" height="400"/%3E%3Crect x="0" y="0" width="300" height="400" fill="%23222"/%3E%3Crect x="320" y="100" width="200" height="250" fill="%23333" opacity="0.5"/%3E%3Crect x="340" y="120" width="60" height="80" fill="%23ffcc00" opacity="0.2"/%3E%3Cpath d="M600 50 Q650 100 600 150 T600 250" stroke="%23444" stroke-width="3" fill="none"/%3E%3C/svg%3E');
+        }
+
+        .scene-3 .panel-image {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)),
+                        url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="400"%3E%3Crect fill="%231a1a1a" width="800" height="400"/%3E%3Crect x="200" y="150" width="400" height="200" fill="%23252525"/%3E%3Crect x="350" y="180" width="100" height="140" fill="%23ff4444" opacity="0.1"/%3E%3Ccircle cx="300" cy="100" r="50" fill="%23ffcc00" opacity="0.15"/%3E%3C/svg%3E');
+        }
+
+        .scene-4 .panel-image {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+                        url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="400"%3E%3Crect fill="%23151515" width="800" height="400"/%3E%3Cpath d="M0 0 L800 0 L800 200 L0 250 Z" fill="%23222"/%3E%3Crect x="100" y="250" width="150" height="150" fill="%232a2a2a"/%3E%3Crect x="300" y="220" width="200" height="180" fill="%23282828"/%3E%3Crect x="550" y="240" width="180" height="160" fill="%232c2c2c"/%3E%3C/svg%3E');
+        }
+
+        .scene-5 .panel-image {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+                        url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="400"%3E%3Crect fill="%23000" width="800" height="400"/%3E%3Ccircle cx="400" cy="200" r="100" fill="%23ff0000" opacity="0.2"/%3E%3Cpath d="M300 350 L350 250 L450 250 L500 350 Z" fill="%23222"/%3E%3C/svg%3E');
+        }
+
+        .caption {
+            padding: 2rem;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .caption p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ccc;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .narrative {
+            padding: 2rem;
+            background: #1a1a1a;
+            border-left: 4px solid #ff4444;
+            margin: 2rem 0;
+        }
+
+        .narrative p {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 1rem;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .choice-btn {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 2px solid #444;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn:before {
+            content: '▶';
+            position: absolute;
+            left: -30px;
+            transition: left 0.3s;
+            color: #ff4444;
+        }
+
+        .choice-btn:hover {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            border-color: #ff4444;
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+        }
+
+        .choice-btn:hover:before {
+            left: 1rem;
+        }
+
+        .stats {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid #444;
+            padding: 1rem;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats h3 {
+            color: #ff4444;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .stat-item {
+            margin: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        .chapter-title {
+            text-align: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .chapter-title h2 {
+            font-size: 3rem;
+            color: #ff4444;
+            text-transform: uppercase;
+            letter-spacing: 0.5rem;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        .chapter-title:before,
+        .chapter-title:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff4444, transparent);
+        }
+
+        .chapter-title:before {
+            left: 0;
+        }
+
+        .chapter-title:after {
+            right: 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: #1a1a1a;
+            border: 3px solid #ff4444;
+            box-shadow: 0 0 50px rgba(255, 68, 68, 0.3);
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 600px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #0a0a0a;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 68, 68, 0.9);
+            color: #000;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-metadata {
+            padding: 2rem;
+            background: #151515;
+            border-top: 2px solid #ff4444;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .modal-metadata h3 {
+            color: #ff4444;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .metadata-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 1rem;
+            margin: 0.8rem 0;
+            padding: 0.8rem;
+            background: rgba(255, 68, 68, 0.05);
+            border-left: 2px solid #444;
+        }
+
+        .metadata-label {
+            color: #888;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.1rem;
+        }
+
+        .metadata-value {
+            color: #e0e0e0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .metadata-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #333;
+        }
+
+        .metadata-btn {
+            flex: 1;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 2px solid #444;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .metadata-btn:hover {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .title-screen h1 {
+                font-size: 4rem;
+                letter-spacing: 1rem;
+            }
+
+            .stats {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 2rem 0;
+            }
+
+            .metadata-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .modal-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    
+    <div class="title-screen" id="titleScreen">
+        <h1>LOREM</h1>
+        <p>POLAR NOIR INTERACTIF</p>
+        <button onclick="startGame()">IPSUM DOLOR</button>
+    </div>
+
+    <div class="container" id="gameContainer">
+        <div class="stats" id="stats">
+            <h3>STATUS</h3>
+            <div class="stat-item">
+                <span class="stat-label">Suspicio:</span>
+                <span class="stat-value" id="suspicion">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Probatio:</span>
+                <span class="stat-value" id="evidence">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Confidentia:</span>
+                <span class="stat-value" id="trust">5</span>
+            </div>
+        </div>
+
+        <!-- Modal for image viewing -->
+        <div class="modal" id="imageModal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <div class="modal-image" id="modalImage"></div>
+                <div class="modal-metadata" id="modalMetadata"></div>
+            </div>
+        </div>
+
+        <!-- Scene 1 -->
+        <div class="scene active scene-1" id="scene1">
+            <div class="chapter-title">
+                <h2>Capitulum I</h2>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-image" onclick="openImageModal(1)">
+                    <div class="image-controls">
+                        <button class="image-btn" onclick="event.stopPropagation(); openImageModal(1)">🔍 INSPICERE</button>
+                        <button class="image-btn" onclick="event.stopPropagation(); exportMetadata(1)">📥 EXPORTARE</button>
+                    </div>
+                    <div class="caption">
+                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit..."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrative">
+                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene(2, 1, 0, 0)">
+                    ▶ Lorem ipsum investigare noctem
+                </button>
+                <button class="choice-btn" onclick="goToScene(3, 0, 1, -1)">
+                    ▶ Dolor sit amet interrogare testem
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene 2 -->
+        <div class="scene scene-2" id="scene2">
+            <div class="chapter-title">
+                <h2>Capitulum II</h2>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-image" onclick="openImageModal(2)">
+                    <div class="image-controls">
+                        <button class="image-btn" onclick="event.stopPropagation(); openImageModal(2)">🔍 INSPICERE</button>
+                        <button class="image-btn" onclick="event.stopPropagation(); exportMetadata(2)">📥 EXPORTARE</button>
+                    </div>
+                    <div class="caption">
+                        <p>"Consectetur adipiscing elit, sed do eiusmod..."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrative">
+                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene(4, 2, 1, 0)">
+                    ▶ Consectetur sequi suspectum
+                </button>
+                <button class="choice-btn" onclick="goToScene(5, 0, 0, 1)">
+                    ▶ Adipiscing revertere ad stationem
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene 3 -->
+        <div class="scene scene-3" id="scene3">
+            <div class="chapter-title">
+                <h2>Capitulum III</h2>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-image" onclick="openImageModal(3)">
+                    <div class="image-controls">
+                        <button class="image-btn" onclick="event.stopPropagation(); openImageModal(3)">🔍 INSPICERE</button>
+                        <button class="image-btn" onclick="event.stopPropagation(); exportMetadata(3)">📥 EXPORTARE</button>
+                    </div>
+                    <div class="caption">
+                        <p>"Sed do eiusmod tempor incididunt ut labore..."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrative">
+                <p>Et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene(4, 1, 2, 0)">
+                    ▶ Tempor examinare probationem
+                </button>
+                <button class="choice-btn" onclick="goToScene(2, 0, 0, -1)">
+                    ▶ Incididunt quaerere in vicinitate
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene 4 -->
+        <div class="scene scene-4" id="scene4">
+            <div class="chapter-title">
+                <h2>Capitulum IV</h2>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-image" onclick="openImageModal(4)">
+                    <div class="image-controls">
+                        <button class="image-btn" onclick="event.stopPropagation(); openImageModal(4)">🔍 INSPICERE</button>
+                        <button class="image-btn" onclick="event.stopPropagation(); exportMetadata(4)">📥 EXPORTARE</button>
+                    </div>
+                    <div class="caption">
+                        <p>"Ut labore et dolore magna aliqua..."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrative">
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.</p>
+                <p>In voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="goToScene(5, 2, 1, 1)">
+                    ▶ Magna confrontare suspectum
+                </button>
+                <button class="choice-btn" onclick="goToScene(3, 0, 1, 0)">
+                    ▶ Aliqua colligere plus probationis
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene 5 - Ending -->
+        <div class="scene scene-5" id="scene5">
+            <div class="chapter-title">
+                <h2>Finis</h2>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-image" onclick="openImageModal(5)">
+                    <div class="image-controls">
+                        <button class="image-btn" onclick="event.stopPropagation(); openImageModal(5)">🔍 INSPICERE</button>
+                        <button class="image-btn" onclick="event.stopPropagation(); exportMetadata(5)">📥 EXPORTARE</button>
+                    </div>
+                    <div class="caption">
+                        <p>"Lorem ipsum revelatio finalis..."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="narrative">
+                <p>Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+                <p>Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                <p id="endingText"></p>
+            </div>
+
+            <div class="choices">
+                <button class="choice-btn" onclick="location.reload()">
+                    ▶ ITERUM LUDERE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            suspicion: 0,
+            evidence: 0,
+            trust: 5
+        };
+
+        const imageMetadata = {
+            1: {
+                titulus: "Urbs Nocturna",
+                descriptio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                locus: "Civitas Metropolitana, Sectio Meridionalis",
+                tempus: "23:47 - Nox Pluvialis",
+                camera: "Canon Lorem EOS 5D",
+                apertura: "f/2.8",
+                iso: "3200",
+                exposition: "1/60s",
+                dimensiones: "800x400px",
+                format: "SVG/Vectorialis",
+                creator: "Detective Lorem",
+                dies: "MMXXV-XII-I",
+                tags: "noir, urbs, nox, mysterium, detective",
+                notes: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit."
+            },
+            2: {
+                titulus: "Testimonium Secretum",
+                descriptio: "Consectetur adipiscing elit, sed do eiusmod tempor incididunt. Ut labore et dolore magna aliqua veniam quis.",
+                locus: "Officina Privata, Via Obscura 42",
+                tempus: "00:15 - Post Meridiem Obscurum",
+                camera: "Nikon Ipsum D850",
+                apertura: "f/1.8",
+                iso: "6400",
+                exposition: "1/30s",
+                dimensiones: "800x400px",
+                format: "SVG/Vectorialis",
+                creator: "Detective Lorem",
+                dies: "MMXXV-XII-I",
+                tags: "interrogatio, testimonium, suspectus, umbra",
+                notes: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            },
+            3: {
+                titulus: "Probatio Criminis",
+                descriptio: "Sed do eiusmod tempor incididunt ut labore et dolore. Magna aliqua ut enim ad minim veniam quis nostrud.",
+                locus: "Scena Criminis, Aedificium Derelictum",
+                tempus: "01:32 - Hora Mortuorum",
+                camera: "Sony Dolor A7III",
+                apertura: "f/2.0",
+                iso: "5000",
+                exposition: "1/40s",
+                dimensiones: "800x400px",
+                format: "SVG/Vectorialis",
+                creator: "Detective Lorem",
+                dies: "MMXXV-XII-I",
+                tags: "probatio, crimen, sanguis, indicium",
+                notes: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+            },
+            4: {
+                titulus: "Persecutio Finalis",
+                descriptio: "Ut labore et dolore magna aliqua exercitation. Ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                locus: "Portus Industrialis, Zona Prohibita",
+                tempus: "02:48 - Ante Auroram",
+                camera: "Fujifilm Sit XT-4",
+                apertura: "f/2.4",
+                iso: "4000",
+                exposition: "1/50s",
+                dimensiones: "800x400px",
+                format: "SVG/Vectorialis",
+                creator: "Detective Lorem",
+                dies: "MMXXV-XII-I",
+                tags: "persecutio, suspectus, actio, confrontatio",
+                notes: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
+            },
+            5: {
+                titulus: "Revelatio Veritatis",
+                descriptio: "Lorem ipsum revelatio finalis et conclusio. Sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                locus: "Camera Obscura, Ultimum Locum",
+                tempus: "03:33 - Momentum Veritatis",
+                camera: "Leica Amet M10",
+                apertura: "f/1.4",
+                iso: "12800",
+                exposition: "1/25s",
+                dimensiones: "800x400px",
+                format: "SVG/Vectorialis",
+                creator: "Detective Lorem",
+                dies: "MMXXV-XII-I",
+                tags: "revelatio, veritas, finis, resolutio",
+                notes: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam."
+            }
+        };
+
+        function startGame() {
+            document.getElementById('titleScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('gameContainer').classList.add('visible');
+            }, 1000);
+        }
+
+        function updateStats() {
+            document.getElementById('suspicion').textContent = gameState.suspicion;
+            document.getElementById('evidence').textContent = gameState.evidence;
+            document.getElementById('trust').textContent = gameState.trust;
+        }
+
+        function goToScene(sceneNum, suspicionChange, evidenceChange, trustChange) {
+            gameState.suspicion += suspicionChange;
+            gameState.evidence += evidenceChange;
+            gameState.trust += trustChange;
+            updateStats();
+
+            document.querySelectorAll('.scene').forEach(scene => {
+                scene.classList.remove('active');
+            });
+
+            document.getElementById('scene' + sceneNum).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (sceneNum === 5) {
+                determineEnding();
+            }
+        }
+
+        function determineEnding() {
+            let endingText = '';
+            
+            if (gameState.evidence >= 4 && gameState.trust >= 4) {
+                endingText = '<strong style="color: #4af;">OPTIMUM FINIS:</strong> Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit. Lorem ipsum veritas triumphavit!';
+            } else if (gameState.suspicion >= 5) {
+                endingText = '<strong style="color: #f44;">MALUM FINIS:</strong> Sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Suspectus effugit...';
+            } else if (gameState.evidence >= 3) {
+                endingText = '<strong style="color: #fa4;">MEDIUM FINIS:</strong> Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet. Partialis victoria...';
+            } else {
+                endingText = '<strong style="color: #888;">AMBIGUUS FINIS:</strong> Ut enim ad minima veniam, quis nostrum exercitationem. Mysterium manet...';
+            }
+            
+            document.getElementById('endingText').innerHTML = endingText;
+        }
+
+        function openImageModal(imageId) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalMetadata = document.getElementById('modalMetadata');
+            
+            // Set image background
+            const sceneElement = document.querySelector('.scene-' + imageId + ' .panel-image');
+            const bgImage = window.getComputedStyle(sceneElement).backgroundImage;
+            modalImage.style.backgroundImage = bgImage;
+            
+            // Generate metadata display
+            const metadata = imageMetadata[imageId];
+            let metadataHTML = '<h3>METADATA IMAGINIS</h3>';
+            
+            for (let key in metadata) {
+                metadataHTML += `
+                    <div class="metadata-item">
+                        <div class="metadata-label">${key}</div>
+                        <div class="metadata-value">${metadata[key]}</div>
+                    </div>
+                `;
+            }
+            
+            metadataHTML += `
+                <div class="metadata-actions">
+                    <button class="metadata-btn" onclick="copyMetadata(${imageId})">📋 COPIARE METADATA</button>
+                    <button class="metadata-btn" onclick="downloadMetadata(${imageId})">💾 SALVARE JSON</button>
+                    <button class="metadata-btn" onclick="downloadImage(${imageId})">🖼️ SALVARE IMAGO</button>
+                </div>
+            `;
+            
+            modalMetadata.innerHTML = metadataHTML;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function exportMetadata(imageId) {
+            downloadMetadata(imageId);
+        }
+
+        function copyMetadata(imageId) {
+            const metadata = imageMetadata[imageId];
+            const metadataText = JSON.stringify(metadata, null, 2);
+            
+            navigator.clipboard.writeText(metadataText).then(() => {
+                alert('✓ Metadata copiatum in clipboard!\n\nLorem ipsum dolor sit amet.');
+            });
+        }
+
+        function downloadMetadata(imageId) {
+            const metadata = imageMetadata[imageId];
+            const metadataText = JSON.stringify(metadata, null, 2);
+            const blob = new Blob([metadataText], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lorem_metadata_${imageId}_${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadImage(imageId) {
+            const sceneElement = document.querySelector('.scene-' + imageId + ' .panel-image');
+            const bgImage = window.getComputedStyle(sceneElement).backgroundImage;
+            
+            // Extract SVG data URL
+            const svgMatch = bgImage.match(/url\("data:image\/svg\+xml,([^"]+)"\)/);
+            if (svgMatch) {
+                const svgData = decodeURIComponent(svgMatch[1]);
+                const blob = new Blob([svgData], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `lorem_imago_${imageId}_${Date.now()}.svg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal on background click
+        document.getElementById('imageModal').addEventListener('click', (e) => {
+            if (e.target.id === 'imageModal') {
+                closeModal();
+            }
+        });
+
+        updateStats();
+    </script>
+</body>
+</html>
