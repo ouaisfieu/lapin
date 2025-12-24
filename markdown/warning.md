@@ -1,9 +1,3 @@
----
-cssclasses:
-  - bd-sf-rouge
----
-
-
 # ⚠️ ⭕ WARNING ⭕ ⚠️
 
 ## ⭕ CE SITE ⭕ EST ⭕ PAS ⭕ FEEL GOOD ⭕ 
