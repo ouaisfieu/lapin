@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guide du Jeu · Zalagtiga & Co</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020617;
+      --fg: #e5e7eb;
+      --soft: #9ca3af;
+      --accent: #f97316;
+      --accent2: #22c55e;
+      --accent3: #22d3ee;
+      --border: #1f2937;
+      --card: #020617;
+      --shadow: 0 24px 60px rgba(0,0,0,0.9);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      min-height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 0 0, rgba(251,113,133,0.22), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(56,189,248,0.18), transparent 60%),
+        linear-gradient(to bottom, #020617, #000 55%, #020617 100%);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      padding: 12px 10px 26px;
+      display: flex;
+      justify-content: center;
+    }
+
+    main {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    header.site-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--soft);
+    }
+
+    h1 {
+      margin: 4px 0 4px;
+      font-size: clamp(20px, 5vw, 26px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--soft);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* nav */
+
+    nav.nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin-bottom: 10px;
+    }
+
+    .nav-inner {
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.8));
+      border-radius: 999px;
+      border: 1px solid rgba(51,65,85,0.9);
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .nav-link {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--soft);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      border-color: rgba(148,163,184,0.9);
+    }
+
+    .nav-link.primary {
+      border-color: rgba(249,115,22,0.9);
+      color: #fed7aa;
+      background: radial-gradient(circle at 30% 0, rgba(249,115,22,0.35), transparent 70%);
+    }
+
+    /* sections */
+
+    section {
+      margin-bottom: 14px;
+    }
+
+    .card {
+      border-radius: 16px;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 10px 12px 11px;
+    }
+
+    .card-soft {
+      border-radius: 14px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 9px 10px;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 0 0 4px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      font-size: 14px;
+      margin: 8px 0 4px;
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    ul, ol {
+      padding-left: 18px;
+      margin: 4px 0;
+      font-size: 13px;
+    }
+
+    li {
+      margin: 2px 0;
+    }
+
+    small {
+      font-size: 11px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      padding: 1px 6px;
+      font-size: 10px;
+      color: var(--soft);
+    }
+
+    /* TLDR */
+
+    .tldr {
+      font-size: 13px;
+      border-radius: 12px;
+      border: 1px dashed rgba(252,211,77,0.9);
+      background: rgba(24,24,27,0.95);
+      padding: 8px 9px;
+    }
+
+    .tldr-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #facc15;
+      margin-bottom: 3px;
+    }
+
+    .tldr-list {
+      padding-left: 16px;
+      margin: 4px 0;
+    }
+
+    /* liens */
+
+    a {
+      color: #f97316;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    a:hover {
+      color: #fdba74;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(55,65,81,0.9);
+    }
+
+    /* arbre de décision */
+
+    details {
+      border-radius: 12px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: rgba(15,23,42,0.98);
+      padding: 6px 8px;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    summary::marker,
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-label {
+      font-size: 12px;
+    }
+
+    .summary-badge {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      font-size: 10px;
+      padding: 1px 6px;
+      color: var(--soft);
+    }
+
+    .decision-body {
+      margin-top: 5px;
+      font-size: 13px;
+    }
+
+    .decision-list {
+      padding-left: 16px;
+      margin: 0;
+    }
+
+    .decision-list li {
+      margin: 2px 0;
+    }
+
+    /* factions */
+
+    .factions-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 7px;
+    }
+
+    @media (min-width: 640px) {
+      .factions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .faction-card {
+      border-radius: 12px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 8px 9px;
+      font-size: 13px;
+    }
+
+    .faction-name {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .faction-role {
+      font-size: 11px;
+      color: var(--soft);
+      margin-bottom: 3px;
+    }
+
+    .faction-meta {
+      font-size: 11px;
+      color: var(--soft);
+      margin-top: 3px;
+    }
+
+    /* table "qui joue comment" */
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .mini-table th {
+      background: rgba(15,23,42,0.9);
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    .badge-mode {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      font-size: 10px;
+      color: var(--soft);
+      display: inline-block;
+      margin-bottom: 3px;
+    }
+
+    /* footer */
+
+    .footer-note {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--soft);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="site-header">
+    <div class="eyebrow">documentation du jeu</div>
+    <h1>ZALAGTIGA · MINITEL · MAP</h1>
+    <p class="subtitle">
+      Guide complet pour jouer <strong>from scratch</strong>, en solo ou en équipe,
+      avec les pages&nbsp;: borne d’arcade Zalagtiga, Minitel, MAP échiquier, monitor, etc.
+    </p>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#tldr" class="nav-link primary">TL;DR</a>
+      <a href="#etapes" class="nav-link">Étapes A → Z</a>
+      <a href="#solo" class="nav-link">Mode Solo</a>
+      <a href="#equipe" class="nav-link">Mode Équipe</a>
+      <a href="#factions" class="nav-link">Factions</a>
+      <a href="#decision" class="nav-link">Arbre de décision</a>
+      <a href="#outils" class="nav-link">Outils & liens</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+    </div>
+  </nav>
+
+  <!-- TLDR -->
+  <section id="tldr">
+    <div class="card">
+      <div class="tldr">
+        <div class="tldr-title">TL;DR — comment jouer en 30 secondes</div>
+        <ul class="tldr-list">
+          <li>1. Ouvre <a href="zalagtiga.html">Zalagtiga</a> pour l’ambiance et le briefing.</li>
+          <li>2. Ouvre le terminal <a href="minitel-boot-map.html">Minitel & MAP</a>.</li>
+          <li>3. Sur le Minitel, entre le code <code>↑ ↑ ↓ ↓ ← → ← → B A</code> pour débloquer la MAP.</li>
+          <li>4. Clique sur des cases de l’échiquier, remplis les fiches (acteurs, lieux, médias, hypothèses…)</li>
+          <li>5. Exporte ta carte (JSON / CSV / Markdown), partage-la ou réimporte-la pour rejouer.</li>
+          <li>6. En équipe, répartissez-vous les <strong>factions</strong> et les zones de l’échiquier.</li>
+        </ul>
+        <p style="margin-top:4px;">
+          Tout se passe en local dans ton navigateur. Rien n’est envoyé sur un serveur :
+          c’est un <strong>jeu pédagogique</strong>, pas un outil de surveillance.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETAPES A Z -->
+  <section id="etapes">
+    <div class="card">
+      <h2>Étapes logiques · de A à Z</h2>
+      <p>
+        Voici le chemin “officiel” pour jouer, que tu sois en solo ou en équipe.
+        Les liens supposent que tu as nommé les fichiers comme suit&nbsp;:
+      </p>
+      <ul>
+        <li><code>zalagtiga.html</code> — borne d’arcade / briefing</li>
+        <li><code>minitel-boot-map.html</code> — Minitel, Konami, MAP échiquier</li>
+        <li><code>monitor.html</code> — hub / faux minitel / annuaire (optionnel)</li>
+        <li><code>recap-arcade.html</code> — récap du jeu (optionnel)</li>
+      </ul>
+
+      <h3>1. Lancer la partie (ambiance & briefing)</h3>
+      <div class="card-soft">
+        <ol>
+          <li>Ouvre <a href="zalagtiga.html">Zalagtiga</a> dans ton navigateur.</li>
+          <li>Lis l’intro sur l’écran CRT : Place Poelaert, années 80, guerre froide, salle de jeux glauque…</li>
+          <li>Cliques sur <strong>INSERT COIN</strong> pour afficher le <strong>briefing de mission</strong>.</li>
+        </ol>
+        <p><strong>Objectif :</strong> comprendre que tu vas jouer avec tes habitudes numériques, pas avec des “dossiers” sur des gens.</p>
+        <div class="tag-row">
+          <span class="tag">mise en contexte</span>
+          <span class="tag">fiction</span>
+          <span class="tag">hygiène numérique</span>
+        </div>
+      </div>
+
+      <h3>2. Ouvrir le terminal Minitel et débloquer la MAP</h3>
+      <div class="card-soft">
+        <ol>
+          <li>Ouvre <a href="minitel-boot-map.html">Minitel & MAP</a>.</li>
+          <li>Laisse défiler le faux écran d’allumage (boot).</li>
+          <li>Quand le boot est terminé, entre le <strong>Konami code</strong> sur ton clavier&nbsp;:
+            <code>↑ ↑ ↓ ↓ ← → ← → B A</code>.
+          </li>
+          <li>La MAP d’enquête (échiquier 8×8) apparaît.</li>
+        </ol>
+        <p>
+          Tu viens de passer de “spectateur” à “joueur/joueuse” : le code secret marque ton consentement à jouer.
+        </p>
+      </div>
+
+      <h3>3. Comprendre l’échiquier d’enquête</h3>
+      <div class="card-soft">
+        <p>
+          L’échiquier 8×8 représente une <strong>carte mentale</strong> des enjeux qui t’intéressent.
+          Par exemple&nbsp;:
+        </p>
+        <ul>
+          <li>ligne 8&nbsp;: acteurs nationaux / internationaux</li>
+          <li>ligne 4–5&nbsp;: niveau local / régional</li>
+          <li>colonne A–D&nbsp;: institutions publiques / associations</li>
+          <li>colonne E–H&nbsp;: médias / entreprises / “zones floues”</li>
+        </ul>
+        <p>
+          Tu peux décider seul·e de ce que signifie chaque rangée / colonne, ou le faire en équipe.
+        </p>
+      </div>
+
+      <h3>4. Remplir les fiches (cases de l’échiquier)</h3>
+      <div class="card-soft">
+        <p>En cliquant sur une case (ex&nbsp;: <strong>C5</strong>), une fiche s’ouvre :</p>
+        <ul>
+          <li><strong>Nom / acteur principal</strong> — ex&nbsp;: “Association Quartier X”, “Media Y”.</li>
+          <li><strong>Type</strong> — acteur, organisation, média, lieu, événement, hypothèse…</li>
+          <li><strong>Risque</strong> — faible / moyen / élevé (niveau de sensibilité du sujet).</li>
+          <li><strong>Tags</strong> — mots-clés : “logement”, “climat”, “algorithmes”, “emploi”…</li>
+          <li><strong>Lien principal</strong> — site officiel, article de référence, ressource clé.</li>
+          <li><strong>GPS</strong> — coordonnées d’un <em>lieu public</em> (pas d’adresses privées).</li>
+          <li><strong>Image (URL)</strong> — logo, photo libre, carte, schéma…</li>
+          <li><strong>Notes</strong> — contexte, questions, signaux faibles, idées de veille.</li>
+        </ul>
+        <p>
+          Après enregistrement, la case s’allume avec un point “●” et peut afficher son image en fond.
+          Au survol, un résumé apparaît (tooltip).
+        </p>
+      </div>
+
+      <h3>5. Sauvegarder, partager, rejouer</h3>
+      <div class="card-soft">
+        <p>
+          Les boutons <strong>JSON / CSV / Markdown</strong> te permettent d’exporter ton échiquier. 
+          Tu peux ensuite&nbsp;:
+        </p>
+        <ul>
+          <li>ouvrir le CSV dans un tableur (LibreOffice, Excel) pour trier, filtrer, colorer ;</li>
+          <li>utiliser le JSON dans un script ou un autre outil ;</li>
+          <li>coller le Markdown dans ton système de notes (Obsidian, Hugo…).</li>
+        </ul>
+        <p>
+          Tu peux aussi <strong>importer</strong> un JSON (fichier ou contenu de la zone de texte)
+          pour reprendre une partie ou partager une configuration entre plusieurs personnes.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLO -->
+  <section id="solo">
+    <div class="card">
+      <h2>Mode Solo · apprendre à voir le jeu</h2>
+      <p>
+        Le mode solo sert surtout à te faire la main, sans pression. Tu peux le jouer comme un
+        <strong>journal de bord</strong> interactif.
+      </p>
+
+      <table class="mini-table">
+        <thead>
+          <tr>
+            <th>Étape</th>
+            <th>Ce que tu fais</th>
+            <th>Ce que tu y gagnes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge-mode">1. Lancer</span></td>
+            <td>Tu lis le briefing sur <a href="zalagtiga.html">Zalagtiga</a>.</td>
+            <td>Tu te mets mentalement en mode “jeu” avant d’attaquer le sérieux.</td>
+          </tr>
+          <tr>
+            <td><span class="badge-mode">2. Cartographier</span></td>
+            <td>Tu ouvres la MAP et remplis quelques cases avec des sujets qui te concernent.</td>
+            <td>Tu clarifies ce qui te pèse / t’intéresse dans l’actualité et ta vie numérique.</td>
+          </tr>
+          <tr>
+            <td><span class="badge-mode">3. Relire</span></td>
+            <td>Tu relis tes fiches après quelques jours, tu ajoutes des notes, tu ajustes les risques.</td>
+            <td>Tu vois ce qui a vraiment de l’importance pour toi et ce qui t’angoisse “pour rien”.</td>
+          </tr>
+          <tr>
+            <td><span class="badge-mode">4. Exporter</span></td>
+            <td>Tu exportes ta carte en Markdown ou CSV et tu la classes dans tes dossiers.</td>
+            <td>Tu gardes une trace de ton parcours, sans dépendre d’un service externe.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="tag-row">
+        <span class="tag">journal de bord</span>
+        <span class="tag">auto-défense numérique</span>
+        <span class="tag">lecture critique de l’info</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPE -->
+  <section id="equipe">
+    <div class="card">
+      <h2>Mode Équipe · coopératif et modulable</h2>
+      <p>
+        En équipe, le jeu devient un <strong>atelier</strong> : idéal pour un groupe d’ami·es,
+        une asso, une classe, un collectif de quartier, etc.
+      </p>
+
+      <h3>Organisation simple</h3>
+      <ul>
+        <li>1 personne joue le rôle de <strong>“gardien·ne de la machine”</strong> (maître du jeu) :</li>
+        <ul>
+          <li>affiche Zalagtiga sur grand écran ;</li>
+          <li>manipule la MAP sur un ordi projeté ;</li>
+          <li>exporte / importe les sauvegardes.</li>
+        </ul>
+        <li>Le reste du groupe se répartit les cases / zones / factions (voir ci-dessous).</li>
+      </ul>
+
+      <h3>Principe de base</h3>
+      <ol>
+        <li>Choisir un <strong>thème commun</strong> (ex&nbsp;: logement, numérique, climat, emploi…).</li>
+        <li>Attribuer 2–4 cases de l’échiquier à chaque personne ou petit groupe.</li>
+        <li>Remplir les fiches ensemble, en expliquant à voix haute ce qu’on ajoute et pourquoi.</li>
+        <li>Discuter des liens possibles entre les cases (qui influence quoi, à quel niveau, comment ?).</li>
+      </ol>
+
+      <p>
+        Tu peux ensuite utiliser <a href="recap-arcade.html">recap-arcade.html</a> comme
+        <strong>pense-bête</strong> pour vérifier que tout le monde a suivi les grandes étapes.
+      </p>
+    </div>
+  </section>
+
+  <!-- FACTIONS -->
+  <section id="factions">
+    <div class="card">
+      <h2>Factions & rôles possibles</h2>
+      <p>
+        Les factions servent à <strong>mettre du jeu de rôle</strong> dans l’exercice et à
+        répartir les tâches. Tu peux les renommer / adapter à ton public.
+      </p>
+
+      <div class="factions-grid">
+        <div class="faction-card">
+          <div class="faction-name">1. Veilleurs de Poelaert</div>
+          <div class="faction-role">Rôle&nbsp;: surveiller le “paysage” global.</div>
+          <p>
+            Ils/elles s’occupent surtout des cases du haut de l’échiquier (ligne 8–7–6) :
+            institutions nationales, acteurs internationaux, grandes entreprises, grands médias.
+          </p>
+          <div class="faction-meta">
+            Idéal pour les gens qui aiment prendre de la hauteur, lire la presse, regarder les tendances.
+          </div>
+        </div>
+
+        <div class="faction-card">
+          <div class="faction-name">2. Cartographes de Quartier</div>
+          <div class="faction-role">Rôle&nbsp;: ancrer la carte dans le réel local.</div>
+          <p>
+            Ils/elles se concentrent sur les lignes 3–4–5 : communes, associations, lieux de vie,
+            conflits locaux, initiatives citoyennes, etc.
+          </p>
+          <div class="faction-meta">
+            Idéal pour celles et ceux qui connaissent bien le terrain, les maisons de quartier, les cafés, les squats…
+          </div>
+        </div>
+
+        <div class="faction-card">
+          <div class="faction-name">3. Archivistes du Minitel</div>
+          <div class="faction-role">Rôle&nbsp;: garder une mémoire claire de ce qui est saisi.</div>
+          <p>
+            Ils/elles vérifient que chaque fiche est compréhensible, sourcée, non diffamatoire,
+            et surveillent les exports (JSON, CSV, Markdown).
+          </p>
+          <div class="faction-meta">
+            Idéal pour les gens rigoureux, qui aiment ranger, documenter, faire des synthèses propres.
+          </div>
+        </div>
+
+        <div class="faction-card">
+          <div class="faction-name">4. Script-kiddies Repentis</div>
+          <div class="faction-role">Rôle&nbsp;: poser les questions gênantes.</div>
+          <p>
+            Ils/elles se chargent d’imaginer les “dérives possibles” du système:
+            que se passerait-il si quelqu’un utilisait ces outils pour de mauvaises raisons ?
+          </p>
+          <div class="faction-meta">
+            Idéal pour les joueurs/joueuses qui aiment les scénarios, la SF,
+            les questions de vie privée et de sécurité.
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:6px;">
+        Tu n’es pas obligé d’utiliser les factions, mais elles peuvent aider un groupe
+        à comprendre que <strong>nobody plays God</strong> : chaque rôle a ses limites.
+      </p>
+    </div>
+  </section>
+
+  <!-- ARBRE DE DECISION -->
+  <section id="decision">
+    <div class="card">
+      <h2>Arbre de décision · comment je joue concrètement ?</h2>
+      <p>
+        Cet arbre simplifié t’aide à choisir ton mode de jeu et tes priorités.
+        Clique sur les blocs pour dérouler les options.
+      </p>
+
+      <details>
+        <summary>
+          <span class="summary-label">Je joue seul·e, et je suis plutôt débutant·e</span>
+          <span class="summary-badge">solo · débutant</span>
+        </summary>
+        <div class="decision-body">
+          <ul class="decision-list">
+            <li>1️⃣ Ouvre <a href="zalagtiga.html">Zalagtiga</a> une fois, lis le briefing, puis ferme la page.</li>
+            <li>2️⃣ Ouvre <a href="minitel-boot-map.html">Minitel & MAP</a>, lance le Konami code.</li>
+            <li>3️⃣ Remplis <strong>4 à 6 cases maximum</strong> sur des sujets que tu comprends déjà bien.</li>
+            <li>4️⃣ Exporte en Markdown, colle dans un fichier <code>journal.md</code>.</li>
+            <li>5️⃣ Revient plus tard, efface / modifie ce qui ne te paraît plus pertinent.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="summary-label">Je joue seul·e, mais je veux un niveau “hardcore”</span>
+          <span class="summary-badge">solo · avancé</span>
+        </summary>
+        <div class="decision-body">
+          <ul class="decision-list">
+            <li>1️⃣ Décide d’un <strong>thème précis</strong> (ex&nbsp;: “plateformes vidéo”, “logement étudiant”, “énergie”).</li>
+            <li>2️⃣ Attribue toi-même une signification à chaque ligne et chaque colonne.</li>
+            <li>3️⃣ Remplis au moins 16 cases, en prenant le temps de <strong>vérifier tes sources</strong>.</li>
+            <li>4️⃣ Export JSON + CSV, expérimente avec un tableur et, si tu sais, un petit script.</li>
+            <li>5️⃣ Écris une page de synthèse dans un autre fichier (site statique, blog, etc.) en citant le jeu comme “maquette”.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="summary-label">On joue en équipe, sans pression</span>
+          <span class="summary-badge">équipe · découverte</span>
+        </summary>
+        <div class="decision-body">
+          <ul class="decision-list">
+            <li>1️⃣ Une personne projette <a href="zalagtiga.html">Zalagtiga</a> + <a href="minitel-boot-map.html">Minitel & MAP</a> sur un écran.</li>
+            <li>2️⃣ On choisit un thème et on se répartit 2–3 cases chacun.</li>
+            <li>3️⃣ Chacun explique à voix haute ce qu’il/elle inscrit dans sa fiche.</li>
+            <li>4️⃣ On exporte en CSV, on le relit ensemble pour voir les patterns qui apparaissent.</li>
+            <li>5️⃣ On termine par un tour de table : “qu’est-ce que j’ai appris / qu’est-ce que ça change pour moi ?”.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>
+          <span class="summary-label">On joue en équipe, pour produire un vrai livrable</span>
+          <span class="summary-badge">équipe · avancé</span>
+        </summary>
+        <div class="decision-body">
+          <ul class="decision-list">
+            <li>1️⃣ On définit à l’avance <strong>un livrable</strong> (article, mini-dossier, page web pédagogique…).</li>
+            <li>2️⃣ On utilise les factions pour répartir les responsabilités (Veilleurs, Cartographes, Archivistes, Script-kiddies).</li>
+            <li>3️⃣ On joue plusieurs “tours” (sessions), en sauvegardant entre chaque avec l’export JSON.</li>
+            <li>4️⃣ Après 2–3 sessions, on utilise les exports pour construire le livrable (tableaux, graphiques, récit, etc.).</li>
+            <li>5️⃣ On inclut une section explicite : “ce que ce jeu n’est PAS” (ni flicage, ni vérité absolue).</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- OUTILS & LIENS -->
+  <section id="outils">
+    <div class="card">
+      <h2>Outils utilisés & liens entre les pages</h2>
+      <p>
+        Voici comment relier tout l’univers du jeu en quelques liens cliquables.
+        Adapte les chemins selon où tu as posé les fichiers.
+      </p>
+
+      <div class="card-soft">
+        <h3>Pages du “parc”</h3>
+        <ul>
+          <li><strong>Borne d’arcade</strong> — <a href="zalagtiga.html">zalagtiga.html</a></li>
+          <li><strong>Terminal & MAP</strong> — <a href="minitel-boot-map.html">minitel-boot-map.html</a></li>
+          <li><strong>Monitor / Minitel étendu</strong> — <a href="monitor.html">monitor.html</a> (si tu l’utilises)</li>
+          <li><strong>Récap pédagogique</strong> — <a href="recap-arcade.html">recap-arcade.html</a></li>
+          <li><strong>Guide complet</strong> — cette page : <code>guide-jeu-zalagtiga.html</code> (par exemple)</li>
+        </ul>
+        <p>
+          Tu peux ajouter en bas de chaque page un mini-menu “Navigation” avec ces liens
+          pour que le joueur / la joueuse ne soit jamais perdu·e.
+        </p>
+      </div>
+
+      <div class="card-soft" style="margin-top:6px;">
+        <h3>Idée de menu minimal (copier/coller)</h3>
+        <pre style="white-space:pre-wrap;font-size:11px;background:#020617;border-radius:8px;border:1px solid #374151;padding:6px 7px;overflow:auto;">
+&lt;nav class="mini-menu"&gt;
+  &lt;a href="zalagtiga.html"&gt;Borne Zalagtiga&lt;/a&gt; ·
+  &lt;a href="minitel-boot-map.html"&gt;Minitel &amp; MAP&lt;/a&gt; ·
+  &lt;a href="recap-arcade.html"&gt;Récap du jeu&lt;/a&gt; ·
+  &lt;a href="guide-jeu-zalagtiga.html"&gt;Guide complet&lt;/a&gt;
+&lt;/nav&gt;
+        </pre>
+        <p><small>(Pense à adapter les noms de fichiers si tu les changes.)</small></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="card">
+      <h2>FAQ · questions qu’on va te poser</h2>
+
+      <h3>Est-ce que ce jeu collecte des données sur les gens ?</h3>
+      <p>
+        Non. Tout tourne dans ton <strong>navigateur</strong>, en local.
+        Les fiches sont stockées en <code>localStorage</code> et les exports sont
+        des fichiers que <strong>toi</strong> décides d’enregistrer ou pas.
+      </p>
+
+      <h3>Est-ce qu’on peut mettre des personnes privées dans les cases ?</h3>
+      <p>
+        Non. On reste sur des <strong>acteurs publics</strong>, des organisations,
+        des idées, des lieux publics, des médias, des scénarios.
+        Le jeu est une maquette d’<strong>éducation populaire</strong>, pas un ficher.
+      </p>
+
+      <h3>À quoi ça sert, concrètement ?</h3>
+      <ul>
+        <li>À <strong>ralentir</strong> la manière dont on consomme les infos.</li>
+        <li>À <strong>cartographier</strong> ce qui compte pour toi / ton groupe.</li>
+        <li>À <strong>apprendre</strong> à documenter, sourcer, vérifier, relier.</li>
+        <li>À tester des méthodes de veille citoyenne, sans enjeu policier.</li>
+      </ul>
+
+      <h3>Est-ce que je peux modifier les règles, les factions, les pages ?</h3>
+      <p>
+        Oui, c’est même encouragé. Tu peux :
+      </p>
+      <ul>
+        <li>dupliquer ce fichier de guide et adapter le texte à ton public ;</li>
+        <li>changer les noms de factions, ajouter des rôles ;</li>
+        <li>créer d’autres cartes (un deuxième échiquier, un réseau en grille, etc.).</li>
+      </ul>
+
+      <p class="footer-note">
+        Tu peux considérer ce guide comme un “manuel de base” :
+        libre à toi d’en faire un manuel maison, estampillé avec ton projet.
+      </p>
+    </div>
+  </section>
+</main>
+</body>
+</html>
